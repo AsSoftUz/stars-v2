@@ -69,34 +69,4 @@
             }
         }
     }
-    nav {
-        height: 60px;
-        padding: 0 18px;
-        border-top-left-radius: 30px;
-        border-top-right-radius: 30px;
-        margin-top: 32px;
-        background: #17212B;
-        ul {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            height: 100%;
-            list-style: none;
-            li {
-                a {
-                    text-decoration: none;
-                    color: #fff;
-                    font-size: 11px;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 4px;
-                    img {
-                        width: 16px;
-                        height: 14px;
-                    }
-                }
-            }
-        }
-    }
 }

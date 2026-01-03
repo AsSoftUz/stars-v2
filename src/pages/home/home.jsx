@@ -7,6 +7,7 @@ import premiumIcon from '../../assets/premiumIcon.png'
 import homeIcon from '../../assets/homeIcon.png'
 import referalIcon from '../../assets/referalIcon.png'
 import settingsIcon from '../../assets/settingsIcon.png'
+import Nav from '../nav/nav.jsx'
 
 const Home = () => {
     return (
@@ -56,7 +57,8 @@ const Home = () => {
                     </a>
                 </div>
             </div>
-            <nav>
+            <Nav />
+            {/* <nav>
                 <ul>
                     <li>
                         <a href="">
@@ -89,7 +91,7 @@ const Home = () => {
                         </a>
                     </li>
                 </ul>
-            </nav>
+            </nav> */}
         </div> 
     )
 }
