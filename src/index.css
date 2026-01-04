@@ -22,8 +22,6 @@ body {
   width: 380px;
   height: 100vh;
   margin: 0 auto;
-  /* position: relative; */
-  border: 1px solid red;
 
   display: flex;
   flex-direction: column; 
