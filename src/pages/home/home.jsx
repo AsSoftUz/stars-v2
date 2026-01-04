@@ -4,9 +4,6 @@ import starsIcon from "../../assets/starsIcon.png";
 import starsImg from "../../assets/stars.png";
 import premiumImg from "../../assets/premium.png";
 import premiumIcon from "../../assets/premiumIcon.png";
-import homeIcon from "../../assets/homeIcon.png";
-import referalIcon from "../../assets/referalIcon.png";
-import settingsIcon from "../../assets/settingsIcon.png";
 import Nav from "../nav/nav.jsx";
 
 const Home = () => {

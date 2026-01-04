@@ -3,10 +3,9 @@ nav {
   padding: 0 18px;
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;
-  margin-top: 32px;
   background: #17212b;
   width: 100%;
-  position: absolute;
+  flex-shrink: 0;
   ul {
     display: flex;
     justify-content: space-around;

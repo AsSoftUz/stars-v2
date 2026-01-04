@@ -12,7 +12,12 @@ body {
 
 #root {
   width: 380px;
+  height: 100vh;
   margin: 0 auto;
-  /* padding: 0 10px; */
-  position: relative;
+  /* position: relative; */
+  border: 1px solid red;
+
+  display: flex;
+  flex-direction: column; 
+  overflow: hidden;
 }

@@ -1,5 +1,8 @@
 .premium {
   padding: 0 10px;
+  flex: 1;           // Qolgan hamma bo'sh joyni egallaydi
+  overflow-y: auto;  // Agar kontent ko'p bo'lsa, nav-ni yopmasdan scroll bo'ladi
+  padding-bottom: 20px;
   header {
     text-align: center;
     margin: 50px 0;
