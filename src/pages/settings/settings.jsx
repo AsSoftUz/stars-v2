@@ -1,8 +1,11 @@
 import "./settings.scss";
+import { useState, useRef, useEffect } from "react";
 import premiumImg from "../../assets/premium.png";
 import Nav from "../nav/nav.jsx";
 import { NavLink } from "react-router-dom";
-import { useState, useEffect } from 'react';
+import { useTranslation } from "react-i18next";
+import i18n from "../../utils/i18n";
+
 import {
   Globe,
   CreditCard,
@@ -11,26 +14,49 @@ import {
   ChevronDown,
 } from "lucide-react";
 
+const languageLabel = {
+  uz: "UZB",
+  ru: "RUS",
+  en: "ENG",
+};
+
 const Settings = () => {
-const [openDropdown, setOpenDropdown] = useState(null);
+  const { t } = useTranslation();
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const containerRef = useRef(null);
 
-  // localStorage-dan qiymatlarni olish (dastlabki holat)
+  // 🔤 Language (i18n code saqlanadi)
   const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('app_lang') || 'UZB';
+    return localStorage.getItem("language") || "en";
   });
 
+  // 💳 Payment
   const [payment, setPayment] = useState(() => {
-    return localStorage.getItem('app_payment') || 'Payme';
+    return localStorage.getItem("app_payment") || "Payme";
   });
 
-  // Til o'zgarganda localStorage-ga yozish
+  // 📌 Outside click → close dropdown
   useEffect(() => {
-    localStorage.setItem('app_lang', language);
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // 🌍 Language change
+  useEffect(() => {
+    localStorage.setItem("language", language);
+    i18n.changeLanguage(language);
   }, [language]);
 
-  // To'lov usuli o'zgarganda localStorage-ga yozish
+  // 💾 Payment save
   useEffect(() => {
-    localStorage.setItem('app_payment', payment);
+    localStorage.setItem("app_payment", payment);
   }, [payment]);
 
   const toggleDropdown = (name) => {
@@ -38,106 +64,135 @@ const [openDropdown, setOpenDropdown] = useState(null);
   };
 
   const handleSelect = (type, value) => {
-    if (type === 'til') setLanguage(value);
-    if (type === 'tolov') setPayment(value);
+    if (type === "language") setLanguage(value);
+    if (type === "payment") setPayment(value);
     setOpenDropdown(null);
   };
+
   return (
     <>
       <div className="settings">
+        {/* Header */}
         <header>
-          <img src={premiumImg} alt="" />
+          <img src={premiumImg} alt="Premium" />
           <h2>Name</h2>
         </header>
+
+        {/* Balance */}
         <div className="balance">
           <h2>0 UZS</h2>
-          <NavLink title="Home" to="/topup">
-            Hisobni to'ldirish
-          </NavLink>
+          <NavLink to="/topup">{t("top_up_button")}</NavLink>
         </div>
-        <div className="settings-container">
-          {/* Til Dropdown */}
+
+        {/* Settings */}
+        <div className="settings-container" ref={containerRef}>
+          {/* 🌍 Language */}
           <div className="settings-wrapper">
             <div
               className="settings-item"
-              onClick={() => toggleDropdown("til")}
+              onClick={() => toggleDropdown("language")}
             >
               <div className="left-side">
                 <span className="icon-wrapper">
                   <Globe size={18} />
                 </span>
-                <span className="label">Til</span>
+                <span className="label">{t("settings_language")}</span>
               </div>
+
               <div className="right-side">
-                <span className="value">{language}</span>
+                <span className="value">
+                  {languageLabel[language]}
+                </span>
                 <ChevronDown
                   size={14}
                   className={`arrow-icon ${
-                    openDropdown === "til" ? "open" : ""
+                    openDropdown === "language" ? "open" : ""
                   }`}
                 />
               </div>
             </div>
-            {openDropdown === "til" && (
+
+            {openDropdown === "language" && (
               <div className="dropdown-menu">
-                <div onClick={() => handleSelect("til", "UZB")}>UZB</div>
-                <div onClick={() => handleSelect("til", "RUS")}>RUS</div>
-                <div onClick={() => handleSelect("til", "ENG")}>ENG</div>
+                <div onClick={() => handleSelect("language", "uz")}>
+                  UZB
+                </div>
+                <div onClick={() => handleSelect("language", "ru")}>
+                  RUS
+                </div>
+                <div onClick={() => handleSelect("language", "en")}>
+                  ENG
+                </div>
               </div>
             )}
           </div>
 
-          {/* Tolov usulu Dropdown */}
+          {/* 💳 Payment */}
           <div className="settings-wrapper">
             <div
               className="settings-item"
-              onClick={() => toggleDropdown("tolov")}
+              onClick={() => toggleDropdown("payment")}
             >
               <div className="left-side">
                 <span className="icon-wrapper">
                   <CreditCard size={18} />
                 </span>
-                <span className="label">Tolov usulu</span>
+                <span className="label">{t("settings_payment")}</span>
               </div>
+
               <div className="right-side">
                 <span className="value">{payment}</span>
                 <ChevronDown
                   size={14}
                   className={`arrow-icon ${
-                    openDropdown === "tolov" ? "open" : ""
+                    openDropdown === "payment" ? "open" : ""
                   }`}
                 />
               </div>
             </div>
-            {openDropdown === "tolov" && (
+
+            {openDropdown === "payment" && (
               <div className="dropdown-menu">
-                <div onClick={() => handleSelect("tolov", "Payme")}>Payme</div>
-                <div onClick={() => handleSelect("tolov", "Click")}>Click</div>
+                <div onClick={() => handleSelect("payment", "Payme")}>
+                  Payme
+                </div>
+                <div onClick={() => handleSelect("payment", "Click")}>
+                  Click
+                </div>
               </div>
             )}
           </div>
 
-          {/* Oddiy qatorlar */}
-          <a className="settings-item" href="https://google.com">
+          {/* 🎧 Help */}
+          <a
+            className="settings-item"
+            href="https://t.me/helpmme"
+            target="_blank"
+            rel="noreferrer"
+          >
             <div className="left-side">
               <span className="icon-wrapper">
                 <Headphones size={18} />
               </span>
-              <span className="label">
-                Yordam
-              </span>
+              <span className="label">{t("settings_help")}</span>
             </div>
             <div className="right-side">
               <span className="value">@helpmme</span>
             </div>
           </a>
 
-          <a className="settings-item" href="https://google.com">
+          {/* 📢 News */}
+          <a
+            className="settings-item"
+            href="https://t.me/news"
+            target="_blank"
+            rel="noreferrer"
+          >
             <div className="left-side">
               <span className="icon-wrapper">
                 <Megaphone size={18} />
               </span>
-              <span className="label">Yangiliklar kanali</span>
+              <span className="label">{t("settings_news")}</span>
             </div>
             <div className="right-side">
               <span className="value">@news</span>
@@ -145,6 +200,7 @@ const [openDropdown, setOpenDropdown] = useState(null);
           </a>
         </div>
       </div>
+
       <Nav />
     </>
   );

@@ -67,7 +67,7 @@
         margin-bottom: 12px;
 
         .amount-btn {
-          background: #17212B;
+          background: #17212b;
           border: 1.5px solid rgba(255, 255, 255, 0.1);
           padding: 14px;
           border-radius: 12px;
@@ -165,6 +165,122 @@
         opacity: 0.8;
         transform: scale(0.98);
       }
+    }
+  }
+  .admin-details-expand {
+    margin-top: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px dashed #444;
+    animation: slideDown 0.3s ease-out;
+
+    .card-copy-box {
+      margin-bottom: 15px;
+      .card-number {
+        label {
+          font-size: 12px;
+          color: #aaa;
+        }
+        .number-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background: #1a1a1a;
+          padding: 10px;
+          border-radius: 8px;
+          margin-top: 5px;
+          span {
+            font-weight: bold;
+            letter-spacing: 1px;
+          }
+          button {
+            background: none;
+            border: none;
+            color: #248bda;
+            cursor: pointer;
+          }
+          .copy-btn-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+          
+            .copy-tooltip {
+              position: absolute;
+              bottom: 120%; // Tugmaning tepasida chiqishi uchun
+              right: 0;
+              background: #248bda; // Yashil rang (muvaffaqiyatli)
+              color: white;
+              padding: 4px 8px;
+              border-radius: 4px;
+              font-size: 12px;
+              white-space: nowrap;
+              animation: fadeIn 0.2s ease-in-out;
+          
+              // Pastga qaragan kichkina uchburchak
+              &::after {
+                content: "";
+                position: absolute;
+                top: 100%;
+                right: 10px;
+                border: 5px solid transparent;
+                border-top-color: #248bda;
+              }
+            }
+          }
+          
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+        }
+      }
+    }
+
+    .upload-section {
+      .upload-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 20px;
+        border: 2px dashed #666;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+        &:hover {
+          border-color: #248bda;
+          color: #248bda;
+        }
+        span {
+          font-size: 13px;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  .main-action-btn {
+    &.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      filter: grayscale(1);
+    }
+    &.active {
+      opacity: 1;
+      cursor: pointer;
+      background: #248bda;
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 }

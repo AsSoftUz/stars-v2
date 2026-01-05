@@ -3,8 +3,10 @@ import "./premium.scss";
 import Nav from "../nav/nav.jsx";
 import starsImg from "../../assets/starspageImg.png";
 import headerImg from "../../assets/headerImg.gif";
+import { useTranslation } from 'react-i18next';
 
 const Premium = () => {
+  const { t, i18n } = useTranslation();
   const premiumOptions = [
     { id: 1, amount: 1, price: 5000 },
     { id: 2, amount: 3, price: 18000 },
@@ -18,10 +20,9 @@ const Premium = () => {
       <div className="premium">
         <header>
           <div className="left">
-            <h2>Premium sotib olish</h2>
+            <h2>{t('buyPremium')}</h2>
             <p>
-              Visa kartasiz Telegram Stars balansini o‘zingiz yoki yaqinlaringiz
-              uchun to‘ldirib oling
+              {t('premiumSubtitle')}
             </p>
           </div>
           <div className="right">
@@ -31,13 +32,16 @@ const Premium = () => {
 
         <div className="send">
           <div className="forWho">
-            <label htmlFor="name">Kimga yuboramiz?</label>
-            <input type="text" placeholder="@username kiriting..." id="name" />
+            <label htmlFor="name">
+              {t('forWho')}
+              <a href="#">{t('forMe')}</a>
+            </label>
+            <input type="text" placeholder={t('enterUsername')} id="name" />
           </div>
         </div>
         <div className="main">
           <div className="premium-container">
-            <h3>Muddatni tanlang</h3>
+            <h3>{t('choosePlan')}</h3>
             <div className="options-list">
               {premiumOptions.map((option) => (
                 <div
@@ -55,14 +59,14 @@ const Premium = () => {
                     <span className="premium-icon">
                       <img src={starsImg} alt="" />
                     </span>
-                    <span className="amount">{option.amount} Oy</span>
+                    <span className="amount">{option.amount} {t('month')}</span>
                   </div>
 
                   <div className="price">{option.price} UZS</div>
                 </div>
               ))}
             </div>
-            <button className="buy-button">Telegram Premium sotib olish</button>
+            <button className="buy-button">{t('buyPremium')}</button>
           </div>
         </div>
       </div>

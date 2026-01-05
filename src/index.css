@@ -6,6 +6,11 @@
   color: #FFFFFF;
 }
 
+html, body {
+  touch-action: manipulation;
+  overscroll-behavior: none;
+}
+
 body {
   background: #232E3C;
   scrollbar-gutter: stable;
@@ -20,8 +25,8 @@ body {
 }
 
 #root {
-  width: 380px;
-  height: 100vh;
+  max-width: 380px;
+  min-height: 100vh;
   margin: 0 auto;
 
   display: flex;

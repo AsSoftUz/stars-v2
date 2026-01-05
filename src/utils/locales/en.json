@@ -1,0 +1,66 @@
+{
+
+  "home": "Home",
+  "referal": "Referal",
+  "settings": "Settings",
+
+  "welcome": "Welcome!",
+  "dearUser": "Dear user...",
+  "stars": "Stars",
+  "starsSubtitle": "Purchase Stars quickly and conveniently without a Visa card!",
+  "buyStars": "Buy Stars",
+  "premium": "Premium",
+  "premiumSubtitle": "Purchase Telegram Premium subscription quickly and conveniently without a Visa card!",
+  "buyPremium": "Buy Premium",
+
+  "stars_title": "Buy Stars",
+  "stars_subtitle": "Purchase Stars quickly and conveniently without a Visa card!",
+  "stars_forWho": "Who are we sending to?",
+  "stars_amount": "Enter amount",
+  "stars_amount_placeholder": "Enter amount",
+  "stars_packages": "Choose a plan",
+  "stars_showMore": "Show more variants",
+  "stars_buyButton": "Buy Stars",
+
+  "forWho": "Who are we sending to?",
+  "forMe": "for me",
+  "enterUsername": "Enter @username...",
+  "choosePlan": "Choose a plan",
+  "month": "month",
+
+  "referalTitle": "Referral Program",
+  "referalSubtitle": "Get rewards for each friend you invite",
+  "readyTobuy": "You can withdraw",
+  "totalBalance": "Total balance",
+  "gifts": "Gifts",
+  "withdraw": "Withdraw",
+  "minWithdrawInfo": "Minimum withdrawal amount: 50 Stars",
+  "GiftsReminder": "You have no gifts yet",
+  "copied": "Copied!",
+  "shareOnTelegram": "Share link",
+  "enterAmount": "Enter amount",
+
+
+  "settings_language": "Language",
+  "settings_payment": "Payment Method",
+  "settings_help": "Help",
+  "settings_news": "News Channel",
+  "top_up_button": "Top Up Account",
+
+  "topup_title": "Top Up Account",
+  "topup_subtitle": "Top up your account quickly and conveniently",
+  "my_balance": "My Balance",
+  "select_amount": "Select Amount",
+  "enter_custom_amount": "Enter Custom Amount",
+  "select_payment_method": "Select Payment Method",
+  "click_payment": "Click Payment",
+  "click_payment_desc": "Quick and automatic confirmation",
+  "admin_payment": "Admin Payment",
+  "admin_payment_desc": "Pending verification (5-30 minutes)",
+  "confirm_payment": "Confirm Payment",
+  "payment_sent": "Payment Sent!",
+  "transfer_to_card": "Admin's card number",
+  "upload_receipt": "Upload Reciept"
+
+
+}

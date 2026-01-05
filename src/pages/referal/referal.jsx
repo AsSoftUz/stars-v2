@@ -1,10 +1,12 @@
 import "./referal.scss";
 import { useState } from "react";
-import { Copy, Share2, Check } from "lucide-react";
+import { Copy, Share2, Check, Star } from "lucide-react";
 import Nav from "../nav/nav.jsx";
 import headerImg from "../../assets/headerImg.gif";
+import { useTranslation } from 'react-i18next';
 
 const Referal = () => {
+  const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState("stars"); // 'stars' yoki 'gifts'
   const [copiedId, setCopiedId] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
@@ -40,9 +42,9 @@ const Referal = () => {
       <div className="referal">
         <header>
           <div className="left">
-            <h2>Referral dasturi</h2>
+            <h2>{t('referalTitle')}</h2>
             <p>
-              Har bir taklif qilgan do'stingiz uchun mukofotlarga ega bo'ling
+              {t('referalSubtitle')}
             </p>
           </div>
           <div className="right">
@@ -54,13 +56,13 @@ const Referal = () => {
           {/* Balans qismi */}
           <div className="balance-card">
             <div className="balance-item">
-              <div className="value">⭐ 0 = 0 UZS</div>
-              <div className="sub-text">Yechib olishingiz mumkin</div>
+              <div className="value"><Star fill="#fff" width="20px" /> 0 = 0 UZS</div>
+              <div className="sub-text">{t('readyTobuy')}</div>
             </div>
             <div className="divider"></div>
             <div className="balance-item">
-              <div className="value">⭐ 0 = 0 UZS</div>
-              <div className="sub-text">Jami balans</div>
+              <div className="value"><Star fill="#fff" width="20px" /> 0 = 0 UZS</div>
+              <div className="sub-text">{t('totalBalance')}</div>
             </div>
           </div>
 
@@ -71,13 +73,13 @@ const Referal = () => {
                 className={activeTab === "stars" ? "active" : ""}
                 onClick={() => setActiveTab("stars")}
               >
-                Stars
+                {t('stars')}
               </button>
               <button
                 className={activeTab === "gifts" ? "active" : ""}
                 onClick={() => setActiveTab("gifts")}
               >
-                Gifts
+                {t('gifts')}
               </button>
             </div>
 
@@ -85,13 +87,13 @@ const Referal = () => {
               <div className="stars-content">
                 <form className="input-row">
                   <div className="input-wrapper">
-                    <span className="input-icon">⭐</span>
-                    <input type="number" placeholder="Miqdorni kiriting" />
+                    <span className="input-icon"><Star fill="#fff" width="20px" /></span>
+                    <input type="number" placeholder={t('enterAmount')} />
                   </div>
-                  <button className="withdraw-btn">Yechib olish</button>
+                  <button className="withdraw-btn">{t('withdraw')}</button>
                 </form>
                 <p className="min-withdraw">
-                  Minimal yechish miqdori: 50 Stars
+                  {t('minWithdrawInfo')}
                 </p>
               </div>
             ) : (
@@ -101,7 +103,7 @@ const Referal = () => {
                     <div key={i} className="gift-box"></div>
                   ))}
                 </div>
-                <p className="min-withdraw">Sizda hali sovg'alar mavjud emas</p>
+                <p className="min-withdraw">{t('GiftsReminder')}</p>
               </div>
             )}
           </div>
@@ -115,7 +117,7 @@ const Referal = () => {
                 className="copy-btn"
               >
                 {copiedId ? <Check size={16} /> : <Copy size={16} />}
-                {copiedId && <span className="tooltip">Nusxalandi!</span>}
+                {copiedId && <span className="tooltip">{t('copied')}</span>}
               </button>
             </div>
             <div className="link-box">
@@ -125,13 +127,13 @@ const Referal = () => {
                 className="copy-btn"
               >
                 {copiedLink ? <Check size={16} /> : <Copy size={16} />}
-                {copiedLink && <span className="tooltip">Nusxalandi!</span>}
+                {copiedLink && <span className="tooltip">{t('copied')}</span>}
               </button>
             </div>
           </div>
 
           <button className="share-btn" onClick={handleShare}>
-            <Share2 size={18} /> Havolani ulashish
+            <Share2 size={18} /> {t('shareOnTelegram')}
           </button>
         </div>
       </div>

@@ -6,16 +6,16 @@
     padding-bottom: 20px;
     .hero {
         text-align: right;
-        line-height: 0;
         font-weight: 100;
         font-style: italic;
         padding: 15% 16px 15% 16px;
         h1 {
+            font-size: 38px;
+            font-weight: 700;
+            line-height: 36px;
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            font-size: 38px;
-            font-weight: 700;
         }
     }
     .main-cards {
@@ -42,6 +42,9 @@
                 h2 {
                     font-size: 20px;
                     margin-bottom: 6px;
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
                 }
                 .left {
                     img {

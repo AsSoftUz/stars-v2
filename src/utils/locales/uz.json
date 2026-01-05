@@ -1,0 +1,70 @@
+{
+  "home": "Bosh Sahifa",
+  "referal": "Referal",
+  "settings": "Sozlamalar",
+
+  "welcome": "Xush kelibsiz!",
+  "dearUser": "Aziz foydalanuvchi...",
+  "stars": "Stars",
+  "starsSubtitle": "Visa kartasiz tez va qulay usulda Stars harid qiling!",
+  "buyStars": "Stars sotib olish",
+  "premium": "Premium",
+  "premiumSubtitle": "Visa kartasiz tez va qulay usulda telegram premium obunasini harid qiling!",
+  "buyPremium": "Premium sotib olish",
+
+  "stars_title": "Stars sotib olish",
+  "stars_subtitle": "Visa kartasiz tez va qulay usulda Stars harid qiling!",
+  "stars_forWho": "Kimga yuboramiz?",
+  "stars_amount": "Miqdorni kiriting",
+  "stars_amount_placeholder": "Miqdorni kiriting",
+  "stars_packages": "Muddatni tanlang",
+  "stars_showMore": "Ko‘proq variantlarni ko‘rsatish",
+  "stars_buyButton": "Stars sotib olish",
+
+  "forWho": "Kimga yuboramiz?",
+  "forMe": "o'zimga",
+  "enterUsername": "@username kiriting...",
+  "choosePlan": "Muddatni tanlang",
+  "month": "oy",
+
+  "referalTitle": "Referal Dasturi",
+  "referalSubtitle": "Har bir taklif qilgan do'stingiz uchun mukofotlarga ega bo'ling",
+  "readyTobuy": "Yechib olishingiz mumkin",
+  "totalBalance": "Jami balans",
+  "gifts": "Gifts",
+  "withdraw": "Yechib olish",
+  "minWithdrawInfo": "Minimal yechish miqdori: 50 Stars",
+  "GiftsReminder": "Sizda hali sovg'alar mavjud emas",
+  "copied": "Nusxalandi!",
+  "shareOnTelegram": "Havolani ulashish",
+  "enterAmount": "Miqdorni kiriting",
+
+
+  "settings_language": "Til",
+  "settings_payment": "To'lov usuli",
+  "settings_help": "Yordam",
+  "settings_news": "Yangiliklar kanali",
+  "top_up_button": "Hisobni to'ldirish",
+
+  "topup_title": "Hisobni to'ldirish",
+  "topup_subtitle": "Hisobingizni tez va qulay usulda to'ldiring",
+  "my_balance": "Mening balansim",
+  "select_amount": "Tolov summasini tanlang",
+  "enter_custom_amount": "Boshqa summani kiriting",
+  "select_payment_method": "Tolov usulini tanlang",
+  "click_payment": "Clik / Avto tolov",
+  "click_payment_desc": "Tezkor va avtomatiktasdiqlanadi",
+  "admin_payment": "Admin orqali to'lov",
+  "admin_payment_desc": "Qolda tekshiriladi (5-30 daqiqa)",
+  "confirm_payment": "To'lovni amalga oshirish",
+  "payment_sent": "To'lovga yuborildi!",
+  "transfer_to_card": "Admin Karta raqami",
+  "upload_receipt": "Chekni yuklash"
+}
+
+
+
+
+
+
+

@@ -21,17 +21,23 @@ nav {
         flex-direction: column;
         align-items: center;
         gap: 4px;
-        img {
-          width: 16px;
-          height: 14px;
-        }
-        &.active, &.active-link {
-          color: #248BDA;
-          // background-color: #000;
-
-          img {
-            filter: hue-rotate(30deg);
-            opacity: 0.8;
+        &.active,
+        &.active-link {
+          color: #248bda;
+          
+          svg {
+            // Lucide ikonkalari SVG bo'lgani uchun fill va stroke ishlatiladi
+            stroke: #248bda; /* Chiziqlar rangi */
+            fill: #248bda; /* Ikonka ichini bo'yash (ixtiyoriy) */
+            width: 24px; /* O'lchami */
+            height: 24px;
+            // stroke: #fff;
+            transition: all 0.3s ease; /* Effektlar uchun */
+            .lucide-settings-icon {
+              circle {
+                stroke: #ffffff;
+              }
+            }
           }
         }
       }

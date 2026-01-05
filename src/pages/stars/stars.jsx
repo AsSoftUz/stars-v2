@@ -3,8 +3,10 @@ import "./stars.scss";
 import Nav from "../nav/nav.jsx";
 import starsImg from "../../assets/starspageImg.png";
 import headerImg from "../../assets/headerImg.gif";
+import { useTranslation } from 'react-i18next';
 
 const Stars = () => {
+  const { t, i18n } = useTranslation();
   const starsOptions = [
     { id: 1, amount: 50, price: 5000 },
     { id: 2, amount: 200, price: 18000 },
@@ -17,10 +19,9 @@ const Stars = () => {
       <div className="stars">
         <header>
           <div className="left">
-            <h2>Telegram Stars sotib olish</h2>
+            <h2>{t('stars_title')}</h2>
             <p>
-              Visa kartasiz Telegram Stars balansini o‘zingiz yoki yaqinlaringiz
-              uchun to‘ldirib oling
+              {t('stars_subtitle')}
             </p>
           </div>
           <div className="right">
@@ -29,23 +30,27 @@ const Stars = () => {
         </header>
         <div className="send">
           <div className="forWho">
-            <label htmlFor="name">Kimga yuboramiz?</label>
-            <input type="text" placeholder="@username kiriting..." id="name" />
+            <label htmlFor="name">
+              {t('stars_forWho')}
+              <a href="#">{t('forMe')}</a>
+            </label>
+            
+            <input type="text" placeholder={t('enterUsername')} id="name" />
           </div>
           <div className="forWho">
             <label htmlFor="amount">
-              Telegram yulduzlari miqdorini kiriting
+              {t('stars_amount')}
             </label>
             <input
               type="text"
-              placeholder="50 dan 10 000 gacha miqdorni kiriting"
+              placeholder={t('stars_amount_placeholder')}
               id="amount"
             />
           </div>
         </div>
         <div className="main">
           <div className="stars-container">
-            <h3>Stars paketlarini tanlang</h3>
+            <h3>{t('stars_packages')}</h3>
             <div className="options-list">
               {starsOptions.map((option) => (
                 <div
@@ -72,10 +77,10 @@ const Stars = () => {
             </div>
 
             <button className="show-more">
-              Ko‘proq variantlarni ko‘rsatish <span>⌵</span>
+              {t('stars_showMore')} <span>⌵</span>
             </button>
 
-            <button className="buy-button">Telegram Stars sotib olish</button>
+            <button className="buy-button">{t('stars_buyButton')}</button>
           </div>
         </div>
       </div>

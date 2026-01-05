@@ -47,6 +47,9 @@
         .value {
           font-size: 18px;
           font-weight: bold;
+          display: flex;
+          align-items: center;
+          gap: 16px;
         }
         .sub-text {
           font-size: 10px;
@@ -105,6 +108,7 @@
               padding: 10px 10px 10px 30px;
               border-radius: 8px;
               color: white;
+              outline: none;
             }
           }
           .withdraw-btn {
