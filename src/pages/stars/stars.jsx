@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import useTelegramBack from "../../hooks/useTelegramBack";
 
 const Stars = () => {
-    useTelegramBack("/");
+  useTelegramBack("/");
   const { t } = useTranslation();
   
   const starsOptions = [
@@ -17,6 +17,10 @@ const Stars = () => {
   ];
 
   const [selected, setSelected] = useState(null);
+  const [username, setUsername] = useState(""); // 1. Username state qo'shildi
+
+  // 2. Validatsiya sharti: username bo'sh bo'lmasligi va paket tanlangan bo'lishi kerak
+  const isFormInvalid = !selected || username.trim().length === 0;
 
   return (
     <>
@@ -35,9 +39,16 @@ const Stars = () => {
           <div className="forWho">
             <label htmlFor="name">
               {t('stars_forWho')}
-              <a href="#">{t('forMe')}</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); setUsername("Mening_Usernamem"); }}>{t('forMe')}</a>
             </label>
-            <input type="text" placeholder={t('enterUsername')} id="name" />
+            {/* 3. Input state-ga bog'landi */}
+            <input 
+              type="text" 
+              placeholder={t('enterUsername')} 
+              id="name" 
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
           </div>
           <div className="forWho">
             <label htmlFor="amount">{t('stars_amount')}</label>
@@ -50,7 +61,6 @@ const Stars = () => {
             <h3>{t('stars_packages')}</h3>
             <div className="options-list">
               {starsOptions.map((option) => {
-                // Har 50 ta uchun bitta yulduz, lekin ko'pi bilan 10 ta (joylashuv uchun)
                 const starIconsCount = Math.min(Math.floor(option.amount / 50), 10);
                 
                 return (
@@ -65,7 +75,6 @@ const Stars = () => {
 
                     <div className="stars-info">
                       <div className="stars-row">
-                        {/* Har bir 50 talik uchun bitta i tegi */}
                         {[...Array(starIconsCount)].map((_, index) => (
                           <i key={index} className="star-icon"></i>
                         ))}
@@ -79,11 +88,14 @@ const Stars = () => {
               })}
             </div>
 
-            {/* <button className="show-more">
-              {t('stars_showMore')} <span>⌵</span>
-            </button> */}
-
-            <button className="buy-button">{t('stars_buyButton')}</button>
+            {/* 4. Button disabled holati qo'shildi */}
+            <button 
+              className="buy-button" 
+              disabled={isFormInvalid}
+              style={{ opacity: isFormInvalid ? 0.5 : 1, cursor: isFormInvalid ? "not-allowed" : "pointer" }}
+            >
+              {t('stars_buyButton')}
+            </button>
           </div>
         </div>
       </div>

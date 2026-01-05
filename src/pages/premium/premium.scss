@@ -81,7 +81,7 @@
     .option-item {
         background-color: #17212b;
         border-radius: 14px;
-        padding: 6px 18px;
+        padding: 12px 18px;
         display: flex;
         align-items: center;
         cursor: pointer;
@@ -148,6 +148,10 @@
         font-weight: 500;
         cursor: pointer;
         transition: background 0.3s;
+        &:disabled {
+          background: #ccc;
+          color: #888;
+        }
 
         &:hover {
           background-color: #248bdabe;
