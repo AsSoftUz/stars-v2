@@ -147,6 +147,8 @@ const Topup = () => {
                   </div>
                 </div>
 
+                <p> <p>Abdullajonov A.</p> {/*{t("cardHoledrName")}*/}</p>
+
                 <div className="upload-section">
                   <label htmlFor="receipt-upload" className="upload-label">
                     <Upload size={20} />

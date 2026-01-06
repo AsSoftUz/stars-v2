@@ -5,6 +5,7 @@ import starsImg from "../../assets/stars.png";
 import premiumImg from "../../assets/premium.png";
 import Nav from "../nav/nav.jsx";
 import { useTranslation } from "react-i18next";
+import { NavLink } from "react-router-dom";
 
 const Home = () => {
   const { t, i18n } = useTranslation();
@@ -43,7 +44,7 @@ const Home = () => {
                 <img src={starsImg} alt="" />
               </div>
             </div>
-            <a href="#">
+            <NavLink to="/stars">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -56,7 +57,7 @@ const Home = () => {
                 />
               </svg>
               {t("buyStars")}
-            </a>
+            </NavLink>
           </div>
           <div className="pcard">
             <div className="card">
@@ -81,7 +82,7 @@ const Home = () => {
                 <img src={premiumImg} alt="" />
               </div>
             </div>
-            <a href="#">
+            <NavLink to="/premium">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -94,7 +95,7 @@ const Home = () => {
                 />
               </svg>
               {t("buyPremium")}
-            </a>
+            </NavLink>
           </div>
         </div>
       </div>

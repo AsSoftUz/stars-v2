@@ -20,6 +20,7 @@
   "stars_packages": "Muddatni tanlang",
   "stars_showMore": "Ko‘proq variantlarni ko‘rsatish",
   "stars_buyButton": "Stars sotib olish",
+  "stars_showLess": "Kamroq ko'rsat",
 
   "forWho": "Kimga yuboramiz?",
   "forMe": "o'zimga",
@@ -59,7 +60,8 @@
   "confirm_payment": "To'lovni amalga oshirish",
   "payment_sent": "To'lovga yuborildi!",
   "transfer_to_card": "Admin Karta raqami",
-  "upload_receipt": "Chekni yuklash"
+  "upload_receipt": "Chekni yuklash",
+  "cardHoledrName": "Karta egasi: Abdullajonov A."
 }
 
 

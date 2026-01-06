@@ -19,8 +19,9 @@
   "stars_amount": "Enter amount",
   "stars_amount_placeholder": "Enter amount",
   "stars_packages": "Choose a plan",
-  "stars_showMore": "Show more variants",
   "stars_buyButton": "Buy Stars",
+  "stars_showLess": "Show More",
+  "stars_showMore": "Show Less",
 
   "forWho": "Who are we sending to?",
   "forMe": "for me",
@@ -60,7 +61,8 @@
   "confirm_payment": "Confirm Payment",
   "payment_sent": "Payment Sent!",
   "transfer_to_card": "Admin's card number",
-  "upload_receipt": "Upload Reciept"
+  "upload_receipt": "Upload Reciept",
+  "cardHoledrName": "Card Holder's Name: Abdullayev A."
 
 
 }

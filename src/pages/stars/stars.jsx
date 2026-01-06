@@ -1,40 +1,52 @@
 import { useState } from "react";
 import "./stars.scss";
 import Nav from "../nav/nav.jsx";
-// import headerImg from "../../assets/headerImg.gif";
 import headerImg from "../../assets/starsGif.mp4";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import useTelegramBack from "../../hooks/useTelegramBack";
+import { ChevronUp, ChevronDown } from "lucide-react";
 
 const Stars = () => {
   useTelegramBack("/");
   const { t } = useTranslation();
-  
+
   const starsOptions = [
     { id: 1, amount: 50, price: 5000 },
     { id: 2, amount: 150, price: 14000 },
     { id: 3, amount: 250, price: 22000 },
     { id: 4, amount: 500, price: 42000 },
+    { id: 5, amount: 1000, price: 80000 },
+    { id: 6, amount: 2500, price: 190000 },
+    { id: 7, amount: 5000, price: 350000 },
   ];
 
   const [selected, setSelected] = useState(null);
-  const [username, setUsername] = useState(""); // 1. Username state qo'shildi
+  const [username, setUsername] = useState("");
+  const [showAll, setShowAll] = useState(false); // Ko'proq tugmasi uchun state
 
-  // 2. Validatsiya sharti: username bo'sh bo'lmasligi va paket tanlangan bo'lishi kerak
+  const getStarLayers = (amount) => {
+    if (amount >= 2500) return 5;
+    if (amount >= 1000) return 4;
+    if (amount >= 250) return 3;
+    return 2;
+  };
+
   const isFormInvalid = !selected || username.trim().length === 0;
+
+  // Ko'rsatiladigan paketlar ro'yxatini hisoblaymiz
+  const visibleOptions = showAll ? starsOptions : starsOptions.slice(0, 3);
 
   return (
     <>
       <div className="stars">
         <header>
           <div className="left">
-            <h2>{t('stars_title')}</h2>
-            <p>{t('stars_subtitle')}</p>
+            <h2>{t("stars_title")}</h2>
+            <p>{t("stars_subtitle")}</p>
           </div>
           <div className="right">
-            <video type="video/webm" autoPlay muted loop playsInline className="gif-video">
-              <source src={headerImg}  type="video/webm" />
-              Sizning brauzeringiz videoni qo'llab-quvvatlamaydi.
+            <video autoPlay muted loop playsInline className="gif-video">
+              <source src={headerImg} type="video/mp4" />
             </video>
           </div>
         </header>
@@ -42,63 +54,89 @@ const Stars = () => {
         <div className="send">
           <div className="forWho">
             <label htmlFor="name">
-              {t('stars_forWho')}
-              <a href="#" onClick={(e) => { e.preventDefault(); setUsername("Mening_Usernamem"); }}>{t('forMe')}</a>
+              {t("stars_forWho")}
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setUsername("Mening_Usernamem");
+                }}
+              >
+                {t("forMe")}
+              </a>
             </label>
-            {/* 3. Input state-ga bog'landi */}
-            <input 
-              type="text" 
-              placeholder={t('enterUsername')} 
-              id="name" 
+            <input
+              type="text"
+              placeholder={t("enterUsername")}
+              id="name"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
-          </div>
-          <div className="forWho">
-            <label htmlFor="amount">{t('stars_amount')}</label>
-            <input type="text" placeholder={t('stars_amount_placeholder')} id="amount" />
           </div>
         </div>
 
         <div className="main">
           <div className="stars-container">
-            <h3>{t('stars_packages')}</h3>
+            <h3>{t("stars_packages")}</h3>
             <div className="options-list">
-              {starsOptions.map((option) => {
-                const starIconsCount = Math.min(Math.floor(option.amount / 50), 10);
-                
-                return (
-                  <div
-                    key={option.id}
-                    className={`option-item ${selected === option.id ? "active" : ""}`}
-                    onClick={() => setSelected(option.id)}
-                  >
-                    <div className="radio-circle">
-                      {selected === option.id && <div className="inner-dot" />}
-                    </div>
-
-                    <div className="stars-info">
-                      <div className="stars-row">
-                        {[...Array(starIconsCount)].map((_, index) => (
-                          <i key={index} className="star-icon"></i>
-                        ))}
-                      </div>
-                      <span className="amount">{option.amount.toLocaleString()}</span>
-                    </div>
-
-                    <div className="price">{option.price.toLocaleString()} UZS</div>
+              {visibleOptions.map((option) => (
+                <div
+                  key={option.id}
+                  className={`option-item ${
+                    selected === option.id ? "active" : ""
+                  }`}
+                  onClick={() => setSelected(option.id)}
+                >
+                  <div className="radio-circle">
+                    {selected === option.id && <div className="inner-dot" />}
                   </div>
-                );
-              })}
+
+                  <div className="stars-info">
+                    <div className="stars-stack">
+                      {[...Array(getStarLayers(option.amount))].map((_, i) => (
+                        <i key={i} className="star-icon"></i>
+                      ))}
+                    </div>
+                    <span className="amount">
+                      {option.amount.toLocaleString()} Stars
+                    </span>
+                  </div>
+
+                  <div className="price">
+                    {option.price.toLocaleString()} UZS
+                  </div>
+                </div>
+              ))}
             </div>
 
-            {/* 4. Button disabled holati qo'shildi */}
-            <button 
-              className="buy-button" 
-              disabled={isFormInvalid}
-              style={{ opacity: isFormInvalid ? 0.5 : 1, cursor: isFormInvalid ? "not-allowed" : "pointer" }}
-            >
-              {t('stars_buyButton')}
+            {/* "Ko'proq" tugmasi: faqat hamma elementlar ko'rinmayotgan bo'lsa chiqadi */}
+            {starsOptions.length > 3 && (
+              <button
+                className="show-more"
+                onClick={() => setShowAll(!showAll)}
+              >
+                {showAll ? (
+                  <>
+                    {" "}
+                    {t("stars_showLess")}{" "}
+                    <span className="arrow-up">
+                      <ChevronUp />
+                    </span>{" "}
+                  </>
+                ) : (
+                  <>
+                    {" "}
+                    {t("stars_showMore")}{" "}
+                    <span className="arrow-down">
+                      <ChevronDown />
+                    </span>{" "}
+                  </>
+                )}
+              </button>
+            )}
+
+            <button className="buy-button" disabled={isFormInvalid}>
+              {t("stars_buyButton")}
             </button>
           </div>
         </div>
