@@ -121,7 +121,7 @@ const Stars = () => {
                     {" "}
                     {t("stars_showLess")}{" "}
                     <span className="arrow-up">
-                      <ChevronUp />
+                      <ChevronUp stroke="#248bda"/>
                     </span>{" "}
                   </>
                 ) : (
@@ -129,7 +129,7 @@ const Stars = () => {
                     {" "}
                     {t("stars_showMore")}{" "}
                     <span className="arrow-down">
-                      <ChevronDown />
+                      <ChevronDown stroke="#248bda"/>
                     </span>{" "}
                   </>
                 )}
