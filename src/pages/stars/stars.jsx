@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import useTelegramBack from "../../hooks/useTelegramBack";
 import { ChevronUp, ChevronDown, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import useGetStars from "../../hooks/useGetStars"; 
-import api from "../../api/axios";
+import useBuyStars from "../../hooks/useBuyStars";
 
 const Stars = () => {
   useTelegramBack("/");
@@ -37,6 +37,8 @@ const Stars = () => {
   const isFormInvalid = !selected || username.trim().length === 0;
   const safeStarsOptions = Array.isArray(starsOptions) ? starsOptions : [];
   const visibleOptions = showAll ? safeStarsOptions : safeStarsOptions.slice(0, 3);
+  
+  const { buyStars } = useBuyStars();
 
   const handleBuyStars = async () => {
     setModalOpen(true);
@@ -45,24 +47,23 @@ const Stars = () => {
 
     try {
       const selectedPackage = safeStarsOptions.find(p => p.id === selected);
-      
-      const payload = {
-        telegram_id: tgUser?.id,
-        target_username: username.replace("@", "").trim(),
+
+      await buyStars({
+        user_id: tgUser?.id,
+        username: username.replace("@", "").trim(),
         star_id: selected,
-        // Backend stars_count kutayotgan bo'lishi mumkin
-        stars_count: Number(selectedPackage?.stars_count) || 0 
-      };
+        stars_count: Number(selectedPackage?.stars_count) || 0
+      });
 
-      await api.post("/stars-buy/", payload);
-      
       setModalStatus("success");
-      setTimeout(() => setModalOpen(false), 3000);
-
+      setTimeout(() => {
+        setModalOpen(false);
+      }, 3000);
     } catch (err) {
       setModalStatus("error");
-      const errorMsg = err.response?.data?.message || "Sotib olishda xatolik yuz berdi";
-      setBuyError(errorMsg);
+      setBuyError(
+        err.response?.data?.error || t("error_occurred")
+      );
     }
   };
 
