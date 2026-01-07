@@ -5,7 +5,7 @@ import headerImg from "../../assets/starsGif.mp4";
 import { useTranslation } from 'react-i18next';
 import useTelegramBack from "../../hooks/useTelegramBack";
 import { ChevronUp, ChevronDown, Loader2, CheckCircle2, XCircle } from "lucide-react";
-import useGetStars from "../../hooks/useGetStars"; 
+import useGetStars from "../../hooks/useGetStars";
 import useBuyStars from "../../hooks/useBuyStars";
 
 const Stars = () => {
@@ -36,7 +36,6 @@ const Stars = () => {
   const isFormInvalid = !selected || username.trim().length === 0;
   const safeStarsOptions = Array.isArray(starsOptions) ? starsOptions : [];
   const visibleOptions = showAll ? safeStarsOptions : safeStarsOptions.slice(0, 3);
-
   const handleBuyStars = async () => {
     if (!tgUser?.id) {
       setModalOpen(true);
@@ -52,11 +51,10 @@ const Stars = () => {
     try {
       const selectedPackage = safeStarsOptions.find(p => p.id === selected);
 
-      // BACKEND KUTAYOTGAN ANIQ FORMAT (user_id, miqdor)
+      // BACKEND KUTAYOTGAN ANIQ FORMAT (Faqat 3 ta parametr)
       const payload = {
         user_id: tgUser.id,
         username: username.replace("@", "").trim(),
-        star_id: selected,
         miqdor: Number(selectedPackage?.stars_count) || 0
       };
 
@@ -67,11 +65,10 @@ const Stars = () => {
 
     } catch (err) {
       setModalStatus("error");
-      // Hook ichidan kelgan yoki response ichidagi xato
-      const errorMsg = err.response?.data?.error || 
-                       err.response?.data?.message || 
-                       err.response?.data?.detail || 
-                       "Xatolik yuz berdi";
+      const errorMsg = err.response?.data?.error ||
+        err.response?.data?.message ||
+        err.response?.data?.detail ||
+        "Xatolik yuz berdi";
       setBuyError(errorMsg);
     }
   };
@@ -121,18 +118,18 @@ const Stars = () => {
           <div className="forWho">
             <label>
               {t("stars_forWho")}
-              <a href="#" className="for-me-link" onClick={(e) => { 
-                e.preventDefault(); 
-                setUsername(tgUser?.username || ""); 
+              <a href="#" className="for-me-link" onClick={(e) => {
+                e.preventDefault();
+                setUsername(tgUser?.username || "");
               }}>
                 {t("forMe")}
               </a>
             </label>
-            <input 
-              type="text" 
-              placeholder={t("enterUsername")} 
-              value={username} 
-              onChange={(e) => setUsername(e.target.value)} 
+            <input
+              type="text"
+              placeholder={t("enterUsername")}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
         </div>
@@ -140,15 +137,15 @@ const Stars = () => {
         <div className="main">
           <div className="stars-container">
             <h3>{t("stars_packages")}</h3>
-            
+
             {starsLoading ? (
               <div className="stars-loader"><Loader2 className="spinner" /></div>
             ) : (
               <div className="options-list">
                 {visibleOptions.map((option) => (
-                  <div 
-                    key={option.id} 
-                    className={`option-item ${selected === option.id ? "active" : ""}`} 
+                  <div
+                    key={option.id}
+                    className={`option-item ${selected === option.id ? "active" : ""}`}
                     onClick={() => setSelected(option.id)}
                   >
                     <div className="radio-circle">
@@ -172,14 +169,14 @@ const Stars = () => {
 
             {safeStarsOptions.length > 3 && (
               <button className="show-more" onClick={() => setShowAll(!showAll)}>
-                 {showAll ? t("stars_showLess") : t("stars_showMore")}
-                 {showAll ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                {showAll ? t("stars_showLess") : t("stars_showMore")}
+                {showAll ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
               </button>
             )}
 
-            <button 
-              className="buy-button" 
-              disabled={isFormInvalid || starsLoading} 
+            <button
+              className="buy-button"
+              disabled={isFormInvalid || starsLoading}
               onClick={handleBuyStars}
             >
               {t("stars_buyButton")}
