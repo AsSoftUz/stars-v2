@@ -5,18 +5,18 @@ import premiumGif from "../../assets/premium.gif";
 import { useTranslation } from 'react-i18next';
 import useTelegramBack from "../../hooks/useTelegramBack";
 import { Loader2, CheckCircle2, XCircle } from "lucide-react";
-import useGetPremium from "../../hooks/useGetPremium"; // Hookingiz
+import useGetPremium from "../../hooks/useGetPremium"; 
+import api from "../../api/axios";
 
 const Premium = () => {
   useTelegramBack("/");
   const { t } = useTranslation();
 
-  // Telegram ma'lumotlari
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
 
-  // 1. Hook orqali dinamik ma'lumotlarni olamiz
-  const { premiumOptions, loading: plansLoading, buyPremium } = useGetPremium();
+  // Premium paketlarni olish
+  const { premiumOptions = [], loading: plansLoading } = useGetPremium();
 
   const [selected, setSelected] = useState(null);
   const [username, setUsername] = useState("");
@@ -28,23 +28,24 @@ const Premium = () => {
 
   const isFormInvalid = !selected || username.trim().length === 0;
 
-  // 2. Sotib olish funksiyasi
+  // Sotib olish funksiyasi
   const handleBuyPremium = async () => {
     setModalOpen(true);
     setModalStatus("loading");
     setErrorMessage("");
 
     try {
-      // Tanlangan paketni topish
       const selectedPlan = premiumOptions.find(p => p.id === selected);
 
       const payload = {
         user_id: tgUser?.id,
         username: username.replace("@", "").trim(),
-        duration: selectedPlan?.duration // 3, 6, 12 oy
+        premium_id: selected, // Paket ID raqami
+        duration: selectedPlan?.duration // Oylar soni
       };
 
-      await buyPremium(payload);
+      // Hookdagi buyPremium o'rniga to'g'ridan-to'g'ri API ishlatamiz (Stars bilan bir xil stil)
+      await api.post("/buy-premium/", payload);
       
       setModalStatus("success");
       setTimeout(() => {
@@ -52,7 +53,7 @@ const Premium = () => {
       }, 3000);
     } catch (err) {
       setModalStatus("error");
-      setErrorMessage(typeof err === "string" ? err : "Sotib olishda xatolik yuz berdi");
+      setErrorMessage(err.response?.data?.error || "Sotib olishda xatolik yuz berdi");
     }
   };
 
@@ -131,7 +132,7 @@ const Premium = () => {
             
             {plansLoading ? (
               <div className="plans-loader">
-                <Loader2 className="spinner" />
+                <Loader2 className="spinner" size={30} />
               </div>
             ) : (
               <div className="options-list">
@@ -147,13 +148,8 @@ const Premium = () => {
 
                     <div className="premium-info">
                       <span className="amount">
-                        {option.duration} {t('month')}
+                        {(option.duration || 0)} {t('month')}
                       </span>
-                      {option.perMonth && (
-                        <span className="per-month">
-                          {option.perMonth} UZS / {t('month_short') || 'oy'}
-                        </span>
-                      )}
                     </div>
 
                     <div className="price">
@@ -165,7 +161,7 @@ const Premium = () => {
             )}
 
             <button 
-              className={`buy-button ${isFormInvalid ? "disabled" : ""}`}
+              className="buy-button"
               disabled={isFormInvalid || plansLoading}
               onClick={handleBuyPremium}
             >
