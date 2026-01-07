@@ -1,23 +1,26 @@
 import "./referal.scss";
 import { useState } from "react";
-import { Copy, Share2, Check, Star } from "lucide-react";
+import { Copy, Share2, Check, Star, Loader2 } from "lucide-react";
 import Nav from "../nav/nav.jsx";
 import headerImg from "../../assets/referalGif.mp4";
-// import headerImg from "./gif.webm";
 import { useTranslation } from "react-i18next";
 import useTelegramBack from "../../hooks/useTelegramBack";
+import useGetOrCreateUser from "../../hooks/useGetOrCreateUser";
 
 const Referal = () => {
-    useTelegramBack("/");
-  const { t, i18n } = useTranslation();
-  const [activeTab, setActiveTab] = useState("stars"); // 'stars' yoki 'gifts'
+  useTelegramBack("/");
+  const { t } = useTranslation();
+  const { user, loading } = useGetOrCreateUser(); // Foydalanuvchi ma'lumotlarini olish
+
+  const [activeTab, setActiveTab] = useState("stars");
   const [copiedId, setCopiedId] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
-  const referralId = "stares216565462";
-  const referralLink = "https://t.me/starte?start=123";
+  // Dinamik ma'lumotlar
+  const referralCode = user?.referral_code || "Yuklanmoqda...";
+  const botUsername = "Linkify_tgbot"; // Bot usernamesi
+  const referralLink = `https://t.me/${botUsername}?start=${referralCode}`;
 
-  // Nusxa ko'chirish funksiyasi
   const handleCopy = async (text, type) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -33,13 +36,12 @@ const Referal = () => {
     }
   };
 
-  // Telegramda ulashish funksiyasi
   const handleShare = () => {
-    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(
-      referralLink
-    )}&text=${encodeURIComponent("Men bilan birga Telegram Stars ishlang!")}`;
+    const text = encodeURIComponent("Men bilan birga Telegram Stars ishlang! 🌟");
+    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${text}`;
     window.open(shareUrl, "_blank");
   };
+
   return (
     <>
       <div className="referal">
@@ -49,26 +51,27 @@ const Referal = () => {
             <p>{t("referalSubtitle")}</p>
           </div>
           <div className="right">
-            <video type="video/webm" autoPlay muted loop playsInline className="gif-video">
-              <source src={headerImg}  type="video/webm" />
-              Sizning brauzeringiz videoni qo'llab-quvvatlamaydi.
+            <video autoPlay muted loop playsInline className="gif-video">
+              <source src={headerImg} type="video/mp4" />
             </video>
           </div>
         </header>
 
         <div className="referral-page">
-          {/* Balans qismi */}
+          {/* Balans va Statistika */}
           <div className="balance-card">
             <div className="balance-item">
               <div className="value">
-                <Star fill="#fff" width="20px" /> 0 = 0 UZS
+                <Star fill="#fff" width="20px" /> 
+                {loading ? "..." : (userData?.referral_count || 0)}
               </div>
-              <div className="sub-text">{t("readyTobuy")}</div>
+              <div className="sub-text">Referallar soni</div>
             </div>
             <div className="divider"></div>
             <div className="balance-item">
               <div className="value">
-                <Star fill="#fff" width="20px" /> 0 = 0 UZS
+                <Star fill="#fff" width="20px" /> 
+                {loading ? "..." : (Number(userData?.balance) || 0).toLocaleString()} UZS
               </div>
               <div className="sub-text">{t("totalBalance")}</div>
             </div>
@@ -77,71 +80,57 @@ const Referal = () => {
           {/* Withdraw Section */}
           <div className="withdraw-card">
             <div className="tab-buttons">
-              <button
-                className={activeTab === "stars" ? "active" : ""}
-                onClick={() => setActiveTab("stars")}
-              >
+              <button className={activeTab === "stars" ? "active" : ""} onClick={() => setActiveTab("stars")}>
                 {t("stars")}
               </button>
-              <button
-                className={activeTab === "gifts" ? "active" : ""}
-                onClick={() => setActiveTab("gifts")}
-              >
+              <button className={activeTab === "gifts" ? "active" : ""} onClick={() => setActiveTab("gifts")}>
                 {t("gifts")}
               </button>
             </div>
 
             {activeTab === "stars" ? (
               <div className="stars-content">
-                <form className="input-row">
+                <div className="input-row">
                   <div className="input-wrapper">
-                    <span className="input-icon">
-                      <Star fill="#fff" width="20px" />
-                    </span>
+                    <span className="input-icon"><Star fill="#fff" width="20px" /></span>
                     <input type="number" placeholder={t("enterAmount")} />
                   </div>
                   <button className="withdraw-btn">{t("withdraw")}</button>
-                </form>
+                </div>
                 <p className="min-withdraw">{t("minWithdrawInfo")}</p>
               </div>
             ) : (
               <div className="gifts-content">
                 <div className="gifts-grid">
-                  {[...Array(8)].map((_, i) => (
-                    <div key={i} className="gift-box"></div>
-                  ))}
+                  {[...Array(8)].map((_, i) => <div key={i} className="gift-box"></div>)}
                 </div>
                 <p className="min-withdraw">{t("GiftsReminder")}</p>
               </div>
             )}
           </div>
 
-          {/* Copy & Share Section */}
+          {/* Dinamik Linklar qismi */}
           <div className="links-row">
             <div className="link-box">
-              <span>Referral Id</span>
-              <button
-                onClick={() => handleCopy(referralId, "id")}
-                className="copy-btn"
-              >
-                {copiedId ? <Check size={16} /> : <Copy size={16} />}
-                {copiedId && <span className="tooltip">{t("copied")}</span>}
+              <div className="label-text">Referral ID</div>
+              <div className="code-value">{loading ? <Loader2 className="spin" size={14}/> : referralCode}</div>
+              <button onClick={() => handleCopy(referralCode, "id")} className="copy-btn">
+                {copiedId ? <Check size={16} color="#4caf50" /> : <Copy size={16} />}
               </button>
             </div>
+            
             <div className="link-box">
-              <span>Referral Link</span>
-              <button
-                onClick={() => handleCopy(referralLink, "link")}
-                className="copy-btn"
-              >
-                {copiedLink ? <Check size={16} /> : <Copy size={16} />}
-                {copiedLink && <span className="tooltip">{t("copied")}</span>}
+              <div className="label-text">Referral Link</div>
+              <div className="code-value link">{loading ? "..." : "t.me/Linkify..."}</div>
+              <button onClick={() => handleCopy(referralLink, "link")} className="copy-btn">
+                {copiedLink ? <Check size={16} color="#4caf50" /> : <Copy size={16} />}
               </button>
             </div>
           </div>
 
-          <button className="share-btn" onClick={handleShare}>
-            <Share2 size={18} /> {t("shareOnTelegram")}
+          <button className="share-btn" onClick={handleShare} disabled={loading}>
+            {loading ? <Loader2 className="spin" size={18} /> : <Share2 size={18} />}
+            {t("shareOnTelegram")}
           </button>
         </div>
       </div>
