@@ -1,45 +1,58 @@
 import "./topup.scss";
-import Nav from "../nav/nav";
-import { CreditCard, ShieldCheck, Upload, Copy, Loader2 } from "lucide-react"; // Loader2 qo'shdik
 import { useState } from "react";
-import headerImg from "../../assets/topupGif.mp4";
+import { useNavigate } from "react-router-dom";
+import { 
+  CreditCard, 
+  ShieldCheck, 
+  Upload, 
+  Copy, 
+  Loader2, 
+  CheckCircle2, 
+  XCircle 
+} from "lucide-react";
 import { useTranslation } from 'react-i18next';
+
+import Nav from "../nav/nav";
+import headerImg from "../../assets/topupGif.mp4";
 import useTelegramBack from "../../hooks/useTelegramBack";
-import useGetOrCreateUser from "../../hooks/useGetOrCreateUser"; // Userni olish uchun
-import useTopup from "../../hooks/useTopup"; // Hookni import qilish
+import useGetOrCreateUser from "../../hooks/useGetOrCreateUser";
+import useTopup from "../../hooks/useTopup";
 
 const Topup = () => {
   useTelegramBack("/settings");
   const { t } = useTranslation();
-  
-  // Telegram user va bizning DB dagi user ma'lumotlari
+  const navigate = useNavigate();
+
+  // Telegram va User ma'lumotlari
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
   const { user } = useGetOrCreateUser(tgUser);
-  
-  // Topup hooki
-  const { submitTopup, loading: isSubmitting, error, success } = useTopup();
 
+  // Topup API hooki
+  const { submitTopup } = useTopup();
+
+  // Local holatlar
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [customAmount, setCustomAmount] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("click");
   const [receipt, setReceipt] = useState(null);
   const [showTooltip, setShowTooltip] = useState(false);
-  
+
+  // MODAL holatlari
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalStatus, setModalStatus] = useState("loading"); // loading, success, error
+
   const cardHolderNumber = "9860 1234 5678 9012";
   const presetAmounts = [10000, 20000, 50000, 100000];
-
   const currentAmount = customAmount || (selectedIdx !== null ? presetAmounts[selectedIdx] : 0);
 
   const isFormValid = () => {
-    if (paymentMethod === "click") {
-      return currentAmount >= 5000; // Minimal summa 5000
-    } else {
-      return currentAmount >= 5000 && receipt !== null;
-    }
+    const amount = Number(currentAmount);
+    if (paymentMethod === "click") return amount >= 5000;
+    return amount >= 5000 && receipt !== null;
   };
 
-  const handleSelectAmount = (index, value) => {
+  const handleSelectAmount = (index) => {
     setSelectedIdx(index);
     setCustomAmount("");
   };
@@ -49,39 +62,73 @@ const Topup = () => {
     setSelectedIdx(null);
   };
 
-  const handleFileChange = (e) => {
-    if (e.target.files[0]) {
-      setReceipt(e.target.files[0]);
-    }
-  };
-
   const copyToClipboard = () => {
     navigator.clipboard.writeText(cardHolderNumber.replace(/\s/g, ''));
     setShowTooltip(true);
     setTimeout(() => setShowTooltip(false), 2000);
   };
 
-  // TO'LOVNI YUBORISH
-  const handlePayment = async () => {
+  const handlePaymentSubmit = async () => {
     if (paymentMethod === "admin") {
+      setModalOpen(true);
+      setModalStatus("loading");
+
       try {
         await submitTopup({
-          user_id: tgUser?.id, // Telegram ID yuboramiz
+          user_id: tgUser?.id,
           amount: currentAmount,
           file: receipt
         });
+        
+        setModalStatus("success");
+        // 3 soniyadan keyin avtomat settingsga o'tish
+        setTimeout(() => {
+          setModalOpen(false);
+          navigate("/settings");
+        }, 3000);
+        
       } catch (err) {
-        console.error("Topup error:", err);
+        setModalStatus("error");
       }
     } else {
-      // Click uchun mantiq (masalan, Click billing havolasiga yo'naltirish)
-      alert("Click xizmati tez kunda ishga tushadi. Hozircha 'Admin' orqali to'lov qiling.");
+      alert("Click xizmati tez kunda ishga tushadi!");
     }
   };
 
   return (
     <>
       <div className="topup">
+        {/* Modal: To'lov holati */}
+        {modalOpen && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              {modalStatus === "loading" && (
+                <div className="status-box">
+                  <Loader2 className="spinner-icon" size={60} />
+                  <p>{t("sending_payment") || "Yuborilmoqda..."}</p>
+                </div>
+              )}
+
+              {modalStatus === "success" && (
+                <div className="status-box">
+                  <CheckCircle2 className="success-icon animate-tick" size={60} />
+                  <p>{t("payment_sent") || "Muvaffaqiyatli yuborildi!"}</p>
+                </div>
+              )}
+
+              {modalStatus === "error" && (
+                <div className="status-box">
+                  <XCircle className="error-icon" size={60} />
+                  <p>{t("payment_error") || "Xatolik yuz berdi"}</p>
+                  <button onClick={() => setModalOpen(false)} className="modal-close-btn">
+                    Yopish
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         <header>
           <div className="left">
             <h2>{t("topup_title")}</h2>
@@ -109,7 +156,7 @@ const Topup = () => {
                 <button
                   key={idx}
                   className={`amount-btn ${selectedIdx === idx ? "active" : ""}`}
-                  onClick={() => handleSelectAmount(idx, amt)}
+                  onClick={() => handleSelectAmount(idx)}
                 >
                   {amt.toLocaleString()} UZS
                 </button>
@@ -158,29 +205,31 @@ const Topup = () => {
                     </div>
                   </div>
                 </div>
-                <p>Abdullajonov A.</p>
+                <p className="card-holder">Abdullajonov A.</p>
 
                 <div className="upload-section">
                   <label htmlFor="receipt-upload" className="upload-label">
                     <Upload size={20} />
                     <span>{receipt ? receipt.name : t("upload_receipt")}</span>
-                    <input id="receipt-upload" type="file" accept="image/*" onChange={handleFileChange} hidden />
+                    <input 
+                      id="receipt-upload" 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={(e) => setReceipt(e.target.files[0])} 
+                      hidden 
+                    />
                   </label>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Xatolik yoki Muvaffaqiyat xabarlari */}
-          {error && <p className="error-text" style={{color: 'red', fontSize: '12px', marginBottom: '10px'}}>{error}</p>}
-          {success && <p className="success-text" style={{color: '#4CAF50', fontSize: '13px', marginBottom: '10px'}}>{t("payment_sent")}</p>}
-
           <button
-            className={`main-action-btn ${isFormValid() && !isSubmitting ? "active" : "disabled"}`}
-            disabled={!isFormValid() || isSubmitting}
-            onClick={handlePayment}
+            className={`main-action-btn ${isFormValid() ? "active" : "disabled"}`}
+            disabled={!isFormValid()}
+            onClick={handlePaymentSubmit}
           >
-            {isSubmitting ? <Loader2 className="spinner" size={20} /> : t("confirm_payment")}
+            {t("confirm_payment")}
           </button>
         </div>
       </div>
