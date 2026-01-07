@@ -1,34 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./stars.scss";
 import Nav from "../nav/nav.jsx";
 import headerImg from "../../assets/starsGif.mp4";
 import { useTranslation } from 'react-i18next';
 import useTelegramBack from "../../hooks/useTelegramBack";
-import { ChevronUp, ChevronDown, Loader2 } from "lucide-react";
-import useGetStars from "../../hooks/useGetStars"; // Hookni import qildik
-import PaymentModal from "../topup/PaymentModal"; // Topupda ishlatgan modalimiz
+import { ChevronUp, ChevronDown, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import useGetStars from "../../hooks/useGetStars"; 
 import api from "../../api/axios";
-import loader from "../loader/loader";
 
 const Stars = () => {
   useTelegramBack("/");
   const { t } = useTranslation();
 
-  // 1. Backenddan paketlarni olamiz
+  // Telegram ma'lumotlari
+  const tg = window.Telegram?.WebApp;
+  const tgUser = tg?.initDataUnsafe?.user;
+
+  // Backenddan paketlarni olish
   const { starsOptions, loading: starsLoading } = useGetStars();
 
   const [selected, setSelected] = useState(null);
   const [username, setUsername] = useState("");
   const [showAll, setShowAll] = useState(false);
 
-  // Modal uchun state'lar
+  // Modal holatlari
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalStatus, setModalStatus] = useState("loading");
+  const [modalStatus, setModalStatus] = useState("loading"); // loading, success, error
 
-  const tg = window.Telegram?.WebApp;
-  const tgUser = tg?.initDataUnsafe?.user;
-
-  // Star ikonkalari sonini aniqlash
   const getStarLayers = (amount) => {
     if (amount >= 2500) return 5;
     if (amount >= 1000) return 4;
@@ -37,8 +35,6 @@ const Stars = () => {
   };
 
   const isFormInvalid = !selected || username.trim().length === 0;
-
-  // Ko'rsatiladigan paketlar (dinamik starsOptions dan oladi)
   const visibleOptions = showAll ? starsOptions : starsOptions.slice(0, 3);
 
   // SOTIB OLISH FUNKSIYASI
@@ -47,21 +43,21 @@ const Stars = () => {
     setModalStatus("loading");
 
     try {
-      // Tanlangan paket ma'lumotlarini topamiz
       const selectedPackage = starsOptions.find(p => p.id === selected);
 
       await api.post("/orders/", {
-        telegram_id: tgUser?.id, // Kim sotib olyapti
-        target_username: username, // Kimga yuborilyapti
-        star_id: selected, // Qaysi paket
+        telegram_id: tgUser?.id,
+        target_username: username,
+        star_id: selected,
         amount: selectedPackage.amount
       });
 
       setModalStatus("success");
-      // 3 soniyadan keyin modalni yopish
-      setTimeout(() => setModalOpen(false), 3000);
+      setTimeout(() => {
+        setModalOpen(false);
+        // Xohlasangiz bu yerda userni settingsga o'tkazish mumkin: navigate("/settings")
+      }, 3000);
     } catch (err) {
-      console.error(err);
       setModalStatus("error");
     }
   };
@@ -69,6 +65,33 @@ const Stars = () => {
   return (
     <>
       <div className="stars">
+        {/* INLINE MODAL PART */}
+        {modalOpen && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              {modalStatus === "loading" && (
+                <div className="status-box">
+                  <Loader2 className="spinner-icon" size={60} />
+                  <p>Buyurtma berilmoqda...</p>
+                </div>
+              )}
+              {modalStatus === "success" && (
+                <div className="status-box">
+                  <CheckCircle2 className="success-icon animate-tick" size={60} />
+                  <p>Muvaffaqiyatli sotib olindi!</p>
+                </div>
+              )}
+              {modalStatus === "error" && (
+                <div className="status-box">
+                  <XCircle className="error-icon" size={60} />
+                  <p>Xatolik yuz berdi!</p>
+                  <button onClick={() => setModalOpen(false)} className="modal-close-btn">Yopish</button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         <header>
           <div className="left">
             <h2>{t("stars_title")}</h2>
@@ -85,12 +108,16 @@ const Stars = () => {
           <div className="forWho">
             <label htmlFor="name">
               {t("stars_forWho")}
-              <button
-                className="for-me-btn"
-                onClick={() => setUsername(tgUser?.username || "")}
+              <a
+                href="#"
+                className="for-me-link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setUsername(tgUser?.username || "");
+                }}
               >
                 {t("forMe")}
-              </button>
+              </a>
             </label>
             <input
               type="text"
@@ -105,11 +132,10 @@ const Stars = () => {
         <div className="main">
           <div className="stars-container">
             <h3>{t("stars_packages")}</h3>
-
+            
             {starsLoading ? (
               <div className="stars-loader">
                 <Loader2 className="spinner" />
-                <p>Paketlar yuklanmoqda...</p>
               </div>
             ) : (
               <div className="options-list">
@@ -122,21 +148,15 @@ const Stars = () => {
                     <div className="radio-circle">
                       {selected === option.id && <div className="inner-dot" />}
                     </div>
-
                     <div className="stars-info">
                       <div className="stars-stack">
                         {[...Array(getStarLayers(option.amount))].map((_, i) => (
                           <i key={i} className="star-icon"></i>
                         ))}
                       </div>
-                      <span className="amount">
-                        {option.amount.toLocaleString()} Stars
-                      </span>
+                      <span className="amount">{option.amount.toLocaleString()} Stars</span>
                     </div>
-
-                    <div className="price">
-                      {Number(option.price).toLocaleString()} UZS
-                    </div>
+                    <div className="price">{Number(option.price).toLocaleString()} UZS</div>
                   </div>
                 ))}
               </div>
@@ -162,14 +182,6 @@ const Stars = () => {
           </div>
         </div>
       </div>
-
-      {/* Topupda yaratgan modalimizni bu yerda ham ishlatamiz */}
-      <PaymentModal 
-        isOpen={modalOpen} 
-        status={modalStatus} 
-        onClose={() => setModalOpen(false)} 
-      />
-      
       <Nav />
     </>
   );
