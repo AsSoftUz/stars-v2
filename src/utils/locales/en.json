@@ -62,7 +62,9 @@
   "payment_sent": "Payment Sent!",
   "transfer_to_card": "Admin's card number",
   "upload_receipt": "Upload Reciept",
-  "cardHoledrName": "Card Holder's Name: Abdullayev A."
+  "cardHoledrName": "Card Holder's Name: Abdullayev A.",
+  "sending_payment": "Sending payment...",
+  "payment_error": "Payment error."
 
 
 }

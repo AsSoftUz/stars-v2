@@ -61,7 +61,9 @@
   "payment_sent": "To'lovga yuborildi!",
   "transfer_to_card": "Admin Karta raqami",
   "upload_receipt": "Chekni yuklash",
-  "cardHoledrName": "Karta egasi: Abdullajonov A."
+  "cardHoledrName": "Karta egasi: Abdullajonov A.",
+  "sending_payment": "To'lov yuborilmoqda...",
+  "payment_error": "Xatolik yuz berdi."
 }
 
 
