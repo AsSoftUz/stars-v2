@@ -85,7 +85,7 @@ const Settings = () => {
         {/* Header */}
         <header>
           <img src={tgUser.photo_url || {premiumImg}} alt="Premium" />
-          <h2>{tgUser.fullname}</h2>
+          <h2>{user.fullname}</h2>
         </header>
 
         {/* Balance */}
