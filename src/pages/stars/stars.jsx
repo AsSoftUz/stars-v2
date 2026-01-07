@@ -12,80 +12,99 @@ const Stars = () => {
   useTelegramBack("/");
   const { t } = useTranslation();
 
-  // Telegram ma'lumotlari
+  // Telegram WebApp ma'lumotlari
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
 
-  // Backenddan paketlarni olish
-  const { starsOptions, loading: starsLoading } = useGetStars();
+  // 1. Paketlarni yuklab olish
+  const { starsOptions = [], loading: starsLoading } = useGetStars();
 
+  // 2. Local State
   const [selected, setSelected] = useState(null);
   const [username, setUsername] = useState("");
   const [showAll, setShowAll] = useState(false);
 
-  // Modal holatlari
+  // Modal va Buy mantiqi uchun state
   const [modalOpen, setModalOpen] = useState(false);
   const [modalStatus, setModalStatus] = useState("loading"); // loading, success, error
+  const [buyError, setBuyError] = useState(null);
 
+  // Star qavatlarini aniqlash (vizual stack uchun)
   const getStarLayers = (amount) => {
-    if (amount >= 2500) return 5;
-    if (amount >= 1000) return 4;
-    if (amount >= 250) return 3;
+    const num = Number(amount) || 0;
+    if (num >= 2500) return 5;
+    if (num >= 1000) return 4;
+    if (num >= 250) return 3;
     return 2;
   };
 
   const isFormInvalid = !selected || username.trim().length === 0;
-  const visibleOptions = showAll ? starsOptions : starsOptions.slice(0, 3);
+  
+  // Ma'lumotlar massiv ekanligiga ishonch hosil qilamiz
+  const safeStarsOptions = Array.isArray(starsOptions) ? starsOptions : [];
+  const visibleOptions = showAll ? safeStarsOptions : safeStarsOptions.slice(0, 3);
 
-  // SOTIB OLISH FUNKSIYASI
+  // 3. Sotib olish funksiyasi (useBuyStars hooki o'rnida)
   const handleBuyStars = async () => {
     setModalOpen(true);
     setModalStatus("loading");
+    setBuyError(null);
 
     try {
-      const selectedPackage = starsOptions.find(p => p.id === selected);
-
-      await api.post("/orders/", {
+      const selectedPackage = safeStarsOptions.find(p => p.id === selected);
+      
+      const payload = {
         telegram_id: tgUser?.id,
-        target_username: username,
+        target_username: username.replace("@", "").trim(),
         star_id: selected,
-        amount: selectedPackage.amount
-      });
+        amount: Number(selectedPackage?.amount) || 0
+      };
 
+      await api.post("/stars-buy/", payload);
+      
       setModalStatus("success");
+      
+      // Muvaffaqiyatli bo'lsa 3 soniyadan keyin modal yopiladi
       setTimeout(() => {
         setModalOpen(false);
-        // Xohlasangiz bu yerda userni settingsga o'tkazish mumkin: navigate("/settings")
       }, 3000);
+
     } catch (err) {
       setModalStatus("error");
+      // Serverdan kelgan xatolik xabarini olish
+      const errorMsg = err.response?.data?.message || err.response?.data?.detail || "Sotib olishda xatolik yuz berdi";
+      setBuyError(errorMsg);
     }
   };
 
   return (
     <>
       <div className="stars">
-        {/* INLINE MODAL PART */}
+        {/* --- MODAL SECTION --- */}
         {modalOpen && (
           <div className="modal-overlay">
             <div className="modal-content">
               {modalStatus === "loading" && (
                 <div className="status-box">
                   <Loader2 className="spinner-icon" size={60} />
-                  <p>Buyurtma berilmoqda...</p>
+                  <p>So'rov yuborilmoqda...</p>
                 </div>
               )}
+
               {modalStatus === "success" && (
                 <div className="status-box">
                   <CheckCircle2 className="success-icon animate-tick" size={60} />
                   <p>Muvaffaqiyatli sotib olindi!</p>
                 </div>
               )}
+
               {modalStatus === "error" && (
                 <div className="status-box">
                   <XCircle className="error-icon" size={60} />
-                  <p>Xatolik yuz berdi!</p>
-                  <button onClick={() => setModalOpen(false)} className="modal-close-btn">Yopish</button>
+                  <p className="error-msg">{buyError}</p>
+                  <button onClick={() => setModalOpen(false)} className="modal-close-btn">
+                    Yopish
+                  </button>
                 </div>
               )}
             </div>
@@ -135,7 +154,7 @@ const Stars = () => {
             
             {starsLoading ? (
               <div className="stars-loader">
-                <Loader2 className="spinner" />
+                <Loader2 className="spinner" size={30} />
               </div>
             ) : (
               <div className="options-list">
@@ -148,26 +167,36 @@ const Stars = () => {
                     <div className="radio-circle">
                       {selected === option.id && <div className="inner-dot" />}
                     </div>
+
                     <div className="stars-info">
                       <div className="stars-stack">
                         {[...Array(getStarLayers(option.amount))].map((_, i) => (
                           <i key={i} className="star-icon"></i>
                         ))}
                       </div>
-                      <span className="amount">{option.amount.toLocaleString()} Stars</span>
+                      <span className="amount">
+                        {(Number(option.amount) || 0).toLocaleString()} Stars
+                      </span>
                     </div>
-                    <div className="price">{Number(option.price).toLocaleString()} UZS</div>
+
+                    <div className="price">
+                      {(Number(option.price) || 0).toLocaleString()} UZS
+                    </div>
                   </div>
                 ))}
               </div>
             )}
 
-            {starsOptions.length > 3 && (
+            {safeStarsOptions.length > 3 && (
               <button className="show-more" onClick={() => setShowAll(!showAll)}>
                 {showAll ? (
-                  <>{t("stars_showLess")} <ChevronUp size={18} /></>
+                  <div className="btn-content">
+                    {t("stars_showLess")} <ChevronUp size={18} />
+                  </div>
                 ) : (
-                  <>{t("stars_showMore")} <ChevronDown size={18} /></>
+                  <div className="btn-content">
+                    {t("stars_showMore")} <ChevronDown size={18} />
+                  </div>
                 )}
               </button>
             )}

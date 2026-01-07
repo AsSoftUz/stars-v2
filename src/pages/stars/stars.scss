@@ -301,4 +301,33 @@
       transform: scale(1);
     }
   }
+
+  .error-msg {
+    font-size: 14px;
+    color: #ff4d4d;
+    margin: 0 10px;
+    line-height: 1.4;
+  }
+
+  .btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  .modal-close-btn {
+    margin-top: 15px;
+    padding: 10px 25px;
+    background: #333;
+    border-radius: 12px;
+    border: none;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
 }
