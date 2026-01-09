@@ -5,8 +5,9 @@ import premiumGif from "../../assets/premium.gif";
 import { useTranslation } from 'react-i18next';
 import useTelegramBack from "../../hooks/useTelegramBack";
 import { Loader2, CheckCircle2, XCircle } from "lucide-react";
-import useGetPremium from "../../hooks/useGetPremium"; 
-import api from "../../api/axios";
+import useGetPremium from "../../hooks/useGetPremium";
+import useBuyPremium from "../../hooks/useBuyPremium";
+// import api from "../../api/axios";
 
 const Premium = () => {
   useTelegramBack("/");
@@ -28,32 +29,32 @@ const Premium = () => {
 
   const isFormInvalid = !selected || username.trim().length === 0;
 
-  // Sotib olish funksiyasi
+  const { buyPremium } = useBuyPremium();
+
   const handleBuyPremium = async () => {
     setModalOpen(true);
     setModalStatus("loading");
     setErrorMessage("");
 
     try {
-      const selectedPlan = premiumOptions.find(p => p.id === selected);
+      const selectedPlan = premiumOptions.find((p) => p.id === selected);
 
-      const payload = {
+      await buyPremium({
         user_id: tgUser?.id,
         username: username.replace("@", "").trim(),
-        premium_id: selected, // Paket ID raqami
-        duration: selectedPlan?.duration // Oylar soni
-      };
+        premium_id: selected,
+        duration: selectedPlan?.duration,
+      });
 
-      // Hookdagi buyPremium o'rniga to'g'ridan-to'g'ri API ishlatamiz (Stars bilan bir xil stil)
-      await api.post("/buy-premium/", payload);
-      
       setModalStatus("success");
       setTimeout(() => {
         setModalOpen(false);
       }, 3000);
     } catch (err) {
       setModalStatus("error");
-      setErrorMessage(err.response?.data?.error || "Sotib olishda xatolik yuz berdi");
+      setErrorMessage(
+        err.response?.data?.error || t("error_occurred")
+      );
     }
   };
 

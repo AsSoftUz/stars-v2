@@ -15,21 +15,20 @@ const useGetOrCreateUser = (tgUser) => {
     if (hasFetched.current) return;
     hasFetched.current = true;
 
-    const syncUser = async () => {
+    async function syncUser() {
       try {
         setLoading(true);
-        
+
         // Ism va username tayyorlash (null o'rniga bo'sh string)
         const currentFullname = `${tgUser.first_name || ""} ${tgUser.last_name || ""}`.trim() || "User";
-        const currentUsername = tgUser.username || ""; 
+        const currentUsername = tgUser.username || "";
 
         try {
           // 1. Tekshirish
           const res = await api.get(`/auth/users/${tgUser.id}/`);
           const existingUser = res.data;
 
-          const isChanged = 
-            existingUser.fullname !== currentFullname || 
+          const isChanged = existingUser.fullname !== currentFullname ||
             (existingUser.username || "") !== currentUsername;
 
           if (isChanged) {
@@ -49,13 +48,13 @@ const useGetOrCreateUser = (tgUser) => {
               user_id: tgUser.id,
               fullname: currentFullname,
               username: currentUsername,
-              phone: "", 
+              phone: "",
             };
             const createRes = await api.post("/auth/users/", payload);
             setUser(createRes.data);
           } else {
             console.error("API Error details:", err.response?.data);
-            throw err; 
+            throw err;
           }
         }
       } catch (error) {
@@ -63,7 +62,7 @@ const useGetOrCreateUser = (tgUser) => {
       } finally {
         setLoading(false);
       }
-    };
+    }
 
     syncUser();
   }, [tgUser]);
