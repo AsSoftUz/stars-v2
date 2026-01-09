@@ -129,7 +129,7 @@ const Referal = () => {
             
             <div className="link-box">
               {/* <div className="label-text">Referral Link</div> */}
-              <div className="code-value link">{loading ? "..." : "t.me/Linkify..."}</div>
+              <div className="code-value link">{loading ? "..." : referralLink}</div>
               <button onClick={() => handleCopy(referralLink, "link")} className="copy-btn">
                 {copiedLink ? <Check size={16} color="#4caf50" /> : <Copy size={16} />}
               </button>
