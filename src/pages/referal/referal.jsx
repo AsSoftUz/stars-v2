@@ -119,16 +119,6 @@ const Referal = () => {
           {/* Copy & Share Section */}
           <div className="links-row">
             <div className="link-box">
-              <span>Referral Id</span>
-              <button
-                onClick={() => handleCopy(referralId, "id")}
-                className="copy-btn"
-              >
-                {copiedId ? <Check size={16} /> : <Copy size={16} />}
-                {copiedId && <span className="tooltip">{t("copied")}</span>}
-              </button>
-            </div>
-            <div className="link-box">
               <span>Referral Link</span>
               <button
                 onClick={() => handleCopy(referralLink, "link")}

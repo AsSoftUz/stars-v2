@@ -35,3 +35,15 @@ body {
   position: relative;
   padding-bottom: 60px;
 }
+
+/* Chrome, Safari, Edge, Opera uchun */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox uchun */
+input[type=number] {
+  -moz-appearance: textfield;
+}

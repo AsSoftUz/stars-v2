@@ -283,7 +283,6 @@
     &.disabled {
       opacity: 0.5;
       cursor: not-allowed;
-      filter: grayscale(1);
     }
     &.active {
       opacity: 1;
