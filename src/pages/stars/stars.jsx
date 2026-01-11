@@ -40,7 +40,7 @@ const Stars = () => {
     if (!tgUser?.id) {
       setModalOpen(true);
       setModalStatus("error");
-      setBuyError("Telegram ID topilmadi. WebAppni qayta ishga tushiring.");
+      setBuyError(t("error_modal_stars"));
       return;
     }
 
@@ -68,7 +68,7 @@ const Stars = () => {
       const errorMsg = err.response?.data?.error ||
         err.response?.data?.message ||
         err.response?.data?.detail ||
-        "Xatolik yuz berdi";
+        t("error_modal_stars2");
       setBuyError(errorMsg);
     }
   };
@@ -82,20 +82,20 @@ const Stars = () => {
               {modalStatus === "loading" && (
                 <div className="status-box">
                   <Loader2 className="spinner-icon" size={60} />
-                  <p>Yuborilmoqda...</p>
+                  <p>{t("sending_modal_referal")}</p>
                 </div>
               )}
               {modalStatus === "success" && (
                 <div className="status-box">
                   <CheckCircle2 className="success-icon animate-tick" size={60} />
-                  <p>Muvaffaqiyatli!</p>
+                  <p>{t("success_modal_referal")}</p>
                 </div>
               )}
               {modalStatus === "error" && (
                 <div className="status-box">
                   <XCircle className="error-icon" size={60} />
                   <p className="error-msg">{buyError}</p>
-                  <button onClick={() => setModalOpen(false)} className="modal-close-btn">Yopish</button>
+                  <button onClick={() => setModalOpen(false)} className="modal-close-btn">{t("close_modal")}</button>
                 </div>
               )}
             </div>

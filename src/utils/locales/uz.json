@@ -24,6 +24,8 @@
   "stars_showMore": "Ko‘proq variantlarni ko‘rsatish",
   "stars_buyButton": "Stars sotib olish",
   "stars_showLess": "Kamroq ko'rsat",
+  "error_modal_stars": "Telegram ID topilmadi. WebAppni qayta ishga tushiring.",
+  "error_modal_stars2": "Xatolik yuz berdi.",
 
   "forWho": "Kimga yuboramiz?",
   "forMe": "o'zimga",

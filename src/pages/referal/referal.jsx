@@ -180,7 +180,7 @@ const Referal = () => {
                     <span className="input-icon"><Star fill="#fff" width="20px" /></span>
                     <input 
                       type="number" 
-                      placeholder="Miqdorni kiriting" 
+                      placeholder={t("enterAmount")}
                       value={starAmount}
                       onChange={(e) => setStarAmount(e.target.value)}
                     />

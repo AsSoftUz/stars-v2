@@ -52,7 +52,7 @@ const Premium = () => {
     } catch (err) {
       setModalStatus("error");
       setErrorMessage(
-        err.response?.data?.error || t("error_occurred")
+        err.response?.data?.error || t("error_modal_referal")
       );
     }
   };
@@ -67,14 +67,14 @@ const Premium = () => {
               {modalStatus === "loading" && (
                 <div className="status-box">
                   <Loader2 className="spinner-icon" size={60} />
-                  <p>Yuborilmoqda...</p>
+                  <p>{t("sending_modal_referal")}</p>
                 </div>
               )}
 
               {modalStatus === "success" && (
                 <div className="status-box">
                   <CheckCircle2 className="success-icon animate-tick" size={60} />
-                  <p>Muvaffaqiyatli sotib olindi!</p>
+                  <p>{t("success_modal_referal")}</p>
                 </div>
               )}
 
@@ -83,7 +83,7 @@ const Premium = () => {
                   <XCircle className="error-icon" size={60} />
                   <p className="error-text">{errorMessage}</p>
                   <button onClick={() => setModalOpen(false)} className="modal-close-btn">
-                    Yopish
+                    {t("close_modal")}
                   </button>
                 </div>
               )}

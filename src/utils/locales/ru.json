@@ -24,6 +24,8 @@
   "stars_showMore": "Показать больше вариантов",
   "stars_buyButton": "Купить Stars",
   "stars_showLess": "Показать меньше вариантов",
+  "error_modal_stars": "Telegram ID не найден. Перезапустите WebApp.",
+  "error_modal_stars2": "Ошибка.",
 
   "forWho": "Кому мы отправляем?",
   "forMe": "для меня",

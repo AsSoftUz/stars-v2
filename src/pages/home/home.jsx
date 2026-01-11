@@ -29,7 +29,7 @@ const Home = () => {
   }, [loading]);
 
   const handleJoinChannel = () => {
-    const channelLink = "https://t.me/SizningKanalingiz"; // O'zingizni kanal linkiga almashtiring
+    const channelLink = "https://t.me/Abdullayev_Stars";
     if (tg) {
       tg.openTelegramLink(channelLink);
     } else {
