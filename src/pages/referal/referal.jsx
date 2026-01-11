@@ -1,41 +1,96 @@
 import "./referal.scss";
 import { useState } from "react";
-import { Copy, Share2, Check, Star, Loader2 } from "lucide-react";
+import { Copy, Share2, Check, Star, Loader2, CheckCircle2, XCircle, Users } from "lucide-react";
 import Nav from "../nav/nav.jsx";
 import headerImg from "../../assets/referalGif.mp4";
 import { useTranslation } from "react-i18next";
 import useTelegramBack from "../../hooks/useTelegramBack";
 import useGetOrCreateUser from "../../hooks/useGetOrCreateUser";
+import useBuyGifts from "../../hooks/useBuyGifts";
+
+// Rasmlar importi (o'zingizdagi yo'llar)
+import archa from "../../assets/gifts/archa.png";
+import yurak from "../../assets/gifts/yurak.png";
+import ayiq from "../../assets/gifts/ayiq.png";
+import sovga from "../../assets/gifts/sovga.png";
+import atirgul from "../../assets/gifts/atirgul.png";
+import tort from "../../assets/gifts/tort.png";
+import gullar from "../../assets/gifts/gullar.png";
+import raketa from "../../assets/gifts/raketa.png";
+import kubok from "../../assets/gifts/kubok.png";
+import uzuk from "../../assets/gifts/uzuk.png";
+import olmos from "../../assets/gifts/olmos.png";
+import shanpan from "../../assets/gifts/shanpan.png";
 
 const Referal = () => {
   useTelegramBack("/");
   const { t } = useTranslation();
-  
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
 
-  // 1. Hook orqali user ma'lumotlarini olamiz
-  const { user, loading } = useGetOrCreateUser(tgUser);
+  const { user, loading: userLoading } = useGetOrCreateUser(tgUser);
+  const { buyGifts } = useBuyGifts();
 
   const [activeTab, setActiveTab] = useState("stars");
-  const [copiedId, setCopiedId] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [selectedGift, setSelectedGift] = useState(null);
+  const [starAmount, setStarAmount] = useState("");
 
-  // Dinamik ma'lumotlar
-  const referralCode = user?.referral_code || "Yuklanmoqda...";
-  const botUsername = "Linkify_tgbot"; // Bot usernamesi
-  const referralLink = `https://t.me/${botUsername}?start=${referralCode}`;
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalStatus, setModalStatus] = useState("loading");
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleCopy = async (text, type) => {
+  const GIFTS_LIST = [
+    { id: 1, name: "Archa", img: archa, price: 50 },
+    { id: 2, name: "Yurak", img: yurak, price: 15 },
+    { id: 3, name: "Ayiq", img: ayiq, price: 50 },
+    { id: 4, name: "Sovga", img: sovga, price: 25 },
+    { id: 5, name: "Atirgul", img: atirgul, price: 25 },
+    { id: 6, name: "Tort", img: tort, price: 50 },
+    { id: 7, name: "Gullar", img: gullar, price: 50 },
+    { id: 8, name: "Raketa", img: raketa, price: 50 },
+    { id: 9, name: "Kubok", img: kubok, price: 100 },
+    { id: 10, name: "Uzuk", img: uzuk, price: 100 },
+    { id: 11, name: "Olmos", img: olmos, price: 100 },
+    { id: 12, name: "Shanpan", img: shanpan, price: 50 },
+  ];
+
+  // Tugmani holatini aniqlash (50 dan kam bo'lsa true qaytaradi)
+  const isWithdrawDisabled = !starAmount || Number(starAmount) < 50;
+
+  const handleAction = async (type) => {
+    setModalOpen(true);
+    setModalStatus("loading");
+    setErrorMsg("");
+
+    try {
+      const payload = {
+        gift_type: type,
+        gift_name: type === 'STAR' ? 'Telegram Stars' : selectedGift.name,
+        points_spent: type === 'STAR' ? Number(starAmount) : selectedGift.price,
+        user: user?.id,
+      };
+
+      await buyGifts(payload);
+
+      setModalStatus("success");
+      setStarAmount("");
+      setSelectedGift(null);
+      setTimeout(() => setModalOpen(false), 3000);
+    } catch (err) {
+      setModalStatus("error");
+      setErrorMsg(err.response?.data?.error || err.response?.data?.message || "Xatolik yuz berdi");
+    }
+  };
+
+  const referralCode = user?.referral_code || "";
+  const referralLink = `https://t.me/Linkify_tgbot?start=${referralCode}`;
+
+  const handleCopy = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
-      if (type === "id") {
-        setCopiedId(true);
-        setTimeout(() => setCopiedId(false), 2000);
-      } else {
-        setCopiedLink(true);
-        setTimeout(() => setCopiedLink(false), 2000);
-      }
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
     } catch (err) {
       console.error("Nusxa ko‘chirib bo‘lmadi", err);
     }
@@ -50,6 +105,32 @@ const Referal = () => {
   return (
     <>
       <div className="referal">
+        {modalOpen && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              {modalStatus === "loading" && (
+                <div className="status-box">
+                  <Loader2 className="spinner-icon" size={60} />
+                  <p>Yuborilmoqda...</p>
+                </div>
+              )}
+              {modalStatus === "success" && (
+                <div className="status-box">
+                  <CheckCircle2 className="success-icon animate-tick" size={60} />
+                  <p>Muvaffaqiyatli!</p>
+                </div>
+              )}
+              {modalStatus === "error" && (
+                <div className="status-box">
+                  <XCircle className="error-icon" size={60} />
+                  <p className="error-msg">{errorMsg}</p>
+                  <button onClick={() => setModalOpen(false)} className="modal-close-btn">Yopish</button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         <header>
           <div className="left">
             <h2>{t("referalTitle")}</h2>
@@ -63,26 +144,25 @@ const Referal = () => {
         </header>
 
         <div className="referral-page">
-          {/* Balans va Statistika */}
           <div className="balance-card">
             <div className="balance-item">
               <div className="value">
-                <Star fill="#fff" width="20px" /> 
-                {loading ? "..." : (user?.referral_count || 0)}
+                <Users width="20px" height="20px" fill="#fff" />
+                {/* <Star fill="#fff" width="20px" /> */}
+                {userLoading ? "..." : (user?.referral_count || 0)}
               </div>
-              <div className="sub-text">{t("referal_count")}</div>
+              <div className="sub-text">Takliflar</div>
             </div>
             <div className="divider"></div>
             <div className="balance-item">
               <div className="value">
-                <Star fill="#fff" width="20px" /> 
-                {loading ? "..." : (Number(user?.balance) || 0).toLocaleString()} UZS
+                <Star fill="#fff" width="20px" />
+                {userLoading ? "..." : (Number(user?.balance) || 0).toLocaleString()}
               </div>
-              <div className="sub-text">{t("totalBalance")}</div>
+              <div className="sub-text">Balans (Stars)</div>
             </div>
           </div>
 
-          {/* Withdraw Section */}
           <div className="withdraw-card">
             <div className="tab-buttons">
               <button className={activeTab === "stars" ? "active" : ""} onClick={() => setActiveTab("stars")}>
@@ -98,46 +178,63 @@ const Referal = () => {
                 <div className="input-row">
                   <div className="input-wrapper">
                     <span className="input-icon"><Star fill="#fff" width="20px" /></span>
-                    <input type="number" placeholder={t("enterAmount")} />
+                    <input 
+                      type="number" 
+                      placeholder="Miqdorni kiriting" 
+                      value={starAmount}
+                      onChange={(e) => setStarAmount(e.target.value)}
+                    />
                   </div>
-                  <button className="withdraw-btn">{t("withdraw")}</button>
+                  <button 
+                    className={`withdraw-btn ${isWithdrawDisabled ? "disabled" : ""}`} 
+                    onClick={() => handleAction('STAR')}
+                    disabled={isWithdrawDisabled}
+                  >
+                    {t("withdraw")}
+                  </button>
                 </div>
-                <p className="min-withdraw">{t("minWithdrawInfo")}</p>
+                <p className="min-withdraw">min. 50 Stars</p>
               </div>
             ) : (
               <div className="gifts-content">
                 <div className="gifts-grid">
-                  {[...Array(8)].map((_, i) => <div key={i} className="gift-box"></div>)}
+                  {GIFTS_LIST.map((gift) => (
+                    <div
+                      key={gift.id}
+                      className={`gift-box ${selectedGift?.id === gift.id ? "selected" : ""}`}
+                      onClick={() => setSelectedGift(gift)}
+                    >
+                      <div className="gift-img-wrapper">
+                        <img src={gift.img} alt={gift.name} />
+                      </div>
+                      <div className="gift-price-tag"><Star fill="#ffd700" size={12} /> {gift.price}</div>
+                    </div>
+                  ))}
                 </div>
-                <p className="min-withdraw">{t("GiftsReminder")}</p>
+                <div className="withdraw-section-gift">
+                  <button
+                    className={`withdraw-btn-gift ${!selectedGift ? "disabled" : ""}`}
+                    disabled={!selectedGift}
+                    onClick={() => handleAction('GIFT')}
+                  >
+                    {t("withdraw")} {selectedGift && `(${selectedGift.price})`}
+                  </button>
+                </div>
               </div>
             )}
           </div>
 
-          {/* Dinamik Linklar qismi */}
           <div className="links-row">
-            {/* <div className="link-box">
-              <span>Referral Link</span>
-              <button
-                onClick={() => handleCopy(referralLink, "link")}
-                className="copy-btn"
-              >
-                {copiedLink ? <Check size={16} /> : <Copy size={16} />}
-                {copiedLink && <span className="tooltip">{t("copied")}</span>}
-              </button>
-            </div> */}
-            
             <div className="link-box">
-              {/* <div className="label-text">Referral Link</div> */}
-              <div className="code-value link">{loading ? "..." : referralLink}</div>
-              <button onClick={() => handleCopy(referralLink, "link")} className="copy-btn">
+              <div className="code-value link">t.me/Linkify_tgbot?start={referralCode}</div>
+              <button onClick={() => handleCopy(referralLink)} className="copy-btn">
                 {copiedLink ? <Check size={16} color="#4caf50" /> : <Copy size={16} />}
               </button>
             </div>
           </div>
 
-          <button className="share-btn" onClick={handleShare} disabled={loading}>
-            {loading ? <Loader2 className="spin" size={18} /> : <Share2 size={18} />}
+          <button className="share-btn" onClick={handleShare} disabled={userLoading}>
+            {userLoading ? <Loader2 className="spin" size={18} /> : <Share2 size={18} />}
             {t("shareOnTelegram")}
           </button>
         </div>
