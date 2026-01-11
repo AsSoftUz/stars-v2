@@ -193,11 +193,10 @@
               object-fit: contain;
             }
           }
-
-          .gift-name {
-            font-size: 10px;
-            color: #fff;
-            font-weight: 500;
+          .gift-price-tag {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
           }
         }
       }

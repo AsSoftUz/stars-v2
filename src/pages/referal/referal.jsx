@@ -207,7 +207,7 @@ const Referal = () => {
                       <div className="gift-img-wrapper">
                         <img src={gift.img} alt={gift.name} />
                       </div>
-                      <div className="gift-price-tag"><Star fill="#ffd700" size={12} /> {gift.price}</div>
+                      <div className="gift-price-tag"><Star fill="#fff" size={16} /> {gift.price}</div>
                     </div>
                   ))}
                 </div>
