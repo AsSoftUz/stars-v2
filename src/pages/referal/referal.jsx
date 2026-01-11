@@ -84,7 +84,7 @@ const Referal = () => {
   };
 
   const referralCode = user?.referral_code || "";
-  const referralLink = `https://t.me/Linkify_tgbot?start=${referralCode}`;
+  const referralLink = `https://t.me/Abdullayev_Stars_Bot?start=${referralCode}`;
 
   const handleCopy = async (text) => {
     try {
