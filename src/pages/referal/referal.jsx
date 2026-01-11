@@ -228,7 +228,7 @@ const Referal = () => {
             <div className="link-box">
               <div className="code-value link">t.me/Abdullayev_Stars_Bot?start={referralCode}</div>
               <button onClick={() => handleCopy(referralLink)} className="copy-btn">
-                {copiedLink ? <Check size={16} color="#4caf50" /> : <Copy size={16} />}
+                {copiedLink ? <Check size={16} color="#fff" /> : <Copy size={16} />}
               </button>
             </div>
           </div>
