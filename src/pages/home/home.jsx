@@ -1,5 +1,5 @@
 import "./home.scss";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import duck from "../../assets/duck.gif";
 import starsImg from "../../assets/stars.png";
 import premiumImg from "../../assets/premium.png";
@@ -7,45 +7,76 @@ import Nav from "../nav/nav.jsx";
 import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router-dom";
 import Loader from "../loader/loader";
-// 1. Hookni import qilamiz
 import useGetOrCreateUser from "../../hooks/useGetOrCreateUser"; 
+import { X, Bell } from "lucide-react"; // Ikonkalar
 
 const Home = () => {
   const { t } = useTranslation();
+  const [showWelcome, setShowWelcome] = useState(false);
 
-  // 2. Telegram WebApp'dan foydalanuvchi ma'lumotlarini olamiz
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
 
-  // 3. Hookni ishga tushiramiz (U orqa fonda tekshirish/yaratishni bajaradi)
   const { user, loading } = useGetOrCreateUser(tgUser);
 
-  // Agar loading bo'lsa, xohlasangiz skeleton yoki loader qo'shish mumkin
-  // Lekin Home sahifasi ko'rinib turishi uchun shunchaki davom etaveramiz
+  useEffect(() => {
+    // Birinchi marta kirayotganini tekshirish
+    const hasVisited = localStorage.getItem("has_visited_linkify");
+    if (!hasVisited && !loading) {
+      setShowWelcome(true);
+      localStorage.setItem("has_visited_linkify", "true");
+    }
+  }, [loading]);
+
+  const handleJoinChannel = () => {
+    const channelLink = "https://t.me/SizningKanalingiz"; // O'zingizni kanal linkiga almashtiring
+    if (tg) {
+      tg.openTelegramLink(channelLink);
+    } else {
+      window.open(channelLink, "_blank");
+    }
+    setShowWelcome(false);
+  };
 
   if (loading) {
-    return (
-      <>
-        <Loader />
-      </>
-    )
+    return <Loader />;
   }
 
   return (
     <>
       <div className="home">
+        {/* --- WELCOME MODAL --- */}
+        {showWelcome && (
+          <div className="welcome-modal-overlay">
+            <div className="welcome-modal-content">
+              <button className="close-x" onClick={() => setShowWelcome(false)}>
+                <X size={20} />
+              </button>
+              
+              <div className="icon-wrapper">
+                <Bell size={40} color="#0088cc" fill="#0088cc22" />
+              </div>
+              
+              <h3>{t("welcome_modal_title")}</h3>
+              <p>
+                {t("welcome_modal_text")}
+              </p>
+              
+              <button className="join-btn" onClick={handleJoinChannel}>
+                {t("join_channel_btn")}
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="hero">
           <h1>
             {t("welcome")}
-            {/* Foydalanuvchi ismi yuklangandan keyin chiqishi uchun: */}
-            {/* {user && <span>, {user.fullname}!</span>} */}
             <img src={duck} alt="" width="44px" />
           </h1>
-          {/* <p>{t("dearUser")}</p> */}
         </div>
         
         <div className="main-cards">
-          {/* Stars Card */}
           <div className="pcard">
             <div className="card">
               <div className="left">
@@ -61,13 +92,9 @@ const Home = () => {
                 <img src={starsImg} alt="" />
               </div>
             </div>
-            <NavLink to="/stars">
-               {/* SVG icon... */}
-              {t("buyStars")}
-            </NavLink>
+            <NavLink to="/stars">{t("buyStars")}</NavLink>
           </div>
 
-          {/* Premium Card */}
           <div className="pcard">
             <div className="card">
               <div className="left">
@@ -83,10 +110,7 @@ const Home = () => {
                 <img src={premiumImg} alt="" />
               </div>
             </div>
-            <NavLink to="/premium">
-               {/* SVG icon... */}
-              {t("buyPremium")}
-            </NavLink>
+            <NavLink to="/premium">{t("buyPremium")}</NavLink>
           </div>
         </div>
       </div>

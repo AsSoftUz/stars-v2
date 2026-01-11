@@ -79,7 +79,7 @@ const Referal = () => {
       setTimeout(() => setModalOpen(false), 3000);
     } catch (err) {
       setModalStatus("error");
-      setErrorMsg(err.response?.data?.error || err.response?.data?.message || "Xatolik yuz berdi");
+      setErrorMsg(err.response?.data?.error || err.response?.data?.message || t("error_modal_referal"));
     }
   };
 
@@ -92,7 +92,7 @@ const Referal = () => {
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 2000);
     } catch (err) {
-      console.error("Nusxa ko‘chirib bo‘lmadi", err);
+      console.error(t("error_copy_referal"), err);
     }
   };
 
@@ -111,20 +111,20 @@ const Referal = () => {
               {modalStatus === "loading" && (
                 <div className="status-box">
                   <Loader2 className="spinner-icon" size={60} />
-                  <p>Yuborilmoqda...</p>
+                  <p>{t("sending_modal_referal")}</p>
                 </div>
               )}
               {modalStatus === "success" && (
                 <div className="status-box">
                   <CheckCircle2 className="success-icon animate-tick" size={60} />
-                  <p>Muvaffaqiyatli!</p>
+                  <p>{t("success_modal_referal")}</p>
                 </div>
               )}
               {modalStatus === "error" && (
                 <div className="status-box">
                   <XCircle className="error-icon" size={60} />
                   <p className="error-msg">{errorMsg}</p>
-                  <button onClick={() => setModalOpen(false)} className="modal-close-btn">Yopish</button>
+                  <button onClick={() => setModalOpen(false)} className="modal-close-btn">{t("close_modal")}</button>
                 </div>
               )}
             </div>
@@ -151,7 +151,7 @@ const Referal = () => {
                 {/* <Star fill="#fff" width="20px" /> */}
                 {userLoading ? "..." : (user?.referral_count || 0)}
               </div>
-              <div className="sub-text">Takliflar</div>
+              <div className="sub-text">{t("referrals_count")}</div>
             </div>
             <div className="divider"></div>
             <div className="balance-item">
@@ -159,7 +159,7 @@ const Referal = () => {
                 <Star fill="#fff" width="20px" />
                 {userLoading ? "..." : (Number(user?.balance) || 0).toLocaleString()}
               </div>
-              <div className="sub-text">Balans (Stars)</div>
+              <div className="sub-text">{ t("balance_referrals") || "Balans (Stars)"}</div>
             </div>
           </div>
 

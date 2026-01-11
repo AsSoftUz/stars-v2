@@ -2,6 +2,9 @@
   "home": "Bosh Sahifa",
   "referal": "Referal",
   "settings": "Sozlamalar",
+  "welcome_modal_title": "Xush kelibsiz!",
+  "welcome_modal_text": "Yangiliklar va sovg'alardan xabardor bo'lish uchun kanalimizga a'zo bo'ling!",
+  "join_channel_btn": "Kanalga a'zo bo'lish",
 
   "welcome": "Xush kelibsiz!",
   "dearUser": "Aziz foydalanuvchi...",
@@ -40,6 +43,13 @@
   "copied": "Nusxalandi!",
   "shareOnTelegram": "Havolani ulashish",
   "enterAmount": "Miqdorni kiriting",
+  "sending_modal_referal": "Yuborilmoqda...",
+  "success_modal_referal": "Muvaffaqiyatli!",
+  "close_modal": "Yopish",
+  "error_modal_referal": "Xatolik yuz berdi",
+  "error_copy_referal": "Nusxa ko'chirishda xatolik yuz berdi",
+  "referrals_count": "Referallar soni",
+  "balance_referrals": "Balans (Stars)",
 
 
   "settings_language": "Til",

@@ -2,6 +2,9 @@
   "home": "Главная",
   "referal": "Рефераль",
   "settings": "Настройки",
+  "welcome_modal_title": "Добро пожаловать!",
+  "welcome_modal_text": "Получайте новости и подсказки, подписывайтесь на наш канал!",
+  "join_channel_btn": "Подписаться",
 
   "welcome": "Добро пожаловать!",
   "dearUser": "Уважаемый пользователь...",
@@ -40,6 +43,13 @@
   "copied": "Скопировано!",
   "shareOnTelegram": "Поделиться в Telegram",
   "enterAmount": "Введите сумму",
+  "sending_modal_referal": "Отправка...",
+  "success_modal_referal": "Успешно!",
+  "close_modal": "Закрыть",
+  "error_modal_referal": "Ошибка",
+  "error_copy_referal": "Ошибка копирования",
+  "referrals_count": "Количество рефералов",
+  "balance_referrals": "Баланс (Stars)",
 
 
   "settings_language": "Язык",

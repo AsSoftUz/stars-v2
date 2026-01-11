@@ -3,6 +3,9 @@
   "home": "Home",
   "referal": "Referal",
   "settings": "Settings",
+  "welcome_modal_title": "Welcome!",
+  "welcome_modal_text": "Get news and tips, subscribe to our channel!",
+  "join_channel_btn": "Subscribe",
 
   "welcome": "Welcome!",
   "dearUser": "Dear user...",
@@ -32,8 +35,6 @@
   "referalTitle": "Referral Program",
   "referalSubtitle": "Get rewards for each friend you invite",
   "readyTobuy": "You can withdraw",
-  "totalBalance": "Total balance",
-  "referal_count": "Number of referrals",
   "gifts": "Gifts",
   "withdraw": "Withdraw",
   "minWithdrawInfo": "Minimum withdrawal amount: 50 Stars",
@@ -41,6 +42,13 @@
   "copied": "Copied!",
   "shareOnTelegram": "Share link",
   "enterAmount": "Enter amount",
+  "sending_modal_referal": "Sending...",
+  "success_modal_referal": "Success!",
+  "close_modal": "Close",
+  "error_modal_referal": "Error",
+  "error_copy_referal": "Error copying",
+  "referrals_count": "Number of referrals",
+  "balance_referrals": "Balance (Stars)",
 
 
   "settings_language": "Language",
