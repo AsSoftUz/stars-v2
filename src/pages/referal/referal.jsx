@@ -223,7 +223,7 @@ const Referal = () => {
                         onClick={() => setSelectedGift(gift)}
                       >
                         <div className="gift-img-wrapper">
-                          <img src={gift.img} alt={gift.name} loading="lazy" style={{ opacity: isLocked ? 0.4 : 1 }} />
+                          <img src={gift.img} alt={gift.name} style={{ opacity: isLocked ? 0.4 : 1 }} />
                         </div>
                         <div className="gift-price-tag" style={{ color: isLocked ? "#ff4d4d" : "#fff" }}>
                           <Star fill={isLocked ? "#ff4d4d" : "#fff"} size={16} /> {gift.price}
