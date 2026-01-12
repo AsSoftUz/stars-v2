@@ -55,7 +55,7 @@ const Stars = () => {
       const payload = {
         user_id: tgUser.id,
         username: username.replace("@", "").trim(),
-        miqdor: Number(selectedPackage?.stars_count) || 0
+        amount: Number(selectedPackage?.stars_count) || 0
       };
 
       await buyStars(payload);
