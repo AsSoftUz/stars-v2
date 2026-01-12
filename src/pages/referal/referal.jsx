@@ -9,11 +9,11 @@ import useGetOrCreateUser from "../../hooks/useGetOrCreateUser";
 import useBuyGifts from "../../hooks/useBuyGifts";
 
 // Rasmlar importi
-import archa from "../../assets/gifts/archa.png";
+import archa from "../../assets/gifts/archa.webp";
 import yurak from "../../assets/gifts/yurak.png";
 import ayiq from "../../assets/gifts/ayiq.png";
 import sovga from "../../assets/gifts/sovga.png";
-import atirgul from "../../assets/gifts/atirgul.png";
+import atirgul from "../../assets/gifts/atirgul.webp";
 import tort from "../../assets/gifts/tort.png";
 import gullar from "../../assets/gifts/gullar.png";
 import raketa from "../../assets/gifts/raketa.png";
@@ -208,8 +208,7 @@ const Referal = () => {
                 </div>
                 <p className={`min-withdraw ${Number(starAmount) > referralStars ? "error-text" : ""}`}>
                   {Number(starAmount) > referralStars 
-                    ? t("insufficient_stars") || "Stars yetarli emas" 
-                    : "min. 50 Stars"}
+                    ? t("insufficient_stars") : "min. 50 Stars"}
                 </p>
               </div>
             ) : (
@@ -224,7 +223,7 @@ const Referal = () => {
                         onClick={() => setSelectedGift(gift)}
                       >
                         <div className="gift-img-wrapper">
-                          <img src={gift.img} alt={gift.name} style={{ opacity: isLocked ? 0.4 : 1 }} />
+                          <img src={gift.img} alt={gift.name} loading="lazy" style={{ opacity: isLocked ? 0.4 : 1 }} />
                         </div>
                         <div className="gift-price-tag" style={{ color: isLocked ? "#ff4d4d" : "#fff" }}>
                           <Star fill={isLocked ? "#ff4d4d" : "#fff"} size={16} /> {gift.price}
