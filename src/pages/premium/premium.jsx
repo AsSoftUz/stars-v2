@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./premium.scss";
 import Nav from "../nav/nav.jsx";
-import premiumGif from "../../assets/premium.gif";
+import premiumGif from "../../assets/premium.webp";
 import { useTranslation } from 'react-i18next';
 import useTelegramBack from "../../hooks/useTelegramBack";
 import { Loader2, CheckCircle2, XCircle } from "lucide-react";

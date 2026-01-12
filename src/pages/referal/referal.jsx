@@ -10,17 +10,17 @@ import useBuyGifts from "../../hooks/useBuyGifts";
 
 // Rasmlar importi
 import archa from "../../assets/gifts/archa.webp";
-import yurak from "../../assets/gifts/yurak.png";
-import ayiq from "../../assets/gifts/ayiq.png";
-import sovga from "../../assets/gifts/sovga.png";
+import yurak from "../../assets/gifts/yurak.webp";
+import ayiq from "../../assets/gifts/ayiq.webp";
+import sovga from "../../assets/gifts/sovga.webp";
 import atirgul from "../../assets/gifts/atirgul.webp";
-import tort from "../../assets/gifts/tort.png";
-import gullar from "../../assets/gifts/gullar.png";
-import raketa from "../../assets/gifts/raketa.png";
-import kubok from "../../assets/gifts/kubok.png";
-import uzuk from "../../assets/gifts/uzuk.png";
-import olmos from "../../assets/gifts/olmos.png";
-import shanpan from "../../assets/gifts/shanpan.png";
+import tort from "../../assets/gifts/tort.webp";
+import gullar from "../../assets/gifts/gullar.webp";
+import raketa from "../../assets/gifts/raketa.webp";
+import kubok from "../../assets/gifts/kubok.webp";
+import uzuk from "../../assets/gifts/uzuk.webp";
+import olmos from "../../assets/gifts/olmos.webp";
+import shanpan from "../../assets/gifts/shanpan.webp";
 
 const Referal = () => {
   useTelegramBack("/");
