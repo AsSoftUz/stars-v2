@@ -51,6 +51,7 @@
   "error_copy_referal": "Error copying",
   "referrals_count": "Number of referrals",
   "balance_referrals": "Balance (Stars)",
+  "insufficient_stars": "Insufficient stars. You need invite freinds to get star",
 
 
   "settings_language": "Language",

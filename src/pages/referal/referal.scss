@@ -142,7 +142,7 @@
             color: white;
             font-weight: 500;
             cursor: pointer;
-            
+
             &.disabled {
               opacity: 0.5;
               cursor: not-allowed;
@@ -193,6 +193,7 @@
               object-fit: contain;
             }
           }
+
           .gift-price-tag {
             display: flex;
             justify-content: center;
@@ -302,5 +303,21 @@
       gap: 8px;
       cursor: pointer;
     }
+  }
+
+  .withdraw-btn.disabled,
+  .withdraw-btn-gift.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .gift-box.locked {
+    border-color: rgba(255, 0, 0, 0.2);
+    filter: grayscale(0.5);
+  }
+
+  .error-text {
+    color: #ff4d4d;
+    font-weight: bold;
   }
 }

@@ -52,6 +52,7 @@
   "error_copy_referal": "Ошибка копирования",
   "referrals_count": "Количество рефералов",
   "balance_referrals": "Баланс (Stars)",
+  "insufficient_stars": "Недостаточно stars. Вы должны пригласить друзей, чтобы получить star",
 
 
   "settings_language": "Язык",

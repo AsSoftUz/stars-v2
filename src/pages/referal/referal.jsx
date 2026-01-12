@@ -8,7 +8,7 @@ import useTelegramBack from "../../hooks/useTelegramBack";
 import useGetOrCreateUser from "../../hooks/useGetOrCreateUser";
 import useBuyGifts from "../../hooks/useBuyGifts";
 
-// Rasmlar importi (o'zingizdagi yo'llar)
+// Rasmlar importi
 import archa from "../../assets/gifts/archa.png";
 import yurak from "../../assets/gifts/yurak.png";
 import ayiq from "../../assets/gifts/ayiq.png";
@@ -40,6 +40,9 @@ const Referal = () => {
   const [modalStatus, setModalStatus] = useState("loading");
   const [errorMsg, setErrorMsg] = useState("");
 
+  // Foydalanuvchi referallari soni (1 ref = 1 Star)
+  const referralStars = user?.referral_count || 0;
+
   const GIFTS_LIST = [
     { id: 1, name: "Archa", img: archa, price: 50 },
     { id: 2, name: "Yurak", img: yurak, price: 15 },
@@ -55,10 +58,21 @@ const Referal = () => {
     { id: 12, name: "Shanpan", img: shanpan, price: 50 },
   ];
 
-  // Tugmani holatini aniqlash (50 dan kam bo'lsa true qaytaradi)
-  const isWithdrawDisabled = !starAmount || Number(starAmount) < 50;
+  // VALIDATSIYA MANTIQI
+  // Stars uchun: bo'sh bo'lsa, 50 dan kam bo'lsa yoki referallar sonidan ko'p bo'lsa disable bo'ladi
+  const isWithdrawDisabled = 
+    !starAmount || 
+    Number(starAmount) < 50 || 
+    Number(starAmount) > referralStars;
+
+  // Giftlar uchun: tanlanmagan bo'lsa yoki narxi referallar sonidan ko'p bo'lsa disable bo'ladi
+  const isGiftWithdrawDisabled = 
+    !selectedGift || 
+    selectedGift.price > referralStars;
 
   const handleAction = async (type) => {
+    const amountToSpend = type === 'STAR' ? Number(starAmount) : selectedGift.price;
+
     setModalOpen(true);
     setModalStatus("loading");
     setErrorMsg("");
@@ -67,7 +81,7 @@ const Referal = () => {
       const payload = {
         gift_type: type,
         gift_name: type === 'STAR' ? 'Telegram Stars' : selectedGift.name,
-        points_spent: type === 'STAR' ? Number(starAmount) : selectedGift.price,
+        points_spent: amountToSpend,
         user: user?.id,
       };
 
@@ -148,8 +162,7 @@ const Referal = () => {
             <div className="balance-item">
               <div className="value">
                 <Users width="20px" height="20px" fill="#fff" />
-                {/* <Star fill="#fff" width="20px" /> */}
-                {userLoading ? "..." : (user?.referral_count || 0)}
+                {userLoading ? "..." : referralStars}
               </div>
               <div className="sub-text">{t("referrals_count")}</div>
             </div>
@@ -157,9 +170,9 @@ const Referal = () => {
             <div className="balance-item">
               <div className="value">
                 <Star fill="#fff" width="20px" />
-                {userLoading ? "..." : (Number(user?.balance) || 0).toLocaleString()}
+                {userLoading ? "..." : referralStars}
               </div>
-              <div className="sub-text">{ t("balance_referrals") || "Balans (Stars)"}</div>
+              <div className="sub-text">{t("balance_referrals") || "Mavjud Stars"}</div>
             </div>
           </div>
 
@@ -193,28 +206,37 @@ const Referal = () => {
                     {t("withdraw")}
                   </button>
                 </div>
-                <p className="min-withdraw">min. 50 Stars</p>
+                <p className={`min-withdraw ${Number(starAmount) > referralStars ? "error-text" : ""}`}>
+                  {Number(starAmount) > referralStars 
+                    ? t("insufficient_stars") || "Stars yetarli emas" 
+                    : "min. 50 Stars"}
+                </p>
               </div>
             ) : (
               <div className="gifts-content">
                 <div className="gifts-grid">
-                  {GIFTS_LIST.map((gift) => (
-                    <div
-                      key={gift.id}
-                      className={`gift-box ${selectedGift?.id === gift.id ? "selected" : ""}`}
-                      onClick={() => setSelectedGift(gift)}
-                    >
-                      <div className="gift-img-wrapper">
-                        <img src={gift.img} alt={gift.name} />
+                  {GIFTS_LIST.map((gift) => {
+                    const isLocked = gift.price > referralStars;
+                    return (
+                      <div
+                        key={gift.id}
+                        className={`gift-box ${selectedGift?.id === gift.id ? "selected" : ""} ${isLocked ? "locked" : ""}`}
+                        onClick={() => setSelectedGift(gift)}
+                      >
+                        <div className="gift-img-wrapper">
+                          <img src={gift.img} alt={gift.name} style={{ opacity: isLocked ? 0.4 : 1 }} />
+                        </div>
+                        <div className="gift-price-tag" style={{ color: isLocked ? "#ff4d4d" : "#fff" }}>
+                          <Star fill={isLocked ? "#ff4d4d" : "#fff"} size={16} /> {gift.price}
+                        </div>
                       </div>
-                      <div className="gift-price-tag"><Star fill="#fff" size={16} /> {gift.price}</div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
                 <div className="withdraw-section-gift">
                   <button
-                    className={`withdraw-btn-gift ${!selectedGift ? "disabled" : ""}`}
-                    disabled={!selectedGift}
+                    className={`withdraw-btn-gift ${isGiftWithdrawDisabled ? "disabled" : ""}`}
+                    disabled={isGiftWithdrawDisabled}
                     onClick={() => handleAction('GIFT')}
                   >
                     {t("withdraw")} {selectedGift && `(${selectedGift.price})`}
