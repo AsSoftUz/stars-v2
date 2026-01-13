@@ -77,5 +77,7 @@
   "upload_receipt": "Загрузить чек",
   "cardHoledrName": "Имя держателя карты: Абдуллаев А.",
   "sending_payment": "Отправка оплаты...",
-  "payment_error": "Ошибка оплаты."
+  "payment_error": "Ошибка оплаты.",
+  "payment_sent_admin_title": "Оплата отправлена!",
+  "payment_sent_admin_desc": "Ваша оплата проверяется администратором. Пожалуйста, подождите."
 }

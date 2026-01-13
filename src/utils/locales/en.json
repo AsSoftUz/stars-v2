@@ -76,7 +76,8 @@
   "upload_receipt": "Upload Reciept",
   "cardHoledrName": "Card Holder's Name: Abdullayev A.",
   "sending_payment": "Sending payment...",
-  "payment_error": "Payment error."
-
+  "payment_error": "Payment error.",
+  "payment_sent_admin_title": "Payment sent!",
+  "payment_sent_admin_desc": "Your payment is being verified by the admin. Please wait."
 
 }

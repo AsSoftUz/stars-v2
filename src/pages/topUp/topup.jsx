@@ -80,7 +80,7 @@ const Topup = () => {
         setModalStatus("error");
       }
     } else {
-      alert(t("click_soon") || "Click xizmati tez kunda ishga tushadi!");
+      setModalStatus("Click hali qo'shilmagan.");
     }
   };
 
