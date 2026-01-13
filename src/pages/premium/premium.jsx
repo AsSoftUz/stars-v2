@@ -110,7 +110,7 @@ const Premium = () => {
         setModalStatus("idle");
         setSelected(null);
         setUsername("");
-      }, 7000); // Video ko'rinishi uchun vaqt
+      }, 5000); // Video ko'rinishi uchun vaqt
 
     } catch (err) {
       console.error(err);
@@ -144,7 +144,7 @@ const Premium = () => {
                   >
                     <source src={getSuccessWebm(purchasedDuration)} type="video/webm" />
                   </video>
-                  <h2 className="congrats-title">{t("congratulations")}! 🎊</h2>
+                  <h2 className="congrats-title">{t("congratulations")}!</h2>
                   <p className="congrats-text">
                     <span>{purchasedDuration}</span> {t("month_premium_success")}
                   </p>

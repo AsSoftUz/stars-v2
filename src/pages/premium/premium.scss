@@ -201,8 +201,8 @@
 
     // Success Modal uchun maxsus stil
     &.celebration-modal {
-      border: 2px solid #ffd700; // Oltin hoshiya
-      box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
+      border: 0.5px solid #ffd90046; // Oltin hoshiya
+      box-shadow: 0 0 25px -5px rgba(255, 217, 0, 0.11);
       animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
       .congrats-box {
@@ -222,12 +222,13 @@
           color: #248bda; // Telegram ko'k
           font-weight: 800;
           font-size: 26px;
-          margin: 10px 0;
+          // margin: 10px 0;
         }
 
         .congrats-text {
           color: #efefef;
           font-size: 15px;
+          margin-bottom: 20px;
 
           span {
             color: #ffd700; // Oltin rangli muddat
