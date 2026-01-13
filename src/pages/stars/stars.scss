@@ -49,6 +49,16 @@
     flex-direction: column;
     gap: 8px;
     margin-bottom: 20px;
+    
+    .for-me-btn {
+      background: none;
+      border: none;
+      color: #0088cc;
+      cursor: pointer;
+      font-size: 14px;
+      text-decoration: underline;
+      margin-left: 5px;
+    }
 
     label {
       font-size: 14px;
@@ -73,6 +83,7 @@
 
       &:focus {
         border-color: #248bda;
+        box-shadow: 0 0 10px -5px #248bda4b;
       }
     }
   }

@@ -1,11 +1,19 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Yo'naltirish uchun
+import { useNavigate } from "react-router-dom";
 import "./premium.scss";
 import Nav from "../nav/nav.jsx";
 import premiumGif from "../../assets/premium.webp";
+
+// WebM formatidagi stikerlar/videolar
+import success3m from "../../assets/premium3.webm";
+import success6m from "../../assets/premium6.webm";
+import success12m from "../../assets/premium12.webm";
+// import defaultSuccess from "../../assets/success_stars.webm"; 
+
+import confetti from "canvas-confetti";
 import { useTranslation } from 'react-i18next';
+import { Loader2, XCircle } from "lucide-react";
 import useTelegramBack from "../../hooks/useTelegramBack";
-import { Loader2, CheckCircle2, XCircle } from "lucide-react";
 import useGetPremium from "../../hooks/useGetPremium";
 import useBuyPremium from "../../hooks/useBuyPremium";
 import useGetOrCreateUser from "../../hooks/useGetOrCreateUser";
@@ -18,38 +26,70 @@ const Premium = () => {
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
 
-  // Ma'lumotlarni hooklardan olish
   const { user, loading: userLoading } = useGetOrCreateUser(tgUser);
   const { premiumOptions = [], loading: plansLoading } = useGetPremium();
   const { buyPremium } = useBuyPremium();
 
   const [selected, setSelected] = useState(null);
   const [username, setUsername] = useState("");
-
-  // Modal holatlari
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalStatus, setModalStatus] = useState("idle"); // idle, loading, success, error
+  const [modalStatus, setModalStatus] = useState("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [purchasedDuration, setPurchasedDuration] = useState(null);
 
   const isFormInvalid = !selected || username.trim().length === 0 || userLoading || plansLoading;
+
+  // Ikki yondan otiladigan konfetti effekti
+  const fireConfetti = () => {
+    const end = Date.now() + (3 * 1000);
+    const colors = ['#0088cc', '#ffffff', '#ffd700'];
+
+    (function frame() {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0.6 },
+        colors: colors
+      });
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.6 },
+        colors: colors
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    }());
+  };
+
+  // Muddatga qarab WebM faylni aniqlash
+  const getSuccessWebm = (duration) => {
+    switch (Number(duration)) {
+      case 3: return success3m;
+      case 6: return success6m;
+      case 12: return success12m;
+      // default: return defaultSuccess;
+    }
+  };
 
   const handleBuyPremium = async () => {
     const selectedPlan = premiumOptions.find((p) => p.id === selected);
     const planPrice = Number(selectedPlan?.price) || 0;
     const userBalance = Number(user?.balance) || 0;
 
-    // 1. Balansni oldindan tekshirish
     if (userBalance < planPrice) {
       setModalOpen(true);
       setModalStatus("error");
-      setErrorMessage("insufficient_balance"); // Kalit so'z sifatida saqlaymiz
+      setErrorMessage("insufficient_balance");
       return;
     }
 
-    // 2. Modalni ochish va so'rovni boshlash
     setModalOpen(true);
     setModalStatus("loading");
-    setErrorMessage("");
 
     try {
       const payload = {
@@ -59,37 +99,32 @@ const Premium = () => {
         duration: selectedPlan?.duration,
       };
 
-      // 3. Backend javobini kutish (timeout: 0 bo'lsa cheksiz kutadi)
       await buyPremium(payload);
 
-      // 4. Muvaffaqiyatli yakunlash
+      setPurchasedDuration(selectedPlan?.duration);
       setModalStatus("success");
-      
+      fireConfetti();
+
       setTimeout(() => {
         setModalOpen(false);
         setModalStatus("idle");
         setSelected(null);
         setUsername("");
-      }, 3000);
+      }, 7000); // Video ko'rinishi uchun vaqt
 
     } catch (err) {
-      // 5. Xatolik yuz bersa
+      console.error(err);
       setModalStatus("error");
-      const msg = err.response?.data?.error || 
-                  err.response?.data?.message || 
-                  t("error_modal_referal");
-      setErrorMessage(msg);
-      console.error("Premium purchase error:", err);
+      setErrorMessage(err.response?.data?.message || t("error_modal_referal"));
     }
   };
 
   return (
     <>
       <div className="premium">
-        {/* --- MODAL SECTION --- */}
         {modalOpen && (
           <div className="modal-overlay">
-            <div className="modal-content">
+            <div className="modal-content celebration-modal">
               {modalStatus === "loading" && (
                 <div className="status-box">
                   <Loader2 className="spinner-icon animate-spin" size={60} />
@@ -98,9 +133,21 @@ const Premium = () => {
               )}
 
               {modalStatus === "success" && (
-                <div className="status-box">
-                  <CheckCircle2 className="success-icon animate-tick" size={60} />
-                  <p>{t("success_modal_referal")}</p>
+                <div className="status-box congrats-box">
+                  {/* WebM Video player - autoplay va muted bilan */}
+                  <video
+                    autoPlay
+                    muted
+                    // loop 
+                    playsInline
+                    className="success-video"
+                  >
+                    <source src={getSuccessWebm(purchasedDuration)} type="video/webm" />
+                  </video>
+                  <h2 className="congrats-title">{t("congratulations")}! 🎊</h2>
+                  <p className="congrats-text">
+                    <span>{purchasedDuration}</span> {t("month_premium_success")}
+                  </p>
                 </div>
               )}
 
@@ -110,23 +157,10 @@ const Premium = () => {
                   <p className="error-text">
                     {errorMessage === "insufficient_balance" ? t("insufficient_balance") : errorMessage}
                   </p>
-                  
                   <div className="modal-actions">
-                    {errorMessage === "insufficient_balance" ? (
-                      <button 
-                        onClick={() => navigate("/topup")} 
-                        className="modal-topup-btn"
-                      >
-                        {t("topup_balance") || "Hisobni to'ldirish"}
-                      </button>
-                    ) : (
-                      <button 
-                        onClick={() => { setModalOpen(false); setModalStatus("idle"); }} 
-                        className="modal-close-btn"
-                      >
-                        {t("close_modal")}
-                      </button>
-                    )}
+                    <button onClick={() => setModalOpen(false)} className="modal-close-btn">
+                      {t("close_modal")}
+                    </button>
                   </div>
                 </div>
               )}
@@ -140,7 +174,7 @@ const Premium = () => {
             <p>{t('premiumSubtitle')}</p>
           </div>
           <div className="right">
-            <img src={premiumGif} alt="Premium" width="100px" className="gif-image" />
+            <img src={premiumGif} alt="Premium" width="100px" />
           </div>
         </header>
 
@@ -148,17 +182,18 @@ const Premium = () => {
           <div className="forWho">
             <label htmlFor="name">
               {t('forWho')}
-              <a 
+              <button
+                type="button"
                 className="for-me-btn"
                 onClick={() => setUsername(tgUser?.username || "")}
               >
                 {t('forMe')}
-              </a>
+              </button>
             </label>
-            <input 
-              type="text" 
-              placeholder={t('enterUsername')} 
-              id="name" 
+            <input
+              type="text"
+              placeholder={t('enterUsername')}
+              id="name"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -168,11 +203,8 @@ const Premium = () => {
         <div className="main">
           <div className="premium-container">
             <h3>{t('choosePlan')}</h3>
-            
             {plansLoading ? (
-              <div className="plans-loader">
-                <Loader2 className="spinner animate-spin" size={30} />
-              </div>
+              <Loader2 className="animate-spin" size={30} />
             ) : (
               <div className="options-list">
                 {premiumOptions.map((option) => (
@@ -181,32 +213,21 @@ const Premium = () => {
                     className={`option-item ${selected === option.id ? "active" : ""}`}
                     onClick={() => setSelected(option.id)}
                   >
-                    <div className="radio-circle">
-                      {selected === option.id && <div className="inner-dot" />}
-                    </div>
                     <div className="premium-info">
-                      <span className="amount">
-                        {(option.duration || 0)} {t('month')}
-                      </span>
+                      <span className="amount">{option.duration} {t('month')}</span>
                     </div>
-                    <div className="price">
-                      {(Number(option.price) || 0).toLocaleString()} UZS
-                    </div>
+                    <div className="price">{Number(option.price).toLocaleString()} UZS</div>
                   </div>
                 ))}
               </div>
             )}
 
-            <button 
+            <button
               className="buy-button"
               disabled={isFormInvalid || modalStatus === "loading"}
               onClick={handleBuyPremium}
             >
-              {modalStatus === "loading" ? (
-                <Loader2 className="animate-spin" size={20} />
-              ) : (
-                t('buyPremium')
-              )}
+              {modalStatus === "loading" ? <Loader2 className="animate-spin" size={20} /> : t('buyPremium')}
             </button>
           </div>
         </div>

@@ -34,6 +34,8 @@
   "enterUsername": "@username введите...",
   "choosePlan": "Выберите план",
   "month": "месяц",
+  "congratulations": "Поздравляем",
+  "month_premium_success": "Месячная подписка успешно включена",
 
   "referalTitle": "Реферальная программа",
   "referalSubtitle": "Получите вознаграждение за каждого друга, которого вы пригласите",

@@ -157,9 +157,9 @@ const Stars = () => {
           <div className="forWho">
             <label>
               {t("stars_forWho")}
-              <a className="for-me-btn" onClick={() => setUsername(tgUser?.username || "")}>
+              <button className="for-me-btn" onClick={() => setUsername(tgUser?.username || "")}>
                 {t("forMe")}
-              </a>
+              </button>
             </label>
             <input
               type="text"

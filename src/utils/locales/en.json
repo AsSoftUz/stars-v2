@@ -35,6 +35,8 @@
   "enterUsername": "Enter @username...",
   "choosePlan": "Choose a plan",
   "month": "month",
+  "congratulations": "Congratulations",
+  "month_premium_success": "Monthly Premium subscription enabled successfully",
 
   "referalTitle": "Referral Program",
   "referalSubtitle": "Get rewards for each friend you invite",

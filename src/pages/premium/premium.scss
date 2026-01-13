@@ -1,7 +1,7 @@
 .premium {
   padding: 0 10px;
-  flex: 1; // Qolgan hamma bo'sh joyni egallaydi
-  overflow-y: auto; // Agar kontent ko'p bo'lsa, nav-ni yopmasdan scroll bo'ladi
+  flex: 1;
+  overflow-y: auto;
   padding-bottom: 20px;
 
   header {
@@ -39,7 +39,7 @@
         width: 100%;
         height: auto;
         display: block;
-        object-fit: cover; // Konteynerni to'liq qoplashi uchun
+        object-fit: cover;
       }
     }
   }
@@ -48,6 +48,16 @@
     display: flex;
     flex-direction: column;
     gap: 18px;
+
+    .for-me-btn {
+      background: none;
+      border: none;
+      color: #0088cc;
+      cursor: pointer;
+      font-size: 14px;
+      text-decoration: underline;
+      margin-left: 5px;
+    }
 
     .forWho {
       display: flex;
@@ -59,22 +69,20 @@
         padding: 0 10px;
         display: flex;
         justify-content: space-between;
-
-        a {
-          font-size: 14px;
-          color: #248bda;
-          margin-left: 10px;
-        }
       }
 
       input {
-        width: 100%;
-        height: 40px;
-        border: none;
-        border-radius: 12px;
-        padding: 6px 18px;
         background: #17212b;
+        border: 1px solid transparent;
+        border-radius: 12px;
+        padding: 12px 15px;
+        color: #fff;
         outline: none;
+
+        &:focus {
+          border-color: #248bda;
+          box-shadow: 0 0 10px -5px #248bda4b;
+        }
       }
     }
   }
@@ -127,7 +135,6 @@
             height: 12px;
             background-color: #248bda;
             border-radius: 50%;
-            margin: 0;
           }
         }
 
@@ -136,10 +143,6 @@
           align-items: center;
           flex-grow: 1;
           gap: 10px;
-
-          .premium-icon {
-            font-size: 1.2rem;
-          }
 
           .amount {
             font-weight: 600;
@@ -150,14 +153,7 @@
         .price {
           font-weight: 500;
         }
-
-        .active {
-          .price {
-            color: #248bda;
-          }
-        }
       }
-
 
       .buy-button {
         width: 100%;
@@ -177,43 +173,9 @@
         }
       }
     }
-
-    .plans-loader {
-      display: flex;
-      justify-content: center;
-      padding: 30px;
-
-      .spinner {
-        animation: rotate 1s linear infinite;
-        color: #0088cc;
-      }
-    }
-
-    .for-me-link {
-      color: #0088cc;
-      text-decoration: none;
-      font-size: 13px;
-      margin-left: 10px;
-
-      &:active {
-        opacity: 0.7;
-      }
-    }
-
-    .per-month {
-      display: block;
-      font-size: 11px;
-      color: #888;
-      margin-top: 2px;
-    }
-
-    .buy-button.disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
   }
 
-  // Modal stillari (Stars sahifasidagidek bir xil bo'lishi kerak)
+  // MODAL QISMI (O'lchamlar saqlandi, ranglar va shadow qo'shildi)
   .modal-overlay {
     position: fixed;
     top: 0;
@@ -237,6 +199,44 @@
     border: 1px solid #333;
     color: white;
 
+    // Success Modal uchun maxsus stil
+    &.celebration-modal {
+      border: 2px solid #ffd700; // Oltin hoshiya
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
+      animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+      .congrats-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .success-video {
+          width: 200px;
+          height: 200px;
+          object-fit: contain;
+          margin-bottom: 15px;
+          filter: drop-shadow(0 0 10px rgba(36, 139, 218, 0.3));
+        }
+
+        .congrats-title {
+          color: #248bda; // Telegram ko'k
+          font-weight: 800;
+          font-size: 26px;
+          margin: 10px 0;
+        }
+
+        .congrats-text {
+          color: #efefef;
+          font-size: 15px;
+
+          span {
+            color: #ffd700; // Oltin rangli muddat
+            font-weight: bold;
+          }
+        }
+      }
+    }
+
     .status-box {
       display: flex;
       flex-direction: column;
@@ -244,17 +244,26 @@
       gap: 15px;
 
       .spinner-icon {
-        color: #0088cc;
+        color: #248bda;
         animation: rotate 1s linear infinite;
       }
 
-      .success-icon {
-        color: #4caf50;
-      }
-
-      .error-text {
+      .error-icon {
         color: #ff4d4d;
-        font-size: 14px;
+      }
+    }
+
+    .modal-actions {
+      margin-top: 15px;
+
+      .modal-close-btn {
+        width: 100%;
+        background: #248bda;
+        border: none;
+        border-radius: 10px;
+        padding: 12px;
+        color: white;
+        font-weight: bold;
       }
     }
   }
@@ -269,17 +278,15 @@
     }
   }
 
-  .animate-tick {
-    animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-
-  @keyframes pop {
+  @keyframes modalPop {
     0% {
-      transform: scale(0);
+      transform: scale(0.5);
+      opacity: 0;
     }
 
     100% {
       transform: scale(1);
+      opacity: 1;
     }
   }
 }
