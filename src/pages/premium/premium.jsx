@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./premium.scss";
 import Nav from "../nav/nav.jsx";
@@ -32,39 +32,60 @@ const Premium = () => {
 
   const [selected, setSelected] = useState(null);
   const [username, setUsername] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalStatus, setModalStatus] = useState("idle");
+  const [modalOpen, setModalOpen] = useState(true);
+  const [modalStatus, setModalStatus] = useState("success");
   const [errorMessage, setErrorMessage] = useState("");
-  const [purchasedDuration, setPurchasedDuration] = useState(null);
+  const [purchasedDuration, setPurchasedDuration] = useState(3);
 
   const isFormInvalid = !selected || username.trim().length === 0 || userLoading || plansLoading;
 
   // Ikki yondan otiladigan konfetti effekti
   const fireConfetti = () => {
-    const end = Date.now() + (3 * 1000);
-    const colors = ['#0088cc', '#ffffff', '#ffd700'];
+    if (typeof confetti !== 'function') return;
 
-    (function frame() {
+    const duration = 1000;
+    const animationEnd = Date.now() + duration;
+    const colors = ['#248bda', '#ffffff', '#ffd700'];
+
+    const frame = () => {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) return;
+
       confetti({
         particleCount: 3,
         angle: 60,
         spread: 55,
-        origin: { x: 0, y: 0.6 },
-        colors: colors
+        origin: { x: 0, y: 0.8 },
+        colors: colors,
+        zIndex: 10000
       });
+
       confetti({
         particleCount: 3,
         angle: 120,
         spread: 55,
-        origin: { x: 1, y: 0.6 },
-        colors: colors
+        origin: { x: 1, y: 0.8 },
+        colors: colors,
+        zIndex: 10000
       });
 
-      if (Date.now() < end) {
-        requestAnimationFrame(frame);
-      }
-    }());
+      requestAnimationFrame(frame);
+    };
+
+    frame();
   };
+
+  useEffect(() => {
+    if (modalStatus === "success" && modalOpen) {
+      // Modal ochilishi bilan biroz kechikish beramiz (render uchun)
+      const timer = setTimeout(() => {
+        fireConfetti();
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [modalStatus, modalOpen]);
 
   // Muddatga qarab WebM faylni aniqlash
   const getSuccessWebm = (duration) => {
@@ -103,7 +124,9 @@ const Premium = () => {
 
       setPurchasedDuration(selectedPlan?.duration);
       setModalStatus("success");
-      fireConfetti();
+      setTimeout(() => {
+        fireConfetti();
+      }, 100);
 
       setTimeout(() => {
         setModalOpen(false);
@@ -121,6 +144,7 @@ const Premium = () => {
 
   return (
     <>
+      {/* {fireConfetti()} */}
       <div className="premium">
         {modalOpen && (
           <div className="modal-overlay">
@@ -138,7 +162,6 @@ const Premium = () => {
                   <video
                     autoPlay
                     muted
-                    // loop 
                     playsInline
                     className="success-video"
                   >
