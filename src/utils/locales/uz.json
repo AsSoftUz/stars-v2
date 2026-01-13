@@ -14,6 +14,8 @@
   "premium": "Premium",
   "premiumSubtitle": "Visa kartasiz tez va qulay usulda telegram premium obunasini harid qiling!",
   "buyPremium": "Premium sotib olish",
+  "insufficient_balance": "Balansingiz yetarli emas.",
+  "topup_balance": "Balansni to'ldirish",
 
   "stars_title": "Stars sotib olish",
   "stars_subtitle": "Visa kartasiz tez va qulay usulda Stars harid qiling!",

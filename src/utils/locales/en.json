@@ -15,6 +15,8 @@
   "premium": "Premium",
   "premiumSubtitle": "Purchase Telegram Premium subscription quickly and conveniently without a Visa card!",
   "buyPremium": "Buy Premium",
+  "insufficient_balance": "Insufficient balance.",
+  "topup_balance": "Top Up Balance",
 
   "stars_title": "Buy Stars",
   "stars_subtitle": "Purchase Stars quickly and conveniently without a Visa card!",
