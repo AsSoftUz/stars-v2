@@ -174,7 +174,7 @@ const Premium = () => {
             <p>{t('premiumSubtitle')}</p>
           </div>
           <div className="right">
-            <img src={premiumGif} alt="Premium" width="100px" />
+            <img src={premiumGif} alt="Premium" width="140px" />
           </div>
         </header>
 
