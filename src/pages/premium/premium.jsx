@@ -43,31 +43,40 @@ const Premium = () => {
   const fireConfetti = () => {
     if (typeof confetti !== 'function') return;
 
-    const duration = 1000;
+    // 1. SVG'ingizning 'd' atributidagi kodini bu yerga qo'ying
+    const premiumPath = 'M5 20v-2h14v2zm0-3.5L3.725 8.475q-.05 0-.113.013T3.5 8.5q-.625 0-1.062-.438T2 7t.438-1.062T3.5 5.5t1.063.438T5 7q0 .175-.038.325t-.087.275L8 9l3.125-4.275q-.275-.2-.45-.525t-.175-.7q0-.625.438-1.063T12 2t1.063.438T13.5 3.5q0 .375-.175.7t-.45.525L16 9l3.125-1.4q-.05-.125-.088-.275T19 7q0-.625.438-1.063T20.5 5.5t1.063.438T22 7t-.437 1.063T20.5 8.5q-.05 0-.112-.012t-.113-.013L19 16.5z';
+
+    // 2. SVG path'dan confetti shaklini yasaymiz
+    const premiumShape = confetti.shapeFromPath({ path: premiumPath });
+
+    const duration = 3 * 1000;
     const animationEnd = Date.now() + duration;
     const colors = ['#248bda', '#ffffff', '#ffd700'];
 
     const frame = () => {
       const timeLeft = animationEnd - Date.now();
-
       if (timeLeft <= 0) return;
 
       confetti({
-        particleCount: 3,
+        particleCount: 2,
         angle: 60,
         spread: 55,
         origin: { x: 0, y: 0.8 },
         colors: colors,
-        zIndex: 10000
+        zIndex: 10000,
+        shapes: [premiumShape], // O'zingizning shaklingizni bu yerda ko'rsating
+        scalar: 2, // Shakl kichik bo'lsa, bu yerda kattalashtirish mumkin
       });
 
       confetti({
-        particleCount: 3,
+        particleCount: 2,
         angle: 120,
         spread: 55,
         origin: { x: 1, y: 0.8 },
         colors: colors,
-        zIndex: 10000
+        zIndex: 10000,
+        shapes: [premiumShape],
+        scalar: 2,
       });
 
       requestAnimationFrame(frame);
