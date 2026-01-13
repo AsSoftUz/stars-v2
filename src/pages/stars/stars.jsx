@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Yo'naltirish uchun
 import "./stars.scss";
 import Nav from "../nav/nav.jsx";
 import headerImg from "../../assets/starsGif.mp4";
@@ -7,22 +8,28 @@ import useTelegramBack from "../../hooks/useTelegramBack";
 import { ChevronUp, ChevronDown, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import useGetStars from "../../hooks/useGetStars";
 import useBuyStars from "../../hooks/useBuyStars";
+import useGetOrCreateUser from "../../hooks/useGetOrCreateUser";
 
 const Stars = () => {
   useTelegramBack("/");
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
 
+  // Ma'lumotlarni hooklardan olish
+  const { user, loading: userLoading } = useGetOrCreateUser(tgUser);
   const { starsOptions = [], loading: starsLoading } = useGetStars();
   const { buyStars } = useBuyStars();
 
   const [selected, setSelected] = useState(null);
   const [username, setUsername] = useState("");
   const [showAll, setShowAll] = useState(false);
+  
+  // Modal holatlari
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalStatus, setModalStatus] = useState("loading");
+  const [modalStatus, setModalStatus] = useState("idle"); // idle, loading, success, error
   const [buyError, setBuyError] = useState(null);
 
   const getStarLayers = (count) => {
@@ -33,14 +40,21 @@ const Stars = () => {
     return 2;
   };
 
-  const isFormInvalid = !selected || username.trim().length === 0;
   const safeStarsOptions = Array.isArray(starsOptions) ? starsOptions : [];
   const visibleOptions = showAll ? safeStarsOptions : safeStarsOptions.slice(0, 3);
+  
+  const isFormInvalid = !selected || username.trim().length === 0 || userLoading || starsLoading;
+
   const handleBuyStars = async () => {
-    if (!tgUser?.id) {
+    const selectedPackage = safeStarsOptions.find(p => p.id === selected);
+    const planPrice = Number(selectedPackage?.price) || 0;
+    const userBalance = Number(user?.balance) || 0;
+
+    // 1. Balans tekshiruvi
+    if (userBalance < planPrice) {
       setModalOpen(true);
       setModalStatus("error");
-      setBuyError(t("error_modal_stars"));
+      setBuyError("insufficient_balance"); // Til kalitini saqlaymiz
       return;
     }
 
@@ -49,25 +63,28 @@ const Stars = () => {
     setBuyError(null);
 
     try {
-      const selectedPackage = safeStarsOptions.find(p => p.id === selected);
-
-      // BACKEND KUTAYOTGAN ANIQ FORMAT (Faqat 3 ta parametr)
       const payload = {
-        user_id: tgUser.id,
+        user_id: tgUser?.id,
         username: username.replace("@", "").trim(),
         amount: Number(selectedPackage?.stars_count) || 0
       };
 
+      // 2. So'rovni yuborish (timeout: 0 bo'lgani uchun javobni kutadi)
       await buyStars(payload);
 
       setModalStatus("success");
-      setTimeout(() => setModalOpen(false), 3000);
+      
+      setTimeout(() => {
+        setModalOpen(false);
+        setModalStatus("idle");
+        setSelected(null);
+        setUsername("");
+      }, 3000);
 
     } catch (err) {
       setModalStatus("error");
       const errorMsg = err.response?.data?.error ||
         err.response?.data?.message ||
-        err.response?.data?.detail ||
         t("error_modal_stars2");
       setBuyError(errorMsg);
     }
@@ -76,31 +93,53 @@ const Stars = () => {
   return (
     <>
       <div className="stars">
+        {/* --- MODAL SECTION --- */}
         {modalOpen && (
           <div className="modal-overlay">
             <div className="modal-content">
               {modalStatus === "loading" && (
                 <div className="status-box">
-                  <Loader2 className="spinner-icon" size={60} />
+                  <Loader2 className="spinner-icon animate-spin" size={60} />
                   <p>{t("sending_modal_referal")}</p>
                 </div>
               )}
+
               {modalStatus === "success" && (
                 <div className="status-box">
                   <CheckCircle2 className="success-icon animate-tick" size={60} />
                   <p>{t("success_modal_referal")}</p>
                 </div>
               )}
+
               {modalStatus === "error" && (
                 <div className="status-box">
                   <XCircle className="error-icon" size={60} />
-                  <p className="error-msg">{buyError}</p>
-                  <button onClick={() => setModalOpen(false)} className="modal-close-btn">{t("close_modal")}</button>
+                  <p className="error-msg">
+                    {buyError === "insufficient_balance" ? t("insufficient_balance") : buyError}
+                  </p>
+                  
+                  <div className="modal-actions">
+                    {buyError === "insufficient_balance" ? (
+                      <button 
+                        onClick={() => navigate("/topup")} 
+                        className="modal-topup-btn"
+                      >
+                        {t("topup_balance") || "Hisobni to'ldirish"}
+                      </button>
+                    ) : (
+                      <button 
+                        onClick={() => { setModalOpen(false); setModalStatus("idle"); }} 
+                        className="modal-close-btn"
+                      >
+                        {t("close_modal")}
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
           </div>
-        )}
+        )}  
 
         <header>
           <div className="left">
@@ -118,10 +157,7 @@ const Stars = () => {
           <div className="forWho">
             <label>
               {t("stars_forWho")}
-              <a href="#" className="for-me-link" onClick={(e) => {
-                e.preventDefault();
-                setUsername(tgUser?.username || "");
-              }}>
+              <a className="for-me-btn" onClick={() => setUsername(tgUser?.username || "")}>
                 {t("forMe")}
               </a>
             </label>
@@ -139,7 +175,9 @@ const Stars = () => {
             <h3>{t("stars_packages")}</h3>
 
             {starsLoading ? (
-              <div className="stars-loader"><Loader2 className="spinner" /></div>
+              <div className="stars-loader">
+                <Loader2 className="spinner animate-spin" size={30} />
+              </div>
             ) : (
               <div className="options-list">
                 {visibleOptions.map((option) => (
@@ -176,10 +214,14 @@ const Stars = () => {
 
             <button
               className="buy-button"
-              disabled={isFormInvalid || starsLoading}
+              disabled={isFormInvalid || modalStatus === "loading"}
               onClick={handleBuyStars}
             >
-              {t("stars_buyButton")}
+              {modalStatus === "loading" ? (
+                <Loader2 className="animate-spin" size={20} />
+              ) : (
+                t("stars_buyButton")
+              )}
             </button>
           </div>
         </div>
