@@ -26,6 +26,7 @@ const Topup = () => {
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
   const { user } = useGetOrCreateUser(tgUser);
+
   const { submitTopup } = useTopup();
 
   const [selectedIdx, setSelectedIdx] = useState(0);
@@ -34,18 +35,19 @@ const Topup = () => {
   const [receipt, setReceipt] = useState(null);
   const [showTooltip, setShowTooltip] = useState(false);
 
-  // MODAL holatlari
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalStatus, setModalStatus] = useState("idle"); // idle, loading, success, error
+  const [modalStatus, setModalStatus] = useState("idle");
 
   const cardHolderNumber = "9860 1234 5678 9012";
   const presetAmounts = [10000, 20000, 50000, 100000];
   const currentAmount = customAmount || (selectedIdx !== null ? presetAmounts[selectedIdx] : 0);
 
-  const isFormValid = () => {
+  // FUNKSIYA NOMI TUZATILDI
+  const isFormInvalid = () => {
     const amount = Number(currentAmount);
-    if (paymentMethod === "click") return amount >= 5000;
-    return amount >= 5000 && receipt !== null;
+    if (paymentMethod === "click") return amount < 5000;
+    // Admin to'lovi bo'lsa: summa < 5000 yoki chek yuklanmagan bo'lsa true qaytaradi
+    return amount < 5000 || receipt === null;
   };
 
   const copyToClipboard = () => {
@@ -68,13 +70,13 @@ const Topup = () => {
         
         setModalStatus("success");
         
-        // 4 soniyadan keyin settingsga o'tish (foydalanuvchi xabarni o'qishga ulgurishi uchun)
         setTimeout(() => {
           setModalOpen(false);
           navigate("/settings");
         }, 4000);
         
       } catch (err) {
+        console.error("Topup error:", err); // 'err' ishlatilmaganlik xatosi tuzatildi
         setModalStatus("error");
       }
     } else {
@@ -85,7 +87,6 @@ const Topup = () => {
   return (
     <>
       <div className="topup">
-        {/* --- MODAL SECTION --- */}
         {modalOpen && (
           <div className="modal-overlay">
             <div className="modal-content">
@@ -215,8 +216,9 @@ const Topup = () => {
           </div>
 
           <button
-            className={`main-action-btn ${isFormInvalid() ? "active" : "disabled"}`}
-            disabled={!isFormInvalid() || modalStatus === "loading"}
+            // Qavslar qo'shildi: isFormInvalid()
+            className={`main-action-btn ${!isFormInvalid() ? "active" : "disabled"}`}
+            disabled={isFormInvalid() || modalStatus === "loading"}
             onClick={handlePaymentSubmit}
           >
             {modalStatus === "loading" ? <Loader2 className="animate-spin" size={20} /> : t("confirm_payment")}
