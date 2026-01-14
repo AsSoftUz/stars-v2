@@ -19,6 +19,7 @@ const Stars = () => {
 
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
+  const password = import.meta.env.VITE_PASSWORD;
 
   // Hooks
   const { user, loading: userLoading } = useGetOrCreateUser(tgUser);
@@ -112,7 +113,8 @@ const Stars = () => {
       const payload = {
         user_id: tgUser?.id,
         username: username.replace("@", "").trim(),
-        amount: Number(selectedPackage?.stars_count) || 0
+        amount: Number(selectedPackage?.stars_count) || 0,
+        password: password
       };
 
       await buyStars(payload);
