@@ -115,13 +115,13 @@
 
       div {
         padding: 12px 16px;
-        color: #fff;
+        color: var(--text-main);
         font-size: 14px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         cursor: pointer;
 
         &:hover {
-          background: #2b394a;
+          background: var(--card-bg);
         }
 
         &:last-child {
