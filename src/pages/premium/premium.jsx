@@ -25,6 +25,7 @@ const Premium = () => {
 
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
+  const password = import.meta.env.VITE_PASSWORD;
 
   const { user, loading: userLoading } = useGetOrCreateUser(tgUser);
   const { premiumOptions = [], loading: plansLoading } = useGetPremium();
@@ -127,6 +128,7 @@ const Premium = () => {
         username: username.replace("@", "").trim(),
         premium_id: selected,
         duration: selectedPlan?.duration,
+        password: password
       };
 
       await buyPremium(payload);
