@@ -60,14 +60,14 @@ const Referal = () => {
 
   // VALIDATSIYA MANTIQI
   // Stars uchun: bo'sh bo'lsa, 50 dan kam bo'lsa yoki referallar sonidan ko'p bo'lsa disable bo'ladi
-  const isWithdrawDisabled = 
-    !starAmount || 
-    Number(starAmount) < 50 || 
+  const isWithdrawDisabled =
+    !starAmount ||
+    Number(starAmount) < 50 ||
     Number(starAmount) > referralStars;
 
   // Giftlar uchun: tanlanmagan bo'lsa yoki narxi referallar sonidan ko'p bo'lsa disable bo'ladi
-  const isGiftWithdrawDisabled = 
-    !selectedGift || 
+  const isGiftWithdrawDisabled =
+    !selectedGift ||
     selectedGift.price > referralStars;
 
   const handleAction = async (type) => {
@@ -111,7 +111,10 @@ const Referal = () => {
   };
 
   const handleShare = () => {
-    const text = encodeURIComponent("Men bilan birga Telegram Stars ishlang! 🌟");
+    const text = encodeURIComponent(```Assalomu alaykum
+Endi siz Visa kartasiz Humo yoki Uzcard yordamida telegram stars va telegram premium olishingiz mumkin 🥳
+
+      Eng muhimi juda arzon narxlarda 🔥```);
     const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${text}`;
     window.open(shareUrl, "_blank");
   };
@@ -191,15 +194,15 @@ const Referal = () => {
                 <div className="input-row">
                   <div className="input-wrapper">
                     <span className="input-icon"><Star fill="#fff" width="20px" /></span>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       placeholder={t("enterAmount")}
                       value={starAmount}
                       onChange={(e) => setStarAmount(e.target.value)}
                     />
                   </div>
-                  <button 
-                    className={`withdraw-btn ${isWithdrawDisabled ? "disabled" : ""}`} 
+                  <button
+                    className={`withdraw-btn ${isWithdrawDisabled ? "disabled" : ""}`}
                     onClick={() => handleAction('STAR')}
                     disabled={isWithdrawDisabled}
                   >
@@ -207,7 +210,7 @@ const Referal = () => {
                   </button>
                 </div>
                 <p className={`min-withdraw ${Number(starAmount) > referralStars ? "error-text" : ""}`}>
-                  {Number(starAmount) > referralStars 
+                  {Number(starAmount) > referralStars
                     ? t("insufficient_stars") : "min. 50 Stars"}
                 </p>
               </div>

@@ -1,14 +1,14 @@
 import "./topup.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { 
-  CreditCard, 
-  ShieldCheck, 
-  Upload, 
-  Copy, 
-  Loader2, 
-  CheckCircle2, 
-  XCircle 
+import {
+  CreditCard,
+  ShieldCheck,
+  Upload,
+  Copy,
+  Loader2,
+  CheckCircle2,
+  XCircle
 } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 
@@ -64,7 +64,7 @@ const Topup = () => {
 
     try {
       if (paymentMethod === "admin") {
-        // Admin orqali to'lov
+        // Admin orqali to'lov (O'zgarishsiz qoladi)
         await submitAdminTopup({
           user_id: tgUser?.id,
           amount: currentAmount,
@@ -84,8 +84,15 @@ const Topup = () => {
         });
 
         if (data && data.click_url) {
-          setModalOpen(false); // Linkka o'tishdan oldin modalni yopamiz
-          window.location.href = data.click_url; // Click linkiga yo'naltirish
+          setModalOpen(false); // Modalni yopamiz
+
+          // MUHIM O'ZGARISH: Tashqi brauzerda ochish uchun
+          if (window.Telegram?.WebApp) {
+            window.Telegram.WebApp.openLink(data.click_url);
+          } else {
+            // Agar WebApp'dan tashqarida (oddiy brauzerda) bo'lsa
+            window.location.href = data.click_url;
+          }
         } else {
           throw new Error("Click URL topilmadi");
         }
@@ -174,7 +181,7 @@ const Topup = () => {
               onChange={(e) => { setCustomAmount(e.target.value); setSelectedIdx(null); }}
             />
             {Number(currentAmount) < 1000 && currentAmount !== "" && (
-               <p style={{color: '#ff4d4d', fontSize: '12px', marginTop: '5px'}}>Min: 1 000 UZS</p>
+              <p style={{ color: '#ff4d4d', fontSize: '12px', marginTop: '5px' }}>Min: 1 000 UZS</p>
             )}
           </div>
 
@@ -217,12 +224,12 @@ const Topup = () => {
                   <label htmlFor="receipt-upload" className="upload-label">
                     <Upload size={20} />
                     <span>{receipt ? receipt.name : t("upload_receipt")}</span>
-                    <input 
-                      id="receipt-upload" 
-                      type="file" 
-                      accept="image/*" 
-                      onChange={(e) => setReceipt(e.target.files[0])} 
-                      hidden 
+                    <input
+                      id="receipt-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setReceipt(e.target.files[0])}
+                      hidden
                     />
                   </label>
                 </div>
