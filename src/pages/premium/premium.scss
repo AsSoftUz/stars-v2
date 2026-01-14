@@ -72,11 +72,11 @@
       }
 
       input {
-        background: #17212b;
+        background: var(--input-bg);
         border: 1px solid transparent;
         border-radius: 12px;
         padding: 12px 15px;
-        color: #fff;
+        color: var(--text-main);
         outline: none;
 
         &:focus {
@@ -107,7 +107,7 @@
       }
 
       .option-item {
-        background-color: #17212b;
+        background-color: var(--input-bg);
         border-radius: 14px;
         padding: 12px 18px;
         display: flex;
@@ -191,13 +191,13 @@
   }
 
   .modal-content {
-    background: #1a1a1a;
+    background: var(--bg-main);
     padding: 30px;
     border-radius: 20px;
     width: 280px;
     text-align: center;
-    border: 1px solid #333;
-    color: white;
+    border: 1px solid var(--card-bg);
+    color: var(--text-main);
 
     // Success Modal uchun maxsus stil
     &.celebration-modal {
@@ -226,7 +226,7 @@
         }
 
         .congrats-text {
-          color: #efefef;
+          color: var(--text-main);
           font-size: 15px;
           margin-bottom: 20px;
 

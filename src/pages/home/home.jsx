@@ -23,7 +23,7 @@ const Home = () => {
     // Birinchi marta kirayotganini tekshirish
     const hasVisited = localStorage.getItem("has_visited_linkify");
     if (!hasVisited && !loading) {
-      setShowWelcome(true);
+      setShowWelcome(false);
       localStorage.setItem("has_visited_linkify", "true");
     }
   }, [loading]);

@@ -4,16 +4,28 @@
   --text-main: #000000;
   --card-bg: #FFFFFF;
   --btn-bg: #ffffff;
+  --btn-bg-second: #248bda;
+  --btn-txt-second: #ffffff;
   --hint: #999999;
+  --input-bg: #ffffff;
+  --input-border: #e5e7eb;
+  --input-btn-bg: #4cb2ff;
+  --gift-bg: rgba(226, 226, 226, 0.678);
 }
 
 /* DARK MODE RANGALARI */
 :root[data-theme='dark'] {
-  --bg-main: #232E3C;        /* Sizning eski foningiz */
+  --bg-main: #232E3C;
   --text-main: #FFFFFF;
   --card-bg: #1c1c1e;
   --btn-bg: #248BDA;
   --hint: #666666;
+  --btn-bg-second: #248bda;
+  --btn-txt-second: #ffffff;
+  --input-bg: #1c1c1e;
+  --input-border: #666666;
+  --input-btn-bg: #1c2733;
+  --gift-bg: rgba(255, 255, 255, 0.05);
 }
 
 
@@ -71,5 +83,5 @@ input::-webkit-inner-spin-button {
 
 /* Firefox uchun */
 input[type=number] {
-  -moz-appearance: textfield;
+  appearance: textfield;
 }

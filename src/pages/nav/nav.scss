@@ -3,7 +3,7 @@ nav {
   padding: 0 18px;
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;
-  background: #17212b;
+  background: var(--card-bg);
   width: 100%;
   max-width: 380px;
   position: fixed;
@@ -12,33 +12,37 @@ nav {
   transform: translateX(-50%);
   z-index: 1000;
   border: 1px solid #248bda2f;
+
   ul {
     display: flex;
     justify-content: space-around;
     align-items: center;
     height: 100%;
     list-style: none;
+    svg {
+      fill: var(--text-main);
+    }
+
     li {
       a {
         text-decoration: none;
-        color: #fff;
+        color: var(--text-main);
         font-size: 11px;
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 4px;
+
         &.active,
         &.active-link {
           color: #248bda;
 
           svg {
-            // Lucide ikonkalari SVG bo'lgani uchun fill va stroke ishlatiladi
-            stroke: #248bda; /* Chiziqlar rangi */
-            fill: #248bda; /* Ikonka ichini bo'yash (ixtiyoriy) */
-            width: 24px; /* O'lchami */
+            stroke: #248bda;
+            fill: #248bda;
+            width: 24px;
             height: 24px;
-            // stroke: #fff;
-            transition: all 0.3s ease; /* Effektlar uchun */
+            transition: all 0.3s ease;
             .lucide-settings-icon {
               circle {
                 stroke: #ffffff;

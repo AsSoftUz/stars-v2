@@ -81,7 +81,7 @@
         gap: 6px;
         .value {
           font-weight: 500;
-        } // Tanlangan qiymat ko'k rangda
+        }
         .arrow-icon {
           color: #7d8b99;
           transition: transform 0.3s;
@@ -93,7 +93,7 @@
     }
 
     .dropdown-menu {
-      background: #1d2631;
+      background: var(--card-bg);
       border-radius: 8px;
       margin-bottom: 8px;
       overflow: hidden;

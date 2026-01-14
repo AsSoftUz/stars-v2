@@ -190,8 +190,8 @@ const Premium = () => {
                     {errorMessage === "insufficient_balance" ? t("insufficient_balance") : errorMessage}
                   </p>
                   <div className="modal-actions">
-                    <button onClick={() => setModalOpen(false)} className="modal-close-btn">
-                      {t("close_modal")}
+                    <button onClick={() => navigate("/topup")} className="modal-close-btn">
+                      {t("topup_balance")}
                     </button>
                   </div>
                 </div>

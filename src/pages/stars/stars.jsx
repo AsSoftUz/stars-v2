@@ -24,7 +24,6 @@ const Stars = () => {
   const { user, loading: userLoading } = useGetOrCreateUser(tgUser);
   const { starsOptions = [], loading: starsLoading } = useGetStars();
   const { buyStars } = useBuyStars();
-
   // States
   const [selected, setSelected] = useState(null);
   const [username, setUsername] = useState("");
@@ -149,7 +148,6 @@ const Stars = () => {
 
               {modalStatus === "success" && (
                 <div className="status-box congrats-box">
-                  {/* <CheckCircle2 className="success-icon" size={70} /> */}
                   <img src={successIcon} alt="" width="200px" />
                   <h2 className="congrats-title">{t("success_title_stars") || "Success!"}</h2>
                   <p className="congrats-text">

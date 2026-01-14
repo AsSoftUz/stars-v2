@@ -1,7 +1,7 @@
 .referal {
   padding: 0 10px;
-  flex: 1; // Qolgan hamma bo'sh joyni egallaydi
-  overflow-y: auto; // Agar kontent ko'p bo'lsa, nav-ni yopmasdan scroll bo'ladi
+  flex: 1;
+  overflow-y: auto;
   padding-bottom: 20px;
 
   header {
@@ -45,12 +45,9 @@
   }
 
   .referral-page {
-    // padding: 16px;
-    color: white;
-
     .balance-card {
       display: flex;
-      background: #17212b;
+      background: var(--input-bg);
       padding: 20px;
       border-radius: 12px;
       margin-bottom: 20px;
@@ -65,6 +62,10 @@
           display: flex;
           align-items: center;
           gap: 16px;
+
+          svg {
+            fill: var(--text-main);
+          }
         }
 
         .sub-text {
@@ -76,13 +77,13 @@
 
       .divider {
         width: 1px;
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--input-border);
         margin: 0 10px;
       }
     }
 
     .withdraw-card {
-      background: #17212b;
+      background: var(--input-bg);
       padding: 16px;
       border-radius: 12px;
       margin-bottom: 16px;
@@ -97,11 +98,12 @@
           padding: 10px;
           border-radius: 8px;
           border: none;
-          background: #1c2733;
-          color: white;
+          background: var(--input-btn-bg);
+          color: var(--text-main);
           cursor: pointer;
 
           &.active {
+            color: #fff;
             background: #248bda;
           }
         }
@@ -121,15 +123,19 @@
               left: 10px;
               top: 50%;
               transform: translateY(-50%);
+
+              svg {
+                fill: var(--text-main);
+              }
             }
 
             input {
               width: 100%;
-              background: #17212b;
-              border: 1px solid #333;
+              background: var(--bg-main);
+              border: 1px solid var(--input-border);
               padding: 10px 10px 10px 36px;
               border-radius: 8px;
-              color: white;
+              color: var(--text-main);
               outline: none;
             }
           }
@@ -166,7 +172,7 @@
 
         .gift-box {
           position: relative;
-          background: rgba(255, 255, 255, 0.05);
+          background: var(--gift-bg);
           border: 2px solid transparent; // Standartda shaffof
           border-radius: 16px;
           padding: 12px 8px;
@@ -251,7 +257,7 @@
 
       .link-box {
         flex: 1;
-        background: #17212b;
+        background: var(--input-bg);
         padding: 10px;
         border-radius: 10px;
         display: flex;
@@ -270,7 +276,7 @@
           border: none;
           padding: 6px;
           border-radius: 6px;
-          color: white;
+          color: #fff;
           position: relative;
           cursor: pointer;
 
@@ -302,6 +308,10 @@
       align-items: center;
       gap: 8px;
       cursor: pointer;
+
+      svg {
+        stroke: #fff;
+      }
     }
   }
 
@@ -313,7 +323,7 @@
 
   .gift-box.locked {
     border-color: rgba(255, 0, 0, 0.2);
-    filter: grayscale(0.5);
+    filter: grayscale(0.4);
   }
 
   .error-text {
