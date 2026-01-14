@@ -120,7 +120,7 @@ const Stars = () => {
 
       setPurchasedAmount(selectedPackage?.stars_count);
       setModalStatus("success");
-      
+
       setTimeout(() => {
         setModalOpen(false);
         setModalStatus("idle");
@@ -179,7 +179,7 @@ const Stars = () => {
               )}
             </div>
           </div>
-        )}  
+        )}
 
         <header>
           <div className="left">

@@ -3,10 +3,12 @@
   overflow-y: auto; // Agar kontent ko'p bo'lsa, nav-ni yopmasdan scroll bo'ladi
   padding-bottom: 20px;
   padding: 0 10px;
+
   header {
     display: flex;
     flex-direction: column;
     align-items: center;
+
     img {
       width: 100px;
       height: 100px;
@@ -16,6 +18,7 @@
       margin-bottom: 10px;
     }
   }
+
   .balance {
     text-align: center;
     margin: 20px 0;
@@ -27,6 +30,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     a {
       display: inline-block;
       padding: 10px 20px;
@@ -34,11 +38,13 @@
       color: #fff;
       text-decoration: none;
       border-radius: 5px;
+
       &:hover {
         background-color: #0056b3;
       }
     }
   }
+
   .settings-container {
     width: 100%;
     position: relative;
@@ -66,11 +72,13 @@
         display: flex;
         align-items: center;
         gap: 12px;
+
         .icon-wrapper {
           color: #7d8b99;
         }
+
         .label {
-          color: #fff;
+          color: var(--text-main);
           font-size: 15px;
         }
       }
@@ -79,12 +87,15 @@
         display: flex;
         align-items: center;
         gap: 6px;
+
         .value {
           font-weight: 500;
         }
+
         .arrow-icon {
           color: #7d8b99;
           transition: transform 0.3s;
+
           &.open {
             transform: rotate(180deg);
           }
@@ -112,6 +123,7 @@
         &:hover {
           background: #2b394a;
         }
+
         &:last-child {
           border-bottom: none;
         }
@@ -124,6 +136,7 @@
       opacity: 0;
       transform: translateY(-10px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
