@@ -32,10 +32,10 @@ const Premium = () => {
 
   const [selected, setSelected] = useState(null);
   const [username, setUsername] = useState("");
-  const [modalOpen, setModalOpen] = useState(true);
-  const [modalStatus, setModalStatus] = useState("success");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalStatus, setModalStatus] = useState("idle");
   const [errorMessage, setErrorMessage] = useState("");
-  const [purchasedDuration, setPurchasedDuration] = useState(3);
+  const [purchasedDuration, setPurchasedDuration] = useState(null);
 
   const isFormInvalid = !selected || username.trim().length === 0 || userLoading || plansLoading;
 
