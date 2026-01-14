@@ -111,12 +111,23 @@ const Referal = () => {
   };
 
   const handleShare = () => {
-    const text = encodeURIComponent(```Assalomu alaykum
-Endi siz Visa kartasiz Humo yoki Uzcard yordamida telegram stars va telegram premium olishingiz mumkin 🥳
 
-      Eng muhimi juda arzon narxlarda 🔥```);
-    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${text}`;
-    window.open(shareUrl, "_blank");
+    const messageText = `Assalomu alaykum!
+Endi siz Visa kartasiz Humo yoki Uzcard yordamida Telegram Stars va Telegram Premium olishingiz mumkin 🥳
+
+Eng muhimi juda arzon narxlarda 🔥`;
+
+    // 2. Linkni shakllantiramiz
+    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(messageText)}`;
+
+    // 3. Telegram WebApp metodi orqali ochamiz
+    if (window.Telegram?.WebApp) {
+      // Bu metod telegram ichida ulashish oynasini ochib beradi
+      window.Telegram.WebApp.openTelegramLink(shareUrl);
+    } else {
+      // Agar oddiy brauzerda bo'lsa
+      window.open(shareUrl, "_blank");
+    }
   };
 
   return (

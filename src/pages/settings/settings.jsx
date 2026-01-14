@@ -128,7 +128,7 @@ const Settings = () => {
           </div>
 
           {/* Payment Item */}
-          <div className="settings-wrapper">
+          {/* <div className="settings-wrapper">
             <div className="settings-item" onClick={() => toggleDropdown("payment")}>
               <div className="left-side">
                 <span className="icon-wrapper"><CreditCard size={18} /></span>
@@ -145,23 +145,23 @@ const Settings = () => {
                 <div onClick={() => handleSelect("payment", "Click")}>Click</div>
               </div>
             )}
-          </div>
+          </div> */}
 
           {/* Support and News */}
-          <a className="settings-item" href="https://t.me/helpmme" target="_blank" rel="noreferrer">
+          <a className="settings-item" href="https://t.me/Coder_Abdullayev" target="_blank" rel="noreferrer">
             <div className="left-side">
               <span className="icon-wrapper"><Headphones size={18} /></span>
               <span className="label">{t("settings_help")}</span>
             </div>
-            <div className="right-side"><span className="value">@helpmme</span></div>
+            <div className="right-side"><span className="value">@Coder_Abdullayev</span></div>
           </a>
 
-          <a className="settings-item" href="https://t.me/news" target="_blank" rel="noreferrer">
+          <a className="settings-item" href="https://t.me/Abdullayev_Stars" target="_blank" rel="noreferrer">
             <div className="left-side">
               <span className="icon-wrapper"><Megaphone size={18} /></span>
               <span className="label">{t("settings_news")}</span>
             </div>
-            <div className="right-side"><span className="value">@news</span></div>
+            <div className="right-side"><span className="value">@Abdullayev_Stars</span></div>
           </a>
         </div>
       </div>
