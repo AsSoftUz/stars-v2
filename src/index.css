@@ -3,7 +3,8 @@
   padding: 0;
   box-sizing: border-box;
   font-family: Arial, Helvetica, sans-serif;
-  color: #FFFFFF;
+  /* Telegram matn rangi */
+  color: var(--tg-text-color, #FFFFFF); 
 }
 
 html, body {
@@ -12,15 +13,19 @@ html, body {
 }
 
 body {
-  background: #232E3C;
+  /* Telegram fon rangi */
+  background: var(--tg-bg-color, #232E3C); 
   scrollbar-gutter: stable;
 }
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-thumb {
-  background-color: #0b1a29;
+  /* Telegram secondary fon rangi (biroz qorong'uroq qism uchun) */
+  background-color: var(--tg-secondary-bg-color, #0b1a29); 
   border-radius: 10px;
 }
 
@@ -34,6 +39,8 @@ body {
   overflow: hidden;
   position: relative;
   padding-bottom: 60px;
+  /* Root foni ham telegram foniga mos bo'lishi uchun */
+  background: var(--tg-bg-color, #232E3C);
 }
 
 /* Chrome, Safari, Edge, Opera uchun */
