@@ -85,11 +85,14 @@ const Topup = () => {
 
         if (data && data.click_url) {
           setModalOpen(false); // Modalni yopamiz
+          setModalStatus("success");
 
           // MUHIM O'ZGARISH: Tashqi brauzerda ochish uchun
           if (window.Telegram?.WebApp) {
+            setModalStatus("success");
             window.Telegram.WebApp.openLink(data.click_url);
           } else {
+            setModalStatus("success");
             // Agar WebApp'dan tashqarida (oddiy brauzerda) bo'lsa
             window.location.href = data.click_url;
           }

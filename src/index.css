@@ -11,6 +11,7 @@
   --input-border: #e5e7eb;
   --input-btn-bg: #4cb2ff;
   --gift-bg: rgba(226, 226, 226, 0.678);
+  --ref-btn-bg: #dddddd;
 }
 
 /* DARK MODE RANGALARI */
@@ -26,6 +27,7 @@
   --input-border: #666666;
   --input-btn-bg: #1c2733;
   --gift-bg: rgba(255, 255, 255, 0.05);
+  --ref-btn-bg: #1c2733;
 }
 
 

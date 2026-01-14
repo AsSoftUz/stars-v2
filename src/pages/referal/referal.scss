@@ -98,7 +98,7 @@
           padding: 10px;
           border-radius: 8px;
           border: none;
-          background: var(--input-btn-bg);
+          background: var(--ref-btn-bg);
           color: var(--text-main);
           cursor: pointer;
 
@@ -204,6 +204,7 @@
             display: flex;
             justify-content: center;
             gap: 4px;
+
             svg {
               fill: var(--text-main);
             }
