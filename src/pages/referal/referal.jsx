@@ -240,7 +240,7 @@ Eng muhimi juda arzon narxlarda 🔥`;
                           <img src={gift.img} alt={gift.name} style={{ opacity: isLocked ? 0.4 : 1 }} />
                         </div>
                         <div className="gift-price-tag" style={{ color: isLocked ? "#ff4d4d" : "#fff" }}>
-                          <Star fill={isLocked ? "#ff4d4d" : "#fff"} size={16} /> {gift.price}
+                          <Star fill="#fff" size={16} /> {gift.price}
                         </div>
                       </div>
                     );
