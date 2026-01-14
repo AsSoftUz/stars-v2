@@ -16,7 +16,8 @@ import Nav from "../nav/nav";
 import headerImg from "../../assets/topupGif.mp4";
 import useTelegramBack from "../../hooks/useTelegramBack";
 import useGetOrCreateUser from "../../hooks/useGetOrCreateUser";
-import useTopup from "../../hooks/useTopup";
+import useTopup from "../../hooks/useTopup"; // Admin uchun hook
+import useBuyClick from "../../hooks/useBuyClick"; // Click uchun hook
 
 const Topup = () => {
   useTelegramBack("/settings");
@@ -27,7 +28,8 @@ const Topup = () => {
   const tgUser = tg?.initDataUnsafe?.user;
   const { user } = useGetOrCreateUser(tgUser);
 
-  const { submitTopup } = useTopup();
+  const { submitTopup: submitAdminTopup } = useTopup();
+  const { submitTopup: submitClickTopup } = useBuyClick();
 
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [customAmount, setCustomAmount] = useState("");
@@ -42,12 +44,12 @@ const Topup = () => {
   const presetAmounts = [10000, 20000, 50000, 100000];
   const currentAmount = customAmount || (selectedIdx !== null ? presetAmounts[selectedIdx] : 0);
 
-  // FUNKSIYA NOMI TUZATILDI
+  // Validatsiya: Minimal summa 1000 so'm
   const isFormInvalid = () => {
     const amount = Number(currentAmount);
-    if (paymentMethod === "click") return amount < 5000;
-    // Admin to'lovi bo'lsa: summa < 5000 yoki chek yuklanmagan bo'lsa true qaytaradi
-    return amount < 5000 || receipt === null;
+    if (amount < 1000) return true; // Minimal 1000 so'm
+    if (paymentMethod === "admin" && !receipt) return true; // Admin bo'lsa chek shart
+    return false;
   };
 
   const copyToClipboard = () => {
@@ -57,30 +59,40 @@ const Topup = () => {
   };
 
   const handlePaymentSubmit = async () => {
-    if (paymentMethod === "admin") {
-      setModalOpen(true);
-      setModalStatus("loading");
+    setModalOpen(true);
+    setModalStatus("loading");
 
-      try {
-        await submitTopup({
+    try {
+      if (paymentMethod === "admin") {
+        // Admin orqali to'lov
+        await submitAdminTopup({
           user_id: tgUser?.id,
           amount: currentAmount,
           file: receipt
         });
-        
         setModalStatus("success");
-        
         setTimeout(() => {
           setModalOpen(false);
           navigate("/settings");
         }, 4000);
-        
-      } catch (err) {
-        console.error("Topup error:", err); // 'err' ishlatilmaganlik xatosi tuzatildi
-        setModalStatus("error");
+
+      } else {
+        // Click orqali to'lov
+        const data = await submitClickTopup({
+          user_id: tgUser?.id,
+          amount: currentAmount
+        });
+
+        if (data && data.click_url) {
+          setModalOpen(false); // Linkka o'tishdan oldin modalni yopamiz
+          window.location.href = data.click_url; // Click linkiga yo'naltirish
+        } else {
+          throw new Error("Click URL topilmadi");
+        }
       }
-    } else {
-      setModalStatus("Click hali qo'shilmagan.");
+    } catch (err) {
+      console.error("Payment error:", err);
+      setModalStatus("error");
     }
   };
 
@@ -110,8 +122,8 @@ const Topup = () => {
               {modalStatus === "error" && (
                 <div className="status-box">
                   <XCircle className="error-icon" size={60} />
-                  <p>{t("payment_error")}</p>
-                  <button onClick={() => setModalOpen(false)} className="modal-close-btn">
+                  <p>{t("payment_error") || "Xatolik yuz berdi"}</p>
+                  <button onClick={() => { setModalOpen(false); setModalStatus("idle"); }} className="modal-close-btn">
                     {t("close_modal") || "Yopish"}
                   </button>
                 </div>
@@ -161,6 +173,9 @@ const Topup = () => {
               value={customAmount}
               onChange={(e) => { setCustomAmount(e.target.value); setSelectedIdx(null); }}
             />
+            {Number(currentAmount) < 1000 && currentAmount !== "" && (
+               <p style={{color: '#ff4d4d', fontSize: '12px', marginTop: '5px'}}>Min: 1 000 UZS</p>
+            )}
           </div>
 
           <div className="section">
@@ -216,7 +231,6 @@ const Topup = () => {
           </div>
 
           <button
-            // Qavslar qo'shildi: isFormInvalid()
             className={`main-action-btn ${!isFormInvalid() ? "active" : "disabled"}`}
             disabled={isFormInvalid() || modalStatus === "loading"}
             onClick={handlePaymentSubmit}
