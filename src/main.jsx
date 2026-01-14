@@ -14,33 +14,14 @@ const App = () => {
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
     if (tg) {
-      // WebApp ni kengaytiramiz (to'liq ekranda ochilishi uchun)
-      tg.expand();
-      
-      const root = document.documentElement;
-
-      const updateColors = () => {
-        const theme = tg.themeParams;
-        root.style.setProperty('--tg-bg-color', theme.bg_color || '#232E3C');
-        root.style.setProperty('--tg-text-color', theme.text_color || '#FFFFFF');
-        root.style.setProperty('--tg-hint-color', theme.hint_color || '#999999');
-        root.style.setProperty('--tg-link-color', theme.link_color || '#248bda');
-        root.style.setProperty('--tg-button-color', theme.button_color || '#248bda');
-        root.style.setProperty('--tg-button-text-color', theme.button_text_color || '#ffffff');
-        root.style.setProperty('--tg-secondary-bg-color', theme.secondary_bg_color || '#248bda');
-        
-        // Header va App fonini ham Telegram rangiga moslaymiz
-        tg.setHeaderColor(theme.bg_color || 'bg_color');
-        tg.setBackgroundColor(theme.bg_color || 'bg_color');
+      const updateTheme = () => {
+        // 'dark' yoki 'light' ni olib, html tegiga yozadi
+        document.documentElement.setAttribute('data-theme', tg.colorScheme);
       };
 
-      // Birinchi marta ishga tushiramiz
-      updateColors();
-
-      // Mavzu o'zgarganda (Dark/Light) avtomat yangilanishi uchun
-      tg.onEvent('themeChanged', updateColors);
-      
-      return () => tg.offEvent('themeChanged', updateColors);
+      updateTheme();
+      tg.onEvent('themeChanged', updateTheme);
+      return () => tg.offEvent('themeChanged', updateTheme);
     }
   }, []);
 

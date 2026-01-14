@@ -1,10 +1,29 @@
+/* LIGHT MODE RANGALARI (Default) */
+:root[data-theme='light'] {
+  --bg-main: #f1f1f1;
+  --text-main: #000000;
+  --card-bg: #FFFFFF;
+  --btn-bg: #ffffff;
+  --hint: #999999;
+}
+
+/* DARK MODE RANGALARI */
+:root[data-theme='dark'] {
+  --bg-main: #232E3C;        /* Sizning eski foningiz */
+  --text-main: #FFFFFF;
+  --card-bg: #1c1c1e;
+  --btn-bg: #248BDA;
+  --hint: #666666;
+}
+
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: Arial, Helvetica, sans-serif;
   /* Telegram matn rangi */
-  color: var(--tg-text-color, #FFFFFF); 
+  color: var(--text-main); 
 }
 
 html, body {
@@ -14,7 +33,7 @@ html, body {
 
 body {
   /* Telegram fon rangi */
-  background: var(--tg-bg-color, #232E3C); 
+  background: var(--bg-main);
   scrollbar-gutter: stable;
 }
 
@@ -25,7 +44,7 @@ body {
 
 ::-webkit-scrollbar-thumb {
   /* Telegram secondary fon rangi (biroz qorong'uroq qism uchun) */
-  background-color: var(--tg-secondary-bg-color, #0b1a29); 
+  background-color: var(--card-bg, #0b1a29); 
   border-radius: 10px;
 }
 
@@ -40,7 +59,7 @@ body {
   position: relative;
   padding-bottom: 60px;
   /* Root foni ham telegram foniga mos bo'lishi uchun */
-  background: var(--tg-bg-color, #232E3C);
+  background: var(--bg-main);
 }
 
 /* Chrome, Safari, Edge, Opera uchun */
