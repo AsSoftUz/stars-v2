@@ -29,6 +29,8 @@
   "stars_showMore": "Show Less",
   "error_modal_stars": "Telegram ID not found. Restart WebApp.",
   "error_modal_stars2": "Error occured",
+  "success_title_stars": "Success!",
+  "stars_sent_success_stars": "Stars sent!",
 
   "forWho": "Who are we sending to?",
   "forMe": "for me",

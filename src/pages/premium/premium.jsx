@@ -245,6 +245,9 @@ const Premium = () => {
                     className={`option-item ${selected === option.id ? "active" : ""}`}
                     onClick={() => setSelected(option.id)}
                   >
+                    <div className="radio-circle">
+                      {selected === option.id && <div className="inner-dot" />}
+                    </div>
                     <div className="premium-info">
                       <span className="amount">{option.duration} {t('month')}</span>
                     </div>

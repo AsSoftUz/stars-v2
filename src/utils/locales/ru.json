@@ -28,6 +28,8 @@
   "stars_showLess": "Показать меньше вариантов",
   "error_modal_stars": "Telegram ID не найден. Перезапустите WebApp.",
   "error_modal_stars2": "Ошибка.",
+  "success_title_stars": "Успешно!",
+  "stars_sent_success_stars": "Stars отправлены!",
 
   "forWho": "Кому мы отправляем?",
   "forMe": "для меня",
