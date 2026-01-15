@@ -115,6 +115,7 @@ const Premium = () => {
     const userBalance = Number(user?.balance) || 0;
 
     if (userBalance < planPrice) {
+      window.Telegram?.WebApp?.HapticFeedback.impactOccurred('error');
       setModalOpen(true);
       setModalStatus("error");
       setErrorMessage("insufficient_balance");
@@ -137,6 +138,7 @@ const Premium = () => {
 
       setPurchasedDuration(selectedPlan?.duration);
       setModalStatus("success");
+      window.Telegram?.WebApp?.HapticFeedback.impactOccurred('success');
       setTimeout(() => {
         fireConfetti();
       }, 100);
@@ -149,6 +151,7 @@ const Premium = () => {
       }, 5000); // Video ko'rinishi uchun vaqt
 
     } catch (err) {
+      window.Telegram?.WebApp?.HapticFeedback.impactOccurred('error');
       console.error(err);
       setModalStatus("error");
       setErrorMessage(err.response?.data?.message || t("error_modal_referal"));
