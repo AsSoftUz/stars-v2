@@ -81,7 +81,7 @@ const Referal = () => {
         gift_type: type,
         gift_name: type === 'STAR' ? 'Telegram Stars' : selectedGift.name,
         points_spent: amountToSpend,
-        user: user?.id,
+        user: tgUser?.id
       };
 
       await buyGifts(payload);
