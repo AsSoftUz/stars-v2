@@ -42,6 +42,7 @@ const Premium = () => {
 
   // Ikki yondan otiladigan konfetti effekti
   const fireConfetti = () => {
+    window.Telegram?.WebApp?.HapticFeedback.impactOccurred('success');
     if (typeof confetti !== 'function') return;
 
     // 1. SVG'ingizning 'd' atributidagi kodini bu yerga qo'ying
@@ -108,6 +109,7 @@ const Premium = () => {
   };
 
   const handleBuyPremium = async () => {
+    window.Telegram?.WebApp?.HapticFeedback.impactOccurred('light');
     const selectedPlan = premiumOptions.find((p) => p.id === selected);
     const planPrice = Number(selectedPlan?.price) || 0;
     const userBalance = Number(user?.balance) || 0;
