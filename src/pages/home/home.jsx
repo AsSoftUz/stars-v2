@@ -47,7 +47,6 @@ const Home = () => {
   if (tech) {
     return <TechIssues />;
   }
-
   return (
     <>
       <div className="home">

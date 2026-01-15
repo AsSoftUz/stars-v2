@@ -4,63 +4,67 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    .pl {
-        display: block;
-        width: 9.375em;
-        height: 9.375em;
+    img {
+        width: 200px;
+        height: 200px;
     }
-    .pl__ring-rotate,
-    .pl__ring-stroke,
-    .pl__tick {
-        animation-duration: 2s;
-        animation-timing-function: linear;
-        animation-iteration-count: infinite;
-    }
+    // .pl {
+    //     display: block;
+    //     width: 9.375em;
+    //     height: 9.375em;
+    // }
+    // .pl__ring-rotate,
+    // .pl__ring-stroke,
+    // .pl__tick {
+    //     animation-duration: 2s;
+    //     animation-timing-function: linear;
+    //     animation-iteration-count: infinite;
+    // }
 
-    .pl__ring-rotate,
-    .pl__ring-stroke {
-        transform-origin: 80px 80px;
-    }
+    // .pl__ring-rotate,
+    // .pl__ring-stroke {
+    //     transform-origin: 80px 80px;
+    // }
 
-    .pl__ring-rotate {
-        animation-name: ringRotate42;
-    }
+    // .pl__ring-rotate {
+    //     animation-name: ringRotate42;
+    // }
 
-    .pl__ring-stroke {
-        animation-name: ringStroke42;
-        transform: rotate(-45deg);
-    }
+    // .pl__ring-stroke {
+    //     animation-name: ringStroke42;
+    //     transform: rotate(-45deg);
+    // }
 
-    /* Animations */
-    @keyframes arrows42 {
-        from {
-            transform: rotate(45deg);
-        }
+    // /* Animations */
+    // @keyframes arrows42 {
+    //     from {
+    //         transform: rotate(45deg);
+    //     }
 
-        to {
-            transform: rotate(405deg);
-        }
-    }
+    //     to {
+    //         transform: rotate(405deg);
+    //     }
+    // }
 
-    @keyframes ringRotate42 {
-        from {
-            transform: rotate(0);
-        }
+    // @keyframes ringRotate42 {
+    //     from {
+    //         transform: rotate(0);
+    //     }
 
-        to {
-            transform: rotate(720deg);
-        }
-    }
+    //     to {
+    //         transform: rotate(720deg);
+    //     }
+    // }
 
-    @keyframes ringStroke42 {
-        from,to {
-            stroke-dashoffset: 452;
-            transform: rotate(-45deg);
-        }
+    // @keyframes ringStroke42 {
+    //     from,to {
+    //         stroke-dashoffset: 452;
+    //         transform: rotate(-45deg);
+    //     }
 
-        50% {
-            stroke-dashoffset: 169.5;
-            transform: rotate(-180deg);
-        }
-    }
+    //     50% {
+    //         stroke-dashoffset: 169.5;
+    //         transform: rotate(-180deg);
+    //     }
+    // }
 }
