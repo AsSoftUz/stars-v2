@@ -44,32 +44,43 @@ const Topup = () => {
   const presetAmounts = [10000, 20000, 50000, 100000];
   const currentAmount = customAmount || (selectedIdx !== null ? presetAmounts[selectedIdx] : 0);
 
-  // Validatsiya: Minimal summa 1000 so'm
+  // --- YORDAMCHI FUNKSIYALAR ---
+  const formatNumber = (val) => {
+    if (!val) return "";
+    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  };
+
+  const deformatNumber = (val) => {
+    return val.replace(/\s/g, "");
+  };
+
   const isFormInvalid = () => {
     const amount = Number(currentAmount);
-    if (amount < 1000) return true; // Minimal 1000 so'm
-    if (paymentMethod === "admin" && !receipt) return true; // Admin bo'lsa chek shart
+    if (amount < 1000) return true;
+    if (paymentMethod === "admin" && !receipt) return true;
     return false;
   };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(cardHolderNumber.replace(/\s/g, ''));
+    tg?.HapticFeedback.notificationOccurred('success'); // Vibro
     setShowTooltip(true);
     setTimeout(() => setShowTooltip(false), 2000);
   };
 
   const handlePaymentSubmit = async () => {
+    tg?.HapticFeedback.impactOccurred('medium'); // Vibro
     setModalOpen(true);
     setModalStatus("loading");
 
     try {
       if (paymentMethod === "admin") {
-        // Admin orqali to'lov (O'zgarishsiz qoladi)
         await submitAdminTopup({
           user_id: tgUser?.id,
           amount: currentAmount,
           file: receipt
         });
+        tg?.HapticFeedback.notificationOccurred('success'); // Success Vibro
         setModalStatus("success");
         setTimeout(() => {
           setModalOpen(false);
@@ -77,23 +88,19 @@ const Topup = () => {
         }, 4000);
 
       } else {
-        // Click orqali to'lov
         const data = await submitClickTopup({
           user_id: tgUser?.id,
           amount: currentAmount
         });
 
         if (data && data.click_url) {
-          setModalOpen(false); // Modalni yopamiz
-          setModalStatus("success");
+          tg?.HapticFeedback.notificationOccurred('success'); // Success Vibro
+          setModalOpen(false);
+          setModalStatus("idle");
 
-          // MUHIM O'ZGARISH: Tashqi brauzerda ochish uchun
-          if (window.Telegram?.WebApp) {
-            setModalStatus("success");
-            window.Telegram.WebApp.openLink(data.click_url);
+          if (tg) {
+            tg.openLink(data.click_url); // Tashqi app/brauzerda ochish
           } else {
-            setModalStatus("success");
-            // Agar WebApp'dan tashqarida (oddiy brauzerda) bo'lsa
             window.location.href = data.click_url;
           }
         } else {
@@ -102,6 +109,7 @@ const Topup = () => {
       }
     } catch (err) {
       console.error("Payment error:", err);
+      tg?.HapticFeedback.notificationOccurred('error'); // Error Vibro
       setModalStatus("error");
     }
   };
@@ -169,7 +177,11 @@ const Topup = () => {
                 <button
                   key={idx}
                   className={`amount-btn ${selectedIdx === idx ? "active" : ""}`}
-                  onClick={() => { setSelectedIdx(idx); setCustomAmount(""); }}
+                  onClick={() => { 
+                    tg?.HapticFeedback.selectionChanged(); // Vibro
+                    setSelectedIdx(idx); 
+                    setCustomAmount(""); 
+                  }}
                 >
                   {amt.toLocaleString()} UZS
                 </button>
@@ -177,11 +189,19 @@ const Topup = () => {
             </div>
 
             <input
-              type="number"
+              type="text"
+              inputMode="numeric"
               className={`custom-input ${customAmount ? "active" : ""}`}
               placeholder={t("enter_custom_amount")}
-              value={customAmount}
-              onChange={(e) => { setCustomAmount(e.target.value); setSelectedIdx(null); }}
+              value={formatNumber(customAmount)}
+              onChange={(e) => { 
+                const rawValue = deformatNumber(e.target.value);
+                if (/^\d*$/.test(rawValue)) {
+                  setCustomAmount(rawValue); 
+                  setSelectedIdx(null); 
+                  tg?.HapticFeedback.selectionChanged(); // Vibro
+                }
+              }}
             />
             {Number(currentAmount) < 1000 && currentAmount !== "" && (
               <p style={{ color: '#ff4d4d', fontSize: '12px', marginTop: '5px' }}>Min: 1 000 UZS</p>
@@ -191,7 +211,7 @@ const Topup = () => {
           <div className="section">
             <p className="section-label">{t("select_payment_method")}</p>
 
-            <div className={`method-card ${paymentMethod === "click" ? "selected" : ""}`} onClick={() => setPaymentMethod("click")}>
+            <div className={`method-card ${paymentMethod === "click" ? "selected" : ""}`} onClick={() => { tg?.HapticFeedback.impactOccurred('light'); setPaymentMethod("click"); }}>
               <div className="icon-box"><CreditCard size={20} /></div>
               <div className="method-info">
                 <span className="title">{t("click_payment")}</span>
@@ -199,7 +219,7 @@ const Topup = () => {
               </div>
             </div>
 
-            <div className={`method-card ${paymentMethod === "admin" ? "selected" : ""}`} onClick={() => setPaymentMethod("admin")}>
+            <div className={`method-card ${paymentMethod === "admin" ? "selected" : ""}`} onClick={() => { tg?.HapticFeedback.impactOccurred('light'); setPaymentMethod("admin"); }}>
               <div className="icon-box"><ShieldCheck size={20} /></div>
               <div className="method-info">
                 <span className="title">{t("admin_payment")}</span>
@@ -224,7 +244,7 @@ const Topup = () => {
                 <p className="card-holder">Abdullajonov Adhamjon</p>
 
                 <div className="upload-section">
-                  <label htmlFor="receipt-upload" className="upload-label">
+                  <label htmlFor="receipt-upload" className="upload-label" onClick={() => tg?.HapticFeedback.impactOccurred('light')}>
                     <Upload size={20} />
                     <span>{receipt ? receipt.name : t("upload_receipt")}</span>
                     <input

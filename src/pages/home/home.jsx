@@ -9,10 +9,12 @@ import { NavLink } from "react-router-dom";
 import Loader from "../loader/loader";
 import useGetOrCreateUser from "../../hooks/useGetOrCreateUser"; 
 import { X, Bell } from "lucide-react"; // Ikonkalar
+import TechIssues from '../techIssues/techIssues';
 
 const Home = () => {
   const { t } = useTranslation();
   const [showWelcome, setShowWelcome] = useState(false);
+  const [tech, setTech] = useState(false);
 
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
@@ -40,6 +42,10 @@ const Home = () => {
 
   if (loading) {
     return <Loader />;
+  }
+
+  if (tech) {
+    return <TechIssues />;
   }
 
   return (
