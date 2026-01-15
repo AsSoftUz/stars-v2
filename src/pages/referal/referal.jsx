@@ -203,7 +203,9 @@ Eng muhimi juda arzon narxlarda 🔥`;
               <div className="stars-content">
                 <div className="input-row">
                   <div className="input-wrapper">
-                    <span className="input-icon"><Star fill="#fff" width="20px" /></span>
+                    <span className="input-icon">
+                      <img src="data:image/svg+xml,%3Csvg height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m6.02 4.99 2.21-4.42c.25-.51.86-.72 1.37-.46.2.1.36.27.46.47l2.08 4.26c.17.34.5.58.88.63l4.36.52c.59.08 1.02.62.95 1.22-.03.24-.14.47-.32.65l-3.45 3.42c-.14.13-.2.33-.18.53l.57 4.61c.09.66-.38 1.27-1.03 1.35-.25.03-.5-.02-.72-.14l-3.64-2c-.26-.14-.58-.15-.85-.01l-3.77 1.95c-.53.27-1.18.06-1.45-.48-.11-.2-.14-.43-.11-.65l.3-2.12c.15-1.04.79-1.93 1.71-2.41l4.19-2.15c.11-.06.15-.2.1-.31-.05-.09-.14-.14-.24-.12l-5.12.74c-.78.11-1.58-.11-2.19-.62l-1.71-1.4c-.49-.4-.56-1.12-.17-1.62.19-.22.45-.37.74-.41l4.38-.57c.28-.03.52-.21.65-.46z' fill='%23ffb222' /%3E%3C/svg%3E" alt="" width={20} />
+                    </span>
                     <input
                       type="number"
                       placeholder={t("enterAmount")}
@@ -239,7 +241,9 @@ Eng muhimi juda arzon narxlarda 🔥`;
                           <img src={gift.img} alt={gift.name} style={{ opacity: isLocked ? 0.4 : 1 }} />
                         </div>
                         <div className="gift-price-tag" style={{ color: isLocked ? "#ff4d4d" : "#fff" }}>
-                          <Star fill="#fff" size={16} /> {gift.price}
+                          {/* <Star fill="#fff" size={16} /> */}
+                          <img src="data:image/svg+xml,%3Csvg height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m6.02 4.99 2.21-4.42c.25-.51.86-.72 1.37-.46.2.1.36.27.46.47l2.08 4.26c.17.34.5.58.88.63l4.36.52c.59.08 1.02.62.95 1.22-.03.24-.14.47-.32.65l-3.45 3.42c-.14.13-.2.33-.18.53l.57 4.61c.09.66-.38 1.27-1.03 1.35-.25.03-.5-.02-.72-.14l-3.64-2c-.26-.14-.58-.15-.85-.01l-3.77 1.95c-.53.27-1.18.06-1.45-.48-.11-.2-.14-.43-.11-.65l.3-2.12c.15-1.04.79-1.93 1.71-2.41l4.19-2.15c.11-.06.15-.2.1-.31-.05-.09-.14-.14-.24-.12l-5.12.74c-.78.11-1.58-.11-2.19-.62l-1.71-1.4c-.49-.4-.56-1.12-.17-1.62.19-.22.45-.37.74-.41l4.38-.57c.28-.03.52-.21.65-.46z' fill='%23ffb222' /%3E%3C/svg%3E" alt="" width={18} />
+                          {gift.price}
                         </div>
                       </div>
                     );
@@ -262,7 +266,7 @@ Eng muhimi juda arzon narxlarda 🔥`;
             <div className="link-box">
               <div className="code-value link">t.me/Abdullayev_Stars_Bot?start={referralCode}</div>
               <button onClick={() => handleCopy(referralLink)} className="copy-btn">
-                {copiedLink ? <Check size={16} color="#fff" /> : <Copy size={16} />}
+                {copiedLink ? <Check size={16} color="#fff" /> : <Copy size={16} color="#fff" />}
               </button>
             </div>
           </div>
