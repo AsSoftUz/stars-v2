@@ -221,7 +221,7 @@ const Topup = () => {
                     </div>
                   </div>
                 </div>
-                <p className="card-holder">Abdullajonov A.</p>
+                <p className="card-holder">Abdullajonov Adhamjon</p>
 
                 <div className="upload-section">
                   <label htmlFor="receipt-upload" className="upload-label">

@@ -9,7 +9,7 @@ import useGetOrCreateUser from "../../hooks/useGetOrCreateUser";
 import useBuyGifts from "../../hooks/useBuyGifts";
 
 // Rasmlar importi
-import archa from "../../assets/gifts/archa.webp";
+// import archa from "../../assets/gifts/archa.webp";
 import yurak from "../../assets/gifts/yurak.webp";
 import ayiq from "../../assets/gifts/ayiq.webp";
 import sovga from "../../assets/gifts/sovga.webp";
@@ -44,18 +44,17 @@ const Referal = () => {
   const referralStars = user?.referral_count || 0;
 
   const GIFTS_LIST = [
-    { id: 1, name: "Archa", img: archa, price: 50 },
-    { id: 2, name: "Yurak", img: yurak, price: 15 },
-    { id: 3, name: "Ayiq", img: ayiq, price: 50 },
-    { id: 4, name: "Sovga", img: sovga, price: 25 },
-    { id: 5, name: "Atirgul", img: atirgul, price: 25 },
-    { id: 6, name: "Tort", img: tort, price: 50 },
-    { id: 7, name: "Gullar", img: gullar, price: 50 },
-    { id: 8, name: "Raketa", img: raketa, price: 50 },
-    { id: 9, name: "Kubok", img: kubok, price: 100 },
-    { id: 10, name: "Uzuk", img: uzuk, price: 100 },
-    { id: 11, name: "Olmos", img: olmos, price: 100 },
-    { id: 12, name: "Shanpan", img: shanpan, price: 50 },
+    { id: 1, name: "Yurak", img: yurak, price: 15 },
+    { id: 2, name: "Ayiq", img: ayiq, price: 15 },
+    { id: 3, name: "Sovga", img: sovga, price: 25 },
+    { id: 4, name: "Atirgul", img: atirgul, price: 25 },
+    { id: 5, name: "Tort", img: tort, price: 50 },
+    { id: 6, name: "Gullar", img: gullar, price: 50 },
+    { id: 7, name: "Raketa", img: raketa, price: 50 },
+    { id: 8, name: "Kubok", img: kubok, price: 100 },
+    { id: 9, name: "Uzuk", img: uzuk, price: 100 },
+    { id: 10, name: "Olmos", img: olmos, price: 100 },
+    { id: 11, name: "Shanpan", img: shanpan, price: 50 },
   ];
 
   // VALIDATSIYA MANTIQI
