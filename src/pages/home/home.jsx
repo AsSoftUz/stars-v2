@@ -24,13 +24,11 @@ const Home = () => {
     const hasVisited = localStorage.getItem("has_visited_linkify");
     if (!hasVisited && !loading) {
       setShowWelcome(false);
-      window.Telegram?.WebApp?.HapticFeedback.impactOccurred('light');
       localStorage.setItem("has_visited_linkify", "true");
     }
   }, [loading]);
 
   const handleJoinChannel = () => {
-    window.Telegram?.WebApp?.HapticFeedback.impactOccurred('light');
     const channelLink = "https://t.me/Abdullayev_Stars";
     if (tg) {
       tg.openTelegramLink(channelLink);
@@ -41,7 +39,6 @@ const Home = () => {
   };
 
   if (loading) {
-    window.Telegram?.WebApp?.HapticFeedback.impactOccurred('light');
     return <Loader />;
   }
 
