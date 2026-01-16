@@ -40,6 +40,7 @@ const Referal = () => {
   const [errorMsg, setErrorMsg] = useState("");
 
   const referralStars = user?.referral_count || 0;
+  const bonusPoints = user?.bonus_points || 0;
 
   const GIFTS_LIST = [
     { id: 1, name: "Yurak", img: yurak, price: 15 },
@@ -149,7 +150,7 @@ const Referal = () => {
             </div>
             <div className="divider"></div>
             <div className="balance-item">
-              <div className="value"><Star fill="#fff" width="20px" />{userLoading ? "..." : referralStars}</div>
+              <div className="value"><Star fill="#fff" width="20px" />{userLoading ? "..." : bonusPoints}</div>
               <div className="sub-text">{t("balance_referrals") || "Mavjud Stars"}</div>
             </div>
           </div>
