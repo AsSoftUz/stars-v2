@@ -192,7 +192,7 @@ const Referal = () => {
               <div className="gifts-content">
                 <div className="gifts-grid">
                   {GIFTS_LIST.map((gift) => {
-                    const isLocked = gift.price > referralStars;
+                    const isLocked = gift.price > bonusPoints;
                     return (
                       <div key={gift.id} className={`gift-box ${selectedGift?.id === gift.id ? "selected" : ""} ${isLocked ? "locked" : ""}`} onClick={() => { if (!isLocked) triggerVibro(); setSelectedGift(gift); }}>
                         <div className="gift-img-wrapper"><img src={gift.img} alt={gift.name} style={{ opacity: isLocked ? 0.4 : 1 }} /></div>
