@@ -8,13 +8,16 @@ import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router-dom";
 import Loader from "../loader/loader";
 import useGetOrCreateUser from "../../hooks/useGetOrCreateUser"; 
-import { X, Bell } from "lucide-react"; // Ikonkalar
+import { X, Bell } from "lucide-react";
 import TechIssues from '../techIssues/techIssues';
 
 const Home = () => {
   const { t } = useTranslation();
   const [showWelcome, setShowWelcome] = useState(false);
   const [tech, setTech] = useState(false);
+  
+  // GIF tugaganini tekshirish uchun yangi state
+  const [isGifDone, setIsGifDone] = useState(false);
 
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
@@ -22,13 +25,26 @@ const Home = () => {
   const { user, loading } = useGetOrCreateUser(tgUser);
 
   useEffect(() => {
-    // Birinchi marta kirayotganini tekshirish
-    const hasVisited = localStorage.getItem("has_visited_linkify");
-    if (!hasVisited && !loading) {
-      setShowWelcome(false);
-      localStorage.setItem("has_visited_linkify", "true");
+    // 1. Agar foydalanuvchi ma'lumotlari yuklanib bo'lgan bo'lsa
+    if (!loading) {
+      // 2. GIF davomiyligiga qarab taymer qo'yamiz (masalan 3 soniya)
+      // GIF-ingiz necha soniya bo'lsa, 3000 o'rniga o'shani yozing (ms hisobida)
+      const timer = setTimeout(() => {
+        setIsGifDone(true);
+      }, 3000); 
+
+      return () => clearTimeout(timer);
     }
   }, [loading]);
+
+  useEffect(() => {
+    const hasVisited = localStorage.getItem("has_visited_linkify");
+    // Faqat hamma narsa yuklanib bo'lgandan keyin Welcome modalni ko'rsatish
+    if (!hasVisited && !loading && isGifDone) {
+      setShowWelcome(false); // Sizda kodingizda false turgan ekan, true qilishingiz mumkin
+      localStorage.setItem("has_visited_linkify", "true");
+    }
+  }, [loading, isGifDone]);
 
   const handleJoinChannel = () => {
     const channelLink = "https://t.me/Abdullayev_Stars";
@@ -40,13 +56,16 @@ const Home = () => {
     setShowWelcome(false);
   };
 
-  if (loading) {
+  // --- ASOSIY O'ZGARISH ---
+  // Ma'lumotlar yuklanayotgan bo'lsa YOKI GIF hali tugamagan bo'lsa Loader chiqib turadi
+  if (loading || !isGifDone) {
     return <Loader />;
   }
 
   if (tech) {
     return <TechIssues />;
   }
+
   return (
     <>
       <div className="home">
@@ -63,9 +82,7 @@ const Home = () => {
               </div>
               
               <h3>{t("welcome_modal_title")}</h3>
-              <p>
-                {t("welcome_modal_text")}
-              </p>
+              <p>{t("welcome_modal_text")}</p>
               
               <button className="join-btn" onClick={handleJoinChannel}>
                 {t("join_channel_btn")}
