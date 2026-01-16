@@ -68,8 +68,8 @@ const Referal = () => {
     }
   };
 
-  const isWithdrawDisabled = !starAmount || Number(starAmount) < 50 || Number(starAmount) > referralStars;
-  const isGiftWithdrawDisabled = !selectedGift || selectedGift.price > referralStars;
+  const isWithdrawDisabled = !starAmount || Number(starAmount) < 50 || Number(starAmount) > bonusPoints;
+  const isGiftWithdrawDisabled = !selectedGift || selectedGift.price > bonusPoints;
 
   const handleAction = async (type) => {
     const amountToSpend = type === 'STAR' ? Number(starAmount) : selectedGift.price;
@@ -184,8 +184,8 @@ const Referal = () => {
                   </div>
                   <button className={`withdraw-btn ${isWithdrawDisabled ? "disabled" : ""}`} onClick={() => handleAction('STAR')} disabled={isWithdrawDisabled}>{t("withdraw")}</button>
                 </div>
-                <p className={`min-withdraw ${Number(starAmount) > referralStars ? "error-text" : ""}`}>
-                  {Number(starAmount) > referralStars ? t("insufficient_stars") : "min. 50 Stars"}
+                <p className={`min-withdraw ${Number(starAmount) > bonusPoints ? "error-text" : ""}`}>
+                  {Number(starAmount) > bonusPoints ? t("insufficient_stars") : "min. 50 Stars"}
                 </p>
               </div>
             ) : (
