@@ -28,18 +28,17 @@
 
     .right {
       width: 40%;
-      border-radius: 12px;
-      background: #248bda;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-
+      
       .gif-video {
         width: 100%;
+        border-radius: 14px;
         height: auto;
         display: block;
-        object-fit: cover; // Konteynerni to'liq qoplashi uchun
+        object-fit: cover;
       }
     }
   }
