@@ -7,7 +7,6 @@ import { useTranslation } from "react-i18next";
 import i18n from "../../utils/i18n";
 import useTelegramBack from "../../hooks/useTelegramBack";
 import useGetOrCreateUser from "../../hooks/useGetOrCreateUser";
-import Loader from "../loader/loader";
 
 import {
   Globe,
@@ -16,6 +15,7 @@ import {
   Megaphone,
   ChevronDown,
 } from "lucide-react";
+import LoaderSt from "./loaderSt.jsx";
 
 const languageLabel = {
   uz: "UZB",
@@ -66,13 +66,13 @@ const Settings = () => {
   };
 
   // 2. Agar ma'lumotlar yuklanayotgan bo'lsa, "Loading..." ko'rsatamiz
-  // if (loading) {
-  //   return (
-  //     <>
-  //       <Loader />
-  //     </>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <>
+        <LoaderSt />
+      </>
+    );
+  }
 
   // 3. Agar user topilmasa (masalan, API xatosi)
   if (!user) {
