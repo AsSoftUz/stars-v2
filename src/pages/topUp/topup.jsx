@@ -189,7 +189,6 @@ const Topup = () => {
                     setCustomAmount("");
                   }}
                 >
-                  <span className="star-count">{item.amount} Stars</span>
                   <span className="star-price">{item.price.toLocaleString()} UZS</span>
                 </button>
               ))}
