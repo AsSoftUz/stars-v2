@@ -41,7 +41,7 @@ const Topup = () => {
   const [modalStatus, setModalStatus] = useState("idle");
 
   const cardHolderNumber = "9860 1234 5678 9012";
-  const presetAmounts = [10000, 20000, 50000, 100000];
+  const presetAmounts = [10500, 21000, 52500, 105000];
   const currentAmount = customAmount || (selectedIdx !== null ? presetAmounts[selectedIdx] : 0);
 
   // --- YORDAMCHI FUNKSIYALAR ---
