@@ -18,8 +18,8 @@ import Nav from "../nav/nav";
 import headerImg from "../../assets/topupGif.mp4";
 import useTelegramBack from "../../hooks/useTelegramBack";
 import useGetOrCreateUser from "../../hooks/useGetOrCreateUser";
-import useTopup from "../../hooks/useTopup"; 
-import useBuyClick from "../../hooks/useBuyClick"; 
+import useTopup from "../../hooks/useTopup";
+import useBuyClick from "../../hooks/useBuyClick";
 import useGetStars from "../../hooks/useGetStars";
 
 const Topup = () => {
@@ -29,7 +29,7 @@ const Topup = () => {
 
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
-  
+
   const { user } = useGetOrCreateUser(tgUser);
   const { starsOptions, loading: starsLoading } = useGetStars();
   const { submitTopup: submitAdminTopup } = useTopup();
@@ -103,10 +103,44 @@ const Topup = () => {
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.withText(cardHolderNumber.replace(/\s/g, ''));
+    // 1. Probelsiz faqat raqamlarni olish
+    const cleanNumber = cardHolderNumber.replace(/\s/g, '');
+
+    // 2. To'g'ri metod: writeText
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cleanNumber)
+        .then(() => {
+          handleCopySuccess();
+        })
+        .catch((err) => {
+          console.error('Kopyalashda xatolik:', err);
+          fallbackCopyText(cleanNumber); // Agar writeText ishlamasa
+        });
+    } else {
+      fallbackCopyText(cleanNumber); // Eski brauzerlar uchun
+    }
+  };
+
+  // Muvaffaqiyatli kopyalangan holat uchun alohida funksiya
+  const handleCopySuccess = () => {
     tg?.HapticFeedback.notificationOccurred('success');
     setShowTooltip(true);
     setTimeout(() => setShowTooltip(false), 2000);
+  };
+
+  // Eski usul (fallback) - agar navigator.clipboard ishlamasa
+  const fallbackCopyText = (text) => {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      handleCopySuccess();
+    } catch (err) {
+      console.error('Fallback kopyalash ham ishlamadi', err);
+    }
+    document.body.removeChild(textArea);
   };
 
   const handlePaymentSubmit = async () => {
@@ -128,7 +162,7 @@ const Topup = () => {
         const data = await submitClickTopup({ user_id: tgUser?.id, amount: currentAmount });
         if (data?.click_url) {
           tg?.HapticFeedback.notificationOccurred('success');
-          
+
           // Tashqi linkka o'tishdan oldin statelarni tozalaymiz
           setModalOpen(false);
           setModalStatus("idle");
@@ -202,7 +236,7 @@ const Topup = () => {
 
           <div className="section">
             <p className="section-label">{t("select_amount")}</p>
-            
+
             <div className="amount-grid">
               {presetData.map((item, idx) => (
                 <button
@@ -220,8 +254,8 @@ const Topup = () => {
             </div>
 
             {starsOptions?.length > 4 && (
-              <button 
-                className="show-all-btn-centered" 
+              <button
+                className="show-all-btn-centered"
                 onClick={() => {
                   setShowAllPrices(!showAllPrices);
                   setSelectedIdx(0);
@@ -229,9 +263,9 @@ const Topup = () => {
                 }}
               >
                 {showAllPrices ? (
-                  <><ChevronUp size={18}/> {t("hide_prices") || "Yashirish"}</>
+                  <><ChevronUp size={18} /> {t("hide_prices") || "Yashirish"}</>
                 ) : (
-                  <><ChevronDown size={18}/> {t("show_all_prices") || "Barcha narxlar"}</>
+                  <><ChevronDown size={18} /> {t("show_all_prices") || "Barcha narxlar"}</>
                 )}
               </button>
             )}
@@ -255,7 +289,7 @@ const Topup = () => {
 
           <div className="section">
             <p className="section-label">{t("select_payment_method")}</p>
-            
+
             <div className={`method-card ${paymentMethod === "click" ? "selected" : ""}`} onClick={() => { tg?.HapticFeedback.impactOccurred('light'); setPaymentMethod("click"); }}>
               <div className="icon-box"><CreditCard size={20} /></div>
               <div className="method-info">
