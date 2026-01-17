@@ -1,5 +1,5 @@
 import "./topup.scss";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react"; // useEffect qo'shildi
 import { useNavigate } from "react-router-dom";
 import {
   CreditCard,
@@ -47,21 +47,38 @@ const Topup = () => {
 
   const cardHolderNumber = "9860 1234 5678 9012";
 
+  // --- SAHIFAGA QAYTGANDA LOADINGNI TOZALASH ---
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        // Agar foydalanuvchi tashqaridan qaytib kirsa va Click tanlangan bo'lsa, loadingni yopamiz
+        if (modalStatus === "loading" && paymentMethod === "click") {
+          setModalOpen(false);
+          setModalStatus("idle");
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleVisibilityChange);
+    };
+  }, [modalStatus, paymentMethod]);
+
   // --- DINAMIK NARXLAR MANTIQI ---
   const presetData = useMemo(() => {
     if (!starsOptions || starsOptions.length === 0) return [];
 
-    // Barcha narxlarni kichikdan kattaga saralaymiz
     const allSorted = [...starsOptions].sort((a, b) => a.amount - b.amount);
 
     if (showAllPrices) {
-      return allSorted; // Hammasini ko'rsatish
+      return allSorted;
     } else {
-      // Faqat asosiy 4 tasini ko'rsatish
       const targets = [50, 100, 250, 500];
       const mainOnes = allSorted.filter(opt => targets.includes(opt.amount));
-      
-      // Agar bazada aynan shu 4 tasi topilmasa, shunchaki birinchi 4 tasini qaytaradi
       return mainOnes.length > 0 ? mainOnes : allSorted.slice(0, 4);
     }
   }, [starsOptions, showAllPrices]);
@@ -86,7 +103,7 @@ const Topup = () => {
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(cardHolderNumber.replace(/\s/g, ''));
+    navigator.clipboard.withText(cardHolderNumber.replace(/\s/g, ''));
     tg?.HapticFeedback.notificationOccurred('success');
     setShowTooltip(true);
     setTimeout(() => setShowTooltip(false), 2000);
@@ -111,8 +128,16 @@ const Topup = () => {
         const data = await submitClickTopup({ user_id: tgUser?.id, amount: currentAmount });
         if (data?.click_url) {
           tg?.HapticFeedback.notificationOccurred('success');
+          
+          // Tashqi linkka o'tishdan oldin statelarni tozalaymiz
           setModalOpen(false);
-          tg ? tg.openLink(data.click_url) : window.location.href = data.click_url;
+          setModalStatus("idle");
+
+          if (tg) {
+            tg.openLink(data.click_url);
+          } else {
+            window.location.href = data.click_url;
+          }
         } else {
           throw new Error("Click URL topilmadi");
         }
@@ -194,13 +219,12 @@ const Topup = () => {
               ))}
             </div>
 
-            {/* SHOW ALL BUTTON - GRIDNING TAGIDA */}
             {starsOptions?.length > 4 && (
               <button 
                 className="show-all-btn-centered" 
                 onClick={() => {
                   setShowAllPrices(!showAllPrices);
-                  setSelectedIdx(0); // Reset selection to avoid index issues
+                  setSelectedIdx(0);
                   tg?.HapticFeedback.impactOccurred('light');
                 }}
               >
