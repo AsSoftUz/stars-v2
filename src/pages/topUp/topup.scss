@@ -3,15 +3,18 @@
   flex: 1; // Qolgan hamma bo'sh joyni egallaydi
   overflow-y: auto; // Agar kontent ko'p bo'lsa, nav-ni yopmasdan scroll bo'ladi
   padding-bottom: 20px;
+
   header {
     margin: 50px 0;
     display: flex;
     justify-content: space-between;
+
     .left {
       width: 50%;
       display: flex;
       flex-direction: column;
       justify-content: center;
+
       // h2 {
       //   font-size: 22px;
       // }
@@ -21,6 +24,7 @@
         margin-top: 6px;
       }
     }
+
     .right {
       width: 40%;
       border-radius: 12px;
@@ -29,6 +33,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+
       .gif-video {
         width: 100%;
         height: auto;
@@ -37,6 +42,7 @@
       }
     }
   }
+
   .payment-page {
     min-height: 100vh;
     color: white;
@@ -66,6 +72,7 @@
         font-size: 13px;
         margin-bottom: 12px;
       }
+
       .amount-grid {
         display: grid;
         grid-template-columns: 1fr 1fr; // Ikkitadan qatorga
@@ -97,6 +104,29 @@
         }
       }
 
+      .show-all-btn-centered {
+        width: 100%;
+        background: rgba(0, 136, 204, 0.1); // Light blue background
+        border: 1px dashed #0088cc;
+        border-radius: 10px;
+        color: #0088cc;
+        padding: 10px;
+        margin: 5px 0 15px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:active {
+          transform: scale(0.98);
+          background: rgba(0, 136, 204, 0.2);
+        }
+      }
+
       .custom-input {
         width: 100%;
         background: var(--input-bg);
@@ -110,6 +140,7 @@
         &.active {
           border-color: #248bda;
         }
+
         &:focus {
           border-color: #248bda;
         }
@@ -143,10 +174,12 @@
       .method-info {
         display: flex;
         flex-direction: column;
+
         .title {
           font-size: 16px;
           font-weight: 500;
         }
+
         .desc {
           font-size: 11px;
           color: #7d8b99;
@@ -173,6 +206,7 @@
       }
     }
   }
+
   .admin-details-expand {
     margin-top: 15px;
     padding: 15px;
@@ -180,6 +214,7 @@
     border-radius: 12px;
     border: 1px dashed #444;
     animation: slideDown 0.3s ease-out;
+
     p {
       // text-align: left;
       color: #afd9fa;
@@ -190,11 +225,13 @@
 
     .card-copy-box {
       margin-bottom: 4px;
+
       .card-number {
         label {
           font-size: 12px;
           color: #aaa;
         }
+
         .number-row {
           display: flex;
           justify-content: space-between;
@@ -203,16 +240,19 @@
           padding: 10px;
           border-radius: 8px;
           margin-top: 5px;
+
           span {
             font-weight: bold;
             letter-spacing: 1px;
           }
+
           button {
             background: none;
             border: none;
             color: #248bda;
             cursor: pointer;
           }
+
           .copy-btn-wrapper {
             position: relative;
             display: flex;
@@ -247,6 +287,7 @@
               opacity: 0;
               transform: translateY(5px);
             }
+
             to {
               opacity: 1;
               transform: translateY(0);
@@ -267,10 +308,12 @@
         border-radius: 10px;
         cursor: pointer;
         transition: 0.3s;
+
         &:hover {
           border-color: #248bda;
           color: #248bda;
         }
+
         span {
           font-size: 13px;
           text-align: center;
@@ -284,19 +327,23 @@
       opacity: 0.5;
       cursor: not-allowed;
     }
+
     &.active {
       opacity: 1;
       cursor: pointer;
       background: #248bda;
     }
   }
+
   .spinner {
     animation: rotate 2s linear infinite;
   }
+
   @keyframes rotate {
     from {
       transform: rotate(0deg);
     }
+
     to {
       transform: rotate(360deg);
     }
@@ -307,6 +354,7 @@
       opacity: 0;
       transform: translateY(-10px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -343,6 +391,7 @@
     align-items: center;
     gap: 20px;
     color: var(--text-main);
+
     button {
       margin-top: 10px;
       background: #248bda;
@@ -376,11 +425,23 @@
 }
 
 @keyframes rotateModal {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes tickScale {
-  0% { transform: scale(0); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }

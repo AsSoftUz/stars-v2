@@ -1,5 +1,5 @@
 import "./topup.scss";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   CreditCard,
@@ -8,7 +8,9 @@ import {
   Copy,
   Loader2,
   CheckCircle2,
-  XCircle
+  XCircle,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 
@@ -38,33 +40,35 @@ const Topup = () => {
   const [paymentMethod, setPaymentMethod] = useState("click");
   const [receipt, setReceipt] = useState(null);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [showAllPrices, setShowAllPrices] = useState(false);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalStatus, setModalStatus] = useState("idle");
 
   const cardHolderNumber = "9860 1234 5678 9012";
 
-  // --- DINAMIK NARXLARNI HISOBLASH ---
-  // 50, 100, 250, 500 miqdorlariga mos narxlarni filtrlab olamiz
+  // --- DINAMIK NARXLAR MANTIQI ---
   const presetData = useMemo(() => {
-    const targets = [50, 100, 250, 500];
-    const filtered = targets.map(amt => {
-      const found = starsOptions.find(opt => opt.amount === amt);
-      return found ? { amount: found.amount, price: found.price } : null;
-    }).filter(item => item !== null);
+    if (!starsOptions || starsOptions.length === 0) return [];
 
-    // Agar API'dan kelmasa, xatolik bermasligi uchun default qiymatlar
-    return filtered.length > 0 ? filtered : [
-      { amount: 50, price: 10500 },
-      { amount: 100, price: 21000 },
-      { amount: 250, price: 52500 },
-      { amount: 500, price: 105000 }
-    ];
-  }, [starsOptions]);
+    // Barcha narxlarni kichikdan kattaga saralaymiz
+    const allSorted = [...starsOptions].sort((a, b) => a.amount - b.amount);
+
+    if (showAllPrices) {
+      return allSorted; // Hammasini ko'rsatish
+    } else {
+      // Faqat asosiy 4 tasini ko'rsatish
+      const targets = [50, 100, 250, 500];
+      const mainOnes = allSorted.filter(opt => targets.includes(opt.amount));
+      
+      // Agar bazada aynan shu 4 tasi topilmasa, shunchaki birinchi 4 tasini qaytaradi
+      return mainOnes.length > 0 ? mainOnes : allSorted.slice(0, 4);
+    }
+  }, [starsOptions, showAllPrices]);
 
   const currentAmount = customAmount || (selectedIdx !== null ? presetData[selectedIdx]?.price : 0);
 
-  // --- YORDAMCHI FUNKSIYALAR ---
+  // --- FUNKSIYALAR ---
   const formatNumber = (val) => {
     if (!val) return "";
     return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
@@ -102,17 +106,9 @@ const Topup = () => {
         });
         tg?.HapticFeedback.notificationOccurred('success');
         setModalStatus("success");
-        setTimeout(() => {
-          setModalOpen(false);
-          navigate("/settings");
-        }, 4000);
-
+        setTimeout(() => { setModalOpen(false); navigate("/settings"); }, 4000);
       } else {
-        const data = await submitClickTopup({
-          user_id: tgUser?.id,
-          amount: currentAmount
-        });
-
+        const data = await submitClickTopup({ user_id: tgUser?.id, amount: currentAmount });
         if (data?.click_url) {
           tg?.HapticFeedback.notificationOccurred('success');
           setModalOpen(false);
@@ -139,23 +135,19 @@ const Topup = () => {
                   <p>{t("sending_payment")}</p>
                 </div>
               )}
-
               {modalStatus === "success" && (
                 <div className="status-box">
                   <CheckCircle2 className="success-icon animate-tick" size={60} />
-                  <p className="success-title">{t("payment_sent_admin_title") || "Xabar yuborildi!"}</p>
-                  <p className="success-desc">
-                    {t("payment_sent_admin_desc") || "To'lov cheki adminga yuborildi. Tasdiqlangach, balansingiz to'ldiriladi."}
-                  </p>
+                  <p className="success-title">{t("payment_sent_admin_title")}</p>
+                  <p className="success-desc">{t("payment_sent_admin_desc")}</p>
                 </div>
               )}
-
               {modalStatus === "error" && (
                 <div className="status-box">
                   <XCircle className="error-icon" size={60} />
-                  <p>{t("payment_error") || "Xatolik yuz berdi"}</p>
+                  <p>{t("payment_error")}</p>
                   <button onClick={() => { setModalOpen(false); setModalStatus("idle"); }} className="modal-close-btn">
-                    {t("close_modal") || "Yopish"}
+                    {t("close_modal")}
                   </button>
                 </div>
               )}
@@ -185,6 +177,7 @@ const Topup = () => {
 
           <div className="section">
             <p className="section-label">{t("select_amount")}</p>
+            
             <div className="amount-grid">
               {presetData.map((item, idx) => (
                 <button
@@ -196,10 +189,29 @@ const Topup = () => {
                     setCustomAmount("");
                   }}
                 >
+                  <span className="star-count">{item.amount} Stars</span>
                   <span className="star-price">{item.price.toLocaleString()} UZS</span>
                 </button>
               ))}
             </div>
+
+            {/* SHOW ALL BUTTON - GRIDNING TAGIDA */}
+            {starsOptions?.length > 4 && (
+              <button 
+                className="show-all-btn-centered" 
+                onClick={() => {
+                  setShowAllPrices(!showAllPrices);
+                  setSelectedIdx(0); // Reset selection to avoid index issues
+                  tg?.HapticFeedback.impactOccurred('light');
+                }}
+              >
+                {showAllPrices ? (
+                  <><ChevronUp size={18}/> {t("hide_prices") || "Yashirish"}</>
+                ) : (
+                  <><ChevronDown size={18}/> {t("show_all_prices") || "Barcha narxlar"}</>
+                )}
+              </button>
+            )}
 
             <input
               type="text"
@@ -216,14 +228,11 @@ const Topup = () => {
                 }
               }}
             />
-            {Number(currentAmount) < 1000 && currentAmount !== "" && (
-              <p className="error-text">Min: 1 000 UZS</p>
-            )}
           </div>
 
           <div className="section">
             <p className="section-label">{t("select_payment_method")}</p>
-
+            
             <div className={`method-card ${paymentMethod === "click" ? "selected" : ""}`} onClick={() => { tg?.HapticFeedback.impactOccurred('light'); setPaymentMethod("click"); }}>
               <div className="icon-box"><CreditCard size={20} /></div>
               <div className="method-info">
@@ -255,18 +264,11 @@ const Topup = () => {
                   </div>
                 </div>
                 <p className="card-holder">Abdullajonov Adhamjon</p>
-
                 <div className="upload-section">
-                  <label htmlFor="receipt-upload" className="upload-label" onClick={() => tg?.HapticFeedback.impactOccurred('light')}>
+                  <label htmlFor="receipt-upload" className="upload-label">
                     <Upload size={20} />
                     <span>{receipt ? receipt.name : t("upload_receipt")}</span>
-                    <input
-                      id="receipt-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setReceipt(e.target.files[0])}
-                      hidden
-                    />
+                    <input id="receipt-upload" type="file" accept="image/*" onChange={(e) => setReceipt(e.target.files[0])} hidden />
                   </label>
                 </div>
               </div>
