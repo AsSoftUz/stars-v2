@@ -45,7 +45,7 @@ const Topup = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalStatus, setModalStatus] = useState("idle");
 
-  const cardHolderNumber = "9860 1234 5678 9012";
+  const cardHolderNumber = "9860 1766 1880 7588";
 
   // --- SAHIFAGA QAYTGANDA LOADINGNI TOZALASH ---
   useEffect(() => {
@@ -320,7 +320,7 @@ const Topup = () => {
                     </div>
                   </div>
                 </div>
-                <p className="card-holder">Abdullajonov Adhamjon</p>
+                <p className="card-holder">A.Abdullajonov</p>
                 <div className="upload-section">
                   <label htmlFor="receipt-upload" className="upload-label">
                     <Upload size={20} />
