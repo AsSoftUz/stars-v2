@@ -66,13 +66,13 @@ const Settings = () => {
   };
 
   // 2. Agar ma'lumotlar yuklanayotgan bo'lsa, "Loading..." ko'rsatamiz
-  if (loading) {
-    return (
-      <>
-        <Loader />
-      </>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <>
+  //       <Loader />
+  //     </>
+  //   );
+  // }
 
   // 3. Agar user topilmasa (masalan, API xatosi)
   if (!user) {
