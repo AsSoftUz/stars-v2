@@ -1,5 +1,5 @@
 import "./topup.scss";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   CreditCard,
@@ -16,8 +16,9 @@ import Nav from "../nav/nav";
 import headerImg from "../../assets/topupGif.mp4";
 import useTelegramBack from "../../hooks/useTelegramBack";
 import useGetOrCreateUser from "../../hooks/useGetOrCreateUser";
-import useTopup from "../../hooks/useTopup"; // Admin uchun hook
-import useBuyClick from "../../hooks/useBuyClick"; // Click uchun hook
+import useTopup from "../../hooks/useTopup"; 
+import useBuyClick from "../../hooks/useBuyClick"; 
+import useGetStars from "../../hooks/useGetStars";
 
 const Topup = () => {
   useTelegramBack("/settings");
@@ -26,8 +27,9 @@ const Topup = () => {
 
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
+  
   const { user } = useGetOrCreateUser(tgUser);
-
+  const { starsOptions, loading: starsLoading } = useGetStars();
   const { submitTopup: submitAdminTopup } = useTopup();
   const { submitTopup: submitClickTopup } = useBuyClick();
 
@@ -41,8 +43,26 @@ const Topup = () => {
   const [modalStatus, setModalStatus] = useState("idle");
 
   const cardHolderNumber = "9860 1234 5678 9012";
-  const presetAmounts = [10500, 21000, 52500, 105000];
-  const currentAmount = customAmount || (selectedIdx !== null ? presetAmounts[selectedIdx] : 0);
+
+  // --- DINAMIK NARXLARNI HISOBLASH ---
+  // 50, 100, 250, 500 miqdorlariga mos narxlarni filtrlab olamiz
+  const presetData = useMemo(() => {
+    const targets = [50, 100, 250, 500];
+    const filtered = targets.map(amt => {
+      const found = starsOptions.find(opt => opt.amount === amt);
+      return found ? { amount: found.amount, price: found.price } : null;
+    }).filter(item => item !== null);
+
+    // Agar API'dan kelmasa, xatolik bermasligi uchun default qiymatlar
+    return filtered.length > 0 ? filtered : [
+      { amount: 50, price: 10500 },
+      { amount: 100, price: 21000 },
+      { amount: 250, price: 52500 },
+      { amount: 500, price: 105000 }
+    ];
+  }, [starsOptions]);
+
+  const currentAmount = customAmount || (selectedIdx !== null ? presetData[selectedIdx]?.price : 0);
 
   // --- YORDAMCHI FUNKSIYALAR ---
   const formatNumber = (val) => {
@@ -63,13 +83,13 @@ const Topup = () => {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(cardHolderNumber.replace(/\s/g, ''));
-    tg?.HapticFeedback.notificationOccurred('success'); // Vibro
+    tg?.HapticFeedback.notificationOccurred('success');
     setShowTooltip(true);
     setTimeout(() => setShowTooltip(false), 2000);
   };
 
   const handlePaymentSubmit = async () => {
-    tg?.HapticFeedback.impactOccurred('medium'); // Vibro
+    tg?.HapticFeedback.impactOccurred('medium');
     setModalOpen(true);
     setModalStatus("loading");
 
@@ -80,7 +100,7 @@ const Topup = () => {
           amount: currentAmount,
           file: receipt
         });
-        tg?.HapticFeedback.notificationOccurred('success'); // Success Vibro
+        tg?.HapticFeedback.notificationOccurred('success');
         setModalStatus("success");
         setTimeout(() => {
           setModalOpen(false);
@@ -93,23 +113,16 @@ const Topup = () => {
           amount: currentAmount
         });
 
-        if (data && data.click_url) {
-          tg?.HapticFeedback.notificationOccurred('success'); // Success Vibro
+        if (data?.click_url) {
+          tg?.HapticFeedback.notificationOccurred('success');
           setModalOpen(false);
-          setModalStatus("idle");
-
-          if (tg) {
-            tg.openLink(data.click_url); // Tashqi app/brauzerda ochish
-          } else {
-            window.location.href = data.click_url;
-          }
+          tg ? tg.openLink(data.click_url) : window.location.href = data.click_url;
         } else {
           throw new Error("Click URL topilmadi");
         }
       }
     } catch (err) {
-      console.error("Payment error:", err);
-      tg?.HapticFeedback.notificationOccurred('error'); // Error Vibro
+      tg?.HapticFeedback.notificationOccurred('error');
       setModalStatus("error");
     }
   };
@@ -173,17 +186,17 @@ const Topup = () => {
           <div className="section">
             <p className="section-label">{t("select_amount")}</p>
             <div className="amount-grid">
-              {presetAmounts.map((amt, idx) => (
+              {presetData.map((item, idx) => (
                 <button
                   key={idx}
                   className={`amount-btn ${selectedIdx === idx ? "active" : ""}`}
-                  onClick={() => { 
-                    tg?.HapticFeedback.selectionChanged(); // Vibro
-                    setSelectedIdx(idx); 
-                    setCustomAmount(""); 
+                  onClick={() => {
+                    tg?.HapticFeedback.selectionChanged();
+                    setSelectedIdx(idx);
+                    setCustomAmount("");
                   }}
                 >
-                  {amt.toLocaleString()} UZS
+                  <span className="star-price">{item.price.toLocaleString()} UZS</span>
                 </button>
               ))}
             </div>
@@ -194,17 +207,17 @@ const Topup = () => {
               className={`custom-input ${customAmount ? "active" : ""}`}
               placeholder={t("enter_custom_amount")}
               value={formatNumber(customAmount)}
-              onChange={(e) => { 
+              onChange={(e) => {
                 const rawValue = deformatNumber(e.target.value);
                 if (/^\d*$/.test(rawValue)) {
-                  setCustomAmount(rawValue); 
-                  setSelectedIdx(null); 
-                  tg?.HapticFeedback.selectionChanged(); // Vibro
+                  setCustomAmount(rawValue);
+                  setSelectedIdx(null);
+                  tg?.HapticFeedback.selectionChanged();
                 }
               }}
             />
             {Number(currentAmount) < 1000 && currentAmount !== "" && (
-              <p style={{ color: '#ff4d4d', fontSize: '12px', marginTop: '5px' }}>Min: 1 000 UZS</p>
+              <p className="error-text">Min: 1 000 UZS</p>
             )}
           </div>
 
