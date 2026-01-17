@@ -1,19 +1,16 @@
-import { useEffect } from 'react';
-import './loader.scss';
-import loaderGif from '../../assets/loaderGif.gif';
+import Lottie from "lottie-react";
+import animationData from "../../assets/loaderGif.json";
+import "./loader.scss";
 
 const Loader = ({ onFinished }) => {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (onFinished) onFinished();
-    }, 4000);
-
-    return () => clearTimeout(timer);
-  }, [onFinished]);
-
   return (
     <div className="home-loading">
-      <img src={`${loaderGif}?t=${new Date().getTime()}`} alt="Loading..." />
+      <Lottie 
+        animationData={animationData} 
+        loop={false} // Bir marta to'liq aylanishi uchun
+        onComplete={onFinished} // Animatsiya tugashi bilan funksiyani chaqiradi
+        style={{ width: "250px", height: "250px" }}
+      />
     </div>
   );
 };

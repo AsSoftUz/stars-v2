@@ -16,35 +16,23 @@ const Home = () => {
   const [showWelcome, setShowWelcome] = useState(false);
   const [tech, setTech] = useState(false);
   
-  // GIF tugaganini tekshirish uchun yangi state
-  const [isGifDone, setIsGifDone] = useState(false);
+  // Animatsiya holati
+  const [isAnimationDone, setIsAnimationDone] = useState(false);
 
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
 
+  // Foydalanuvchi ma'lumotlarini yuklash
   const { user, loading } = useGetOrCreateUser(tgUser);
 
   useEffect(() => {
-    // 1. Agar foydalanuvchi ma'lumotlari yuklanib bo'lgan bo'lsa
-    if (!loading) {
-      // 2. GIF davomiyligiga qarab taymer qo'yamiz (masalan 3 soniya)
-      // GIF-ingiz necha soniya bo'lsa, 3000 o'rniga o'shani yozing (ms hisobida)
-      const timer = setTimeout(() => {
-        setIsGifDone(true);
-      }, 3000); 
-
-      return () => clearTimeout(timer);
-    }
-  }, [loading]);
-
-  useEffect(() => {
+    // Welcome modal faqat hamma narsa yuklanib bo'lgach va birinchi marta kirganda chiqadi
     const hasVisited = localStorage.getItem("has_visited_linkify");
-    // Faqat hamma narsa yuklanib bo'lgandan keyin Welcome modalni ko'rsatish
-    if (!hasVisited && !loading && isGifDone) {
-      setShowWelcome(false); // Sizda kodingizda false turgan ekan, true qilishingiz mumkin
+    if (!hasVisited && !loading && isAnimationDone) {
+      setShowWelcome(true); 
       localStorage.setItem("has_visited_linkify", "true");
     }
-  }, [loading, isGifDone]);
+  }, [loading, isAnimationDone]);
 
   const handleJoinChannel = () => {
     const channelLink = "https://t.me/Abdullayev_Stars";
@@ -56,10 +44,9 @@ const Home = () => {
     setShowWelcome(false);
   };
 
-  // --- ASOSIY O'ZGARISH ---
-  // Ma'lumotlar yuklanayotgan bo'lsa YOKI GIF hali tugamagan bo'lsa Loader chiqib turadi
-  if (loading || !isGifDone) {
-    return <Loader />;
+  // Ma'lumotlar kelayotgan bo'lsa yoki Lottie animatsiyasi hali tugamagan bo'lsa Loader turadi
+  if (loading || !isAnimationDone) {
+    return <Loader onFinished={() => setIsAnimationDone(true)} />;
   }
 
   if (tech) {
@@ -69,21 +56,17 @@ const Home = () => {
   return (
     <>
       <div className="home">
-        {/* --- WELCOME MODAL --- */}
         {showWelcome && (
           <div className="welcome-modal-overlay">
             <div className="welcome-modal-content">
               <button className="close-x" onClick={() => setShowWelcome(false)}>
                 <X size={20} />
               </button>
-              
               <div className="icon-wrapper">
                 <Bell size={40} color="#0088cc" fill="#0088cc22" />
               </div>
-              
               <h3>{t("welcome_modal_title")}</h3>
               <p>{t("welcome_modal_text")}</p>
-              
               <button className="join-btn" onClick={handleJoinChannel}>
                 {t("join_channel_btn")}
               </button>
