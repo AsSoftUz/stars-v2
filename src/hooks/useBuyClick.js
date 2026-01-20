@@ -15,7 +15,8 @@ const useBuyClick = () => {
             // Click odatda JSON qabul qiladi, FormData emas (fayl yo'q bo'lsa)
             const res = await api.post("/click/create/", {
                 user_id: user_id,
-                amount: Number(amount) // Raqam ko'rinishida yuboramiz
+                amount: Number(amount),
+                password: import.meta.env.VITE_PASSWORD,
             });
 
             setSuccess(true);
