@@ -45,7 +45,7 @@ const Topup = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalStatus, setModalStatus] = useState("idle");
 
-  const cardHolderNumber = "9860 1766 1880 7588";
+  const cardHolderNumber = "9860 2566 0185 7111";
 
   // --- SAHIFAGA QAYTGANDA LOADINGNI TOZALASH ---
   useEffect(() => {
