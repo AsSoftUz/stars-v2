@@ -14,7 +14,7 @@ api.interceptors.request.use(
     const tg = window.Telegram?.WebApp;
     if (tg?.initData) {
       // Backendda bu ma'lumotni tekshirish uchun yuboramiz
-      config.headers['Authorization'] = `tma ${tg.initData}`;
+      config.headers['Authorization'] = `Bearer ${tg.initData}`;
     }
     return config;
   },
