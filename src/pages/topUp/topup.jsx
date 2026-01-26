@@ -13,7 +13,6 @@ import {
   ChevronUp
 } from "lucide-react";
 import { useTranslation } from 'react-i18next';
-
 import Nav from "../nav/nav";
 import headerImg from "../../assets/topupGif.mp4";
 import useTelegramBack from "../../hooks/useTelegramBack";
@@ -30,10 +29,10 @@ const Topup = () => {
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
 
-  const { user } = useGetOrCreateUser(tgUser);
+  const { user, isTelegram } = useGetOrCreateUser();
   const { starsOptions, loading: starsLoading } = useGetStars();
-  const { submitTopup: submitAdminTopup } = useTopup();
-  const { submitTopup: submitClickTopup } = useBuyClick();
+  const { submitTopup: submitAdminTopup, loading: adminLoading } = useTopup();
+  const { submitTopup: submitClickTopup, loading: clickLoading } = useBuyClick();
 
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [customAmount, setCustomAmount] = useState("");
@@ -143,6 +142,7 @@ const Topup = () => {
     document.body.removeChild(textArea);
   };
 
+
   const handlePaymentSubmit = async () => {
     tg?.HapticFeedback.impactOccurred('medium');
     setModalOpen(true);
@@ -150,8 +150,8 @@ const Topup = () => {
 
     try {
       if (paymentMethod === "admin") {
+        // user_id olib tashlandi
         await submitAdminTopup({
-          user_id: tgUser?.id,
           amount: currentAmount,
           file: receipt
         });
@@ -159,11 +159,10 @@ const Topup = () => {
         setModalStatus("success");
         setTimeout(() => { setModalOpen(false); navigate("/settings"); }, 4000);
       } else {
-        const data = await submitClickTopup({ user_id: tgUser?.id, amount: currentAmount });
+        // user_id olib tashlandi
+        const data = await submitClickTopup({ amount: currentAmount });
         if (data?.click_url) {
           tg?.HapticFeedback.notificationOccurred('success');
-
-          // Tashqi linkka o'tishdan oldin statelarni tozalaymiz
           setModalOpen(false);
           setModalStatus("idle");
 
@@ -173,7 +172,7 @@ const Topup = () => {
             window.location.href = data.click_url;
           }
         } else {
-          throw new Error("Click URL topilmadi");
+          throw new Error("Click URL not found");
         }
       }
     } catch (err) {
@@ -181,6 +180,14 @@ const Topup = () => {
       setModalStatus("error");
     }
   };
+
+  if (!isTelegram) {
+    return (
+      <div className="browser-error" style={{ textAlign: 'center', marginTop: '50px', color: 'white' }}>
+        <h2>{t("please_open_in_telegram")}</h2>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -285,6 +292,11 @@ const Topup = () => {
                 }
               }}
             />
+            {customAmount && Number(customAmount) < 1000 && (
+              <p style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>
+                {t("min_amount_error") || "Minimal summa: 1 000 UZS"}
+              </p>
+            )}
           </div>
 
           <div className="section">

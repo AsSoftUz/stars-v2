@@ -7,7 +7,7 @@ import Nav from "../nav/nav.jsx";
 import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router-dom";
 import Loader from "../loader/loader";
-import useGetOrCreateUser from "../../hooks/useGetOrCreateUser"; 
+import useGetOrCreateUser from "../../hooks/useGetOrCreateUser";
 import { X, Bell } from "lucide-react";
 import TechIssues from '../techIssues/techIssues';
 
@@ -15,24 +15,30 @@ const Home = () => {
   const { t } = useTranslation();
   const [showWelcome, setShowWelcome] = useState(false);
   const [tech, setTech] = useState(false);
-  
-  // Animatsiya holati
   const [isAnimationDone, setIsAnimationDone] = useState(false);
 
   const tg = window.Telegram?.WebApp;
-  const tgUser = tg?.initDataUnsafe?.user;
 
   // Foydalanuvchi ma'lumotlarini yuklash
-  const { user, loading } = useGetOrCreateUser(tgUser);
+  const { user, loading, isTelegram } = useGetOrCreateUser();
 
   useEffect(() => {
-    // Welcome modal faqat hamma narsa yuklanib bo'lgach va birinchi marta kirganda chiqadi
     const hasVisited = localStorage.getItem("has_visited_linkify");
-    if (!hasVisited && !loading && isAnimationDone) {
-      setShowWelcome(true); 
+    if (!hasVisited && !loading && isAnimationDone && isTelegram) {
+      setShowWelcome(true);
       localStorage.setItem("has_visited_linkify", "true");
     }
-  }, [loading, isAnimationDone]);
+  }, [loading, isAnimationDone, isTelegram]);
+
+  
+  if (!isTelegram) {
+    return (
+      <div className="browser-error">
+        <h2>{t("please_open_in_telegram") || "Iltimos, botni Telegram orqali oching!"}</h2>
+      </div>
+    );
+  }
+
 
   const handleJoinChannel = () => {
     const channelLink = "https://t.me/Abdullayev_Stars";
@@ -80,14 +86,14 @@ const Home = () => {
             <img src={duck} alt="" width="44px" />
           </h1>
         </div>
-        
+
         <div className="main-cards">
           <div className="pcard">
             <div className="card">
               <div className="left">
                 <h2>
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 26 30">
-                    <path d="M25.326 10.137a1.001 1.001 0 0 0-.807-.68l-7.34-1.066l-3.283-6.651c-.337-.683-1.456-.683-1.793 0L8.82 8.391L1.48 9.457a1 1 0 0 0-.554 1.705l5.312 5.178l-1.254 7.31a1.001 1.001 0 0 0 1.451 1.054L13 21.252l6.564 3.451a1 1 0 0 0 1.451-1.054l-1.254-7.31l5.312-5.178a.998.998 0 0 0 .253-1.024z"/>
+                    <path d="M25.326 10.137a1.001 1.001 0 0 0-.807-.68l-7.34-1.066l-3.283-6.651c-.337-.683-1.456-.683-1.793 0L8.82 8.391L1.48 9.457a1 1 0 0 0-.554 1.705l5.312 5.178l-1.254 7.31a1.001 1.001 0 0 0 1.451 1.054L13 21.252l6.564 3.451a1 1 0 0 0 1.451-1.054l-1.254-7.31l5.312-5.178a.998.998 0 0 0 .253-1.024z" />
                   </svg>
                   {t("stars")}
                 </h2>
@@ -105,7 +111,7 @@ const Home = () => {
               <div className="left">
                 <h2>
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                    <path d="M5 20v-2h14v2zm0-3.5L3.725 8.475q-.05 0-.113.013T3.5 8.5q-.625 0-1.062-.438T2 7t.438-1.062T3.5 5.5t1.063.438T5 7q0 .175-.038.325t-.087.275L8 9l3.125-4.275q-.275-.2-.45-.525t-.175-.7q0-.625.438-1.063T12 2t1.063.438T13.5 3.5q0 .375-.175.7t-.45.525L16 9l3.125-1.4q-.05-.125-.088-.275T19 7q0-.625.438-1.063T20.5 5.5t1.063.438T22 7t-.437 1.063T20.5 8.5q-.05 0-.112-.012t-.113-.013L19 16.5z"/>
+                    <path d="M5 20v-2h14v2zm0-3.5L3.725 8.475q-.05 0-.113.013T3.5 8.5q-.625 0-1.062-.438T2 7t.438-1.062T3.5 5.5t1.063.438T5 7q0 .175-.038.325t-.087.275L8 9l3.125-4.275q-.275-.2-.45-.525t-.175-.7q0-.625.438-1.063T12 2t1.063.438T13.5 3.5q0 .375-.175.7t-.45.525L16 9l3.125-1.4q-.05-.125-.088-.275T19 7q0-.625.438-1.063T20.5 5.5t1.063.438T22 7t-.437 1.063T20.5 8.5q-.05 0-.112-.012t-.113-.013L19 16.5z" />
                   </svg>
                   {t("premium")}
                 </h2>

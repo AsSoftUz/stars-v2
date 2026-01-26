@@ -1,33 +1,27 @@
-// src/hooks/useStars.js
 import { useState, useEffect } from "react";
-import api from "../api/axios"; // O'zingizning axios instansingizga yo'l
+import api from "../api/axios";
 
 const useGetStars = () => {
     const [starsOptions, setStarsOptions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     const fetchStars = async () => {
         try {
             setLoading(true);
-            const res = await api.get("/stars/"); // API manzilingiz
-            // Faqat is_active: true bo'lganlarini saralab olamiz
-            const activeStars = res.data.filter(item => item.is_active);
-            console.log(activeStars);
+            const res = await api.get("/stars/");
             
+            const activeStars = res.data.filter(item => item.is_active);
             setStarsOptions(activeStars);
         } catch (err) {
-            setError(err.message || "Stars yuklashda xatolik yuz berdi");
+            console.error("Stars yuklashda xatolik");
         } finally {
             setLoading(false);
         }
     };
 
-    useEffect(() => {
-        fetchStars();
-    }, []);
+    useEffect(() => { fetchStars(); }, []);
 
-    return { starsOptions, loading, error, refetch: fetchStars };
+    return { starsOptions, loading, refetch: fetchStars };
 };
 
 export default useGetStars;

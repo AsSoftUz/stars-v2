@@ -3,13 +3,9 @@ import { useNavigate } from "react-router-dom";
 import "./premium.scss";
 import Nav from "../nav/nav.jsx";
 import premiumGif from "../../assets/premium.webp";
-
-// WebM formatidagi stikerlar/videolar
 import success3m from "../../assets/premium3.webm";
 import success6m from "../../assets/premium6.webm";
 import success12m from "../../assets/premium12.webm";
-// import defaultSuccess from "../../assets/success_stars.webm"; 
-
 import confetti from "canvas-confetti";
 import { useTranslation } from 'react-i18next';
 import { Loader2, XCircle } from "lucide-react";
@@ -25,9 +21,8 @@ const Premium = () => {
 
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
-  const password = import.meta.env.VITE_PASSWORD;
 
-  const { user, loading: userLoading } = useGetOrCreateUser(tgUser);
+  const { user, loading: userLoading, isTelegram } = useGetOrCreateUser();
   const { premiumOptions = [], loading: plansLoading } = useGetPremium();
   const { buyPremium } = useBuyPremium();
 
@@ -124,34 +119,37 @@ const Premium = () => {
 
     try {
       const payload = {
-        user_id: tgUser?.id,
-        username: username.replace("@", "").trim(),
-        premium_id: selected,
-        duration: selectedPlan?.duration,
-        password: password
+        // user_id va password BACKENDDA initData'dan olinadi!
+        target_username: username.replace("@", "").trim(),
+        premium_plan_id: selected,
       };
 
       await buyPremium(payload);
 
       setPurchasedDuration(selectedPlan?.duration);
       setModalStatus("success");
-      setTimeout(() => {
-        fireConfetti();
-      }, 100);
 
       setTimeout(() => {
         setModalOpen(false);
         setModalStatus("idle");
         setSelected(null);
         setUsername("");
-      }, 5000); // Video ko'rinishi uchun vaqt
+        // Ixtiyoriy: Balansni yangilash uchun sahifani reload qilish yoki refetch
+      }, 5000);
 
     } catch (err) {
-      console.error(err);
       setModalStatus("error");
       setErrorMessage(err.response?.data?.message || t("error_modal_referal"));
     }
   };
+
+  if (!isTelegram) {
+    return (
+      <div className="browser-error" style={{ textAlign: 'center', marginTop: '50px', color: 'white' }}>
+        <h2>{t("please_open_in_telegram")}</h2>
+      </div>
+    );
+  }
 
   return (
     <>

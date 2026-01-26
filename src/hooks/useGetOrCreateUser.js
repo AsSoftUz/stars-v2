@@ -1,13 +1,19 @@
 import { useEffect, useState, useRef } from "react";
 import api from "../api/axios";
 
-const useGetOrCreateUser = (tgUser) => {
+const useGetOrCreateUser = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isTelegram, setIsTelegram] = useState(true);
   const hasFetched = useRef(false);
 
   useEffect(() => {
-    if (!tgUser) {
+    const tg = window.Telegram?.WebApp;
+    const tgUser = tg?.initDataUnsafe?.user;
+
+    // 1. Telegram muhitini tekshirish (Interceptor uchun initData borligini ham tekshiramiz)
+    if (!tg?.initData || !tgUser) {
+      setIsTelegram(false);
       setLoading(false);
       return;
     }
@@ -19,20 +25,19 @@ const useGetOrCreateUser = (tgUser) => {
       try {
         setLoading(true);
 
-        // Ism va username tayyorlash (null o'rniga bo'sh string)
         const currentFullname = `${tgUser.first_name || ""} ${tgUser.last_name || ""}`.trim() || "User";
         const currentUsername = tgUser.username || "";
 
         try {
-          // 1. Tekshirish
+          // 1. Tekshirish (Interceptor avtomat Authorization qo'shadi)
           const res = await api.get(`/auth/users/${tgUser.id}/`);
           const existingUser = res.data;
 
           const isChanged = existingUser.fullname !== currentFullname ||
-            (existingUser.username || "") !== currentUsername;
+                           (existingUser.username || "") !== currentUsername;
 
           if (isChanged) {
-            // 2. Yangilash (PATCH)
+            // 2. Yangilash
             const updateRes = await api.patch(`/auth/users/${tgUser.id}/`, {
               fullname: currentFullname,
               username: currentUsername,
@@ -43,7 +48,7 @@ const useGetOrCreateUser = (tgUser) => {
           }
         } catch (err) {
           if (err.response?.status === 404) {
-            // 3. Yaratish (POST)
+            // 3. Yaratish
             const payload = {
               user_id: tgUser.id,
               fullname: currentFullname,
@@ -53,7 +58,6 @@ const useGetOrCreateUser = (tgUser) => {
             const createRes = await api.post("/auth/users/", payload);
             setUser(createRes.data);
           } else {
-            console.error("API Error details:", err.response?.data);
             throw err;
           }
         }
@@ -65,9 +69,9 @@ const useGetOrCreateUser = (tgUser) => {
     }
 
     syncUser();
-  }, [tgUser]);
+  }, []);
 
-  return { user, loading };
+  return { user, loading, isTelegram };
 };
 
 export default useGetOrCreateUser;

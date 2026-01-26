@@ -30,7 +30,7 @@ const Settings = () => {
   const tgUser = tg?.initDataUnsafe?.user;
 
   // 1. Hook orqali user ma'lumotlarini olamiz
-  const { user, loading } = useGetOrCreateUser(tgUser);
+  const { user, loading, refetch } = useGetOrCreateUser(tgUser);
 
   const { t } = useTranslation();
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -38,6 +38,10 @@ const Settings = () => {
 
   const [language, setLanguage] = useState(() => localStorage.getItem("language") || "en");
   const [payment, setPayment] = useState(() => localStorage.getItem("app_payment") || "Payme");
+
+  useEffect(() => {
+    if (refetch) refetch(); // Sahifaga kirganda balansni yangilaydi
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -63,6 +67,17 @@ const Settings = () => {
     if (type === "language") setLanguage(value);
     if (type === "payment") setPayment(value);
     setOpenDropdown(null);
+  };
+
+  const handleOpenLink = (username) => {
+    const url = `https://t.me/${username}`;
+
+    if (tg && tg.openTelegramLink) {
+      tg.openTelegramLink(url);
+    } else {
+      // Agar brauzerda ochilgan bo'lsa (testing uchun)
+      window.open(url, "_blank");
+    }
   };
 
   // 2. Agar ma'lumotlar yuklanayotgan bo'lsa, "Loading..." ko'rsatamiz
@@ -91,7 +106,7 @@ const Settings = () => {
         <header>
           {/* tgUser'dan rasm, agar u bo'lmasa default rasm */}
           <div className="user-avatar">
-             <img src={tgUser?.photo_url || premiumImg} alt="User" />
+            <img src={tgUser?.photo_url || premiumImg} alt="User" onError={(e) => { e.target.src = premiumImg; }} />
           </div>
           <h2>{user.fullname || "User"}</h2>
           <p>@{user.username || "username"}</p>
@@ -148,7 +163,7 @@ const Settings = () => {
           </div> */}
 
           {/* Support and News */}
-          <a className="settings-item" href="https://t.me/Coder_Abdullayev" target="_blank" rel="noreferrer">
+          <a className="settings-item" onClick={() => handleOpenLink("Coder_Abdullayev")}>
             <div className="left-side">
               <span className="icon-wrapper"><Headphones size={18} /></span>
               <span className="label">{t("settings_help")}</span>
@@ -156,7 +171,7 @@ const Settings = () => {
             <div className="right-side"><span className="value">@Coder_Abdullayev</span></div>
           </a>
 
-          <a className="settings-item" href="https://t.me/Abdullayev_Stars" target="_blank" rel="noreferrer">
+          <a className="settings-item" onClick={() => handleOpenLink("Abdullayev_Stars")}>
             <div className="left-side">
               <span className="icon-wrapper"><Megaphone size={18} /></span>
               <span className="label">{t("settings_news")}</span>

@@ -7,8 +7,6 @@ import { useTranslation } from "react-i18next";
 import useTelegramBack from "../../hooks/useTelegramBack";
 import useGetOrCreateUser from "../../hooks/useGetOrCreateUser";
 import useBuyGifts from "../../hooks/useBuyGifts";
-
-// Rasmlar importi
 import yurak from "../../assets/gifts/yurak.webp";
 import ayiq from "../../assets/gifts/ayiq.webp";
 import sovga from "../../assets/gifts/sovga.webp";
@@ -20,6 +18,20 @@ import kubok from "../../assets/gifts/kubok.webp";
 import uzuk from "../../assets/gifts/uzuk.webp";
 import olmos from "../../assets/gifts/olmos.webp";
 import shanpan from "../../assets/gifts/shanpan.webp";
+
+const GIFTS_LIST = [
+  { id: 1, name: "Yurak", img: yurak, price: 15 },
+  { id: 2, name: "Ayiq", img: ayiq, price: 15 },
+  { id: 3, name: "Sovga", img: sovga, price: 25 },
+  { id: 4, name: "Atirgul", img: atirgul, price: 25 },
+  { id: 5, name: "Tort", img: tort, price: 50 },
+  { id: 6, name: "Gullar", img: gullar, price: 50 },
+  { id: 7, name: "Raketa", img: raketa, price: 50 },
+  { id: 8, name: "Kubok", img: kubok, price: 100 },
+  { id: 9, name: "Uzuk", img: uzuk, price: 100 },
+  { id: 10, name: "Olmos", img: olmos, price: 100 },
+  { id: 11, name: "Shanpan", img: shanpan, price: 50 },
+];
 
 const Referal = () => {
   useTelegramBack("/");
@@ -42,19 +54,6 @@ const Referal = () => {
   const referralStars = user?.referral_count || 0;
   const bonusPoints = user?.bonus_points || 0;
 
-  const GIFTS_LIST = [
-    { id: 1, name: "Yurak", img: yurak, price: 15 },
-    { id: 2, name: "Ayiq", img: ayiq, price: 15 },
-    { id: 3, name: "Sovga", img: sovga, price: 25 },
-    { id: 4, name: "Atirgul", img: atirgul, price: 25 },
-    { id: 5, name: "Tort", img: tort, price: 50 },
-    { id: 6, name: "Gullar", img: gullar, price: 50 },
-    { id: 7, name: "Raketa", img: raketa, price: 50 },
-    { id: 8, name: "Kubok", img: kubok, price: 100 },
-    { id: 9, name: "Uzuk", img: uzuk, price: 100 },
-    { id: 10, name: "Olmos", img: olmos, price: 100 },
-    { id: 11, name: "Shanpan", img: shanpan, price: 50 },
-  ];
 
   // --- YORDAMCHI FUNKSIYALAR ---
   const formatNumber = (val) => val ? val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") : "";
@@ -83,13 +82,21 @@ const Referal = () => {
         gift_type: type,
         gift_name: type === 'STAR' ? 'Telegram Stars' : selectedGift.name,
         points_spent: amountToSpend,
-        user: tgUser?.id
+        // user: tgUser?.id --> OLIB TASHLANDI (Xavfsizlik uchun)
       };
+
       await buyGifts(payload);
+
       triggerVibro('success');
       setModalStatus("success");
       setStarAmount("");
       setSelectedGift(null);
+
+      // Ma'lumotlarni yangilash (balance kamayganini ko'rsatish uchun)
+      if (userLoading === false && typeof user !== 'undefined') {
+        // Agar hookda refetch bo'lsa, shu yerda chaqiring
+      }
+
       setTimeout(() => setModalOpen(false), 3000);
     } catch (err) {
       triggerVibro('error');
@@ -115,8 +122,10 @@ const Referal = () => {
   const handleShare = () => {
     triggerVibro();
     const messageText = `Assalomu alaykum!\nEndi siz Visa kartasiz Humo yoki Uzcard yordamida Telegram Stars va Telegram Premium olishingiz mumkin 🥳\n\nEng muhimi juda arzon narxlarda 🔥`;
+
+    // Telegram Share URL formati
     const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(messageText)}`;
-    
+
     if (tg) {
       tg.openTelegramLink(shareUrl);
     } else {

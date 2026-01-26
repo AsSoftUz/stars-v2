@@ -5,6 +5,11 @@ import { useTranslation } from "react-i18next";
 
 const Nav = () => {
   const { t, i18n } = useTranslation();
+  const tg = window.Telegram?.WebApp;
+
+  const handlePress = () => {
+    tg?.HapticFeedback.impactOccurred('light');
+  };
   return (
     <nav>
       <ul>
@@ -13,6 +18,7 @@ const Nav = () => {
             title="Home"
             to="/"
             className={({ isActive }) => (isActive ? "active-link" : "")}
+            onClick={handlePress}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -30,6 +36,7 @@ const Nav = () => {
           <NavLink
             to="/stars"
             className={({ isActive }) => (isActive ? "active-link" : "")}
+            onClick={handlePress}
           >
             <Star width="20px" height="20px" fill="#fff" />
             {t("stars")}
@@ -39,6 +46,7 @@ const Nav = () => {
           <NavLink
             to="/premium"
             className={({ isActive }) => (isActive ? "active-link" : "")}
+            onClick={handlePress}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -56,6 +64,7 @@ const Nav = () => {
           <NavLink
             to="/referal"
             className={({ isActive }) => (isActive ? "active-link" : "")}
+            onClick={handlePress}
           >
             <Users width="20px" height="20px" fill="#fff" />
             {t("referal")}
@@ -65,6 +74,7 @@ const Nav = () => {
           <NavLink
             to="/settings"
             className={({ isActive }) => (isActive ? "active-link" : "")}
+            onClick={handlePress}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

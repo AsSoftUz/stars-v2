@@ -19,10 +19,9 @@ const Stars = () => {
 
   const tg = window.Telegram?.WebApp;
   const tgUser = tg?.initDataUnsafe?.user;
-  const password = import.meta.env.VITE_PASSWORD;
 
   // Hooks
-  const { user, loading: userLoading } = useGetOrCreateUser(tgUser);
+  const { user, loading: userLoading, isTelegram } = useGetOrCreateUser();
   const { starsOptions = [], loading: starsLoading } = useGetStars();
   const { buyStars } = useBuyStars();
   // States
@@ -106,14 +105,15 @@ const Stars = () => {
 
     setModalOpen(true);
     setModalStatus("loading");
-    setBuyError(null);
 
     try {
+      // MUHIM: Faqat kerakli ma'lumotlarni yuboramiz. 
+      // Parol va UserID backendda initData'dan aniqlanadi (xavfsiz yo'l)
       const payload = {
-        user_id: tgUser?.id,
-        username: username.replace("@", "").trim(),
+        package_id: selectedPackage?.id, // Paket ID'sini yuborish yaxshiroq
+        target_username: username.replace("@", "").trim(),
         amount: Number(selectedPackage?.stars_count) || 0,
-        password: password
+        // VITE_PASSWORD ni bu yerdan o'chirib tashlang!
       };
 
       await buyStars(payload);
@@ -121,6 +121,7 @@ const Stars = () => {
       setPurchasedAmount(selectedPackage?.stars_count);
       setModalStatus("success");
 
+      // 5 sekunddan keyin yopish
       setTimeout(() => {
         setModalOpen(false);
         setModalStatus("idle");
@@ -134,6 +135,14 @@ const Stars = () => {
       setBuyError(errorMsg);
     }
   };
+
+  if (!isTelegram) {
+    return (
+      <div className="browser-error" style={{ textAlign: 'center', marginTop: '50px', color: 'white' }}>
+        <h2>{t("please_open_in_telegram") || "Iltimos, botni Telegram orqali oching!"}</h2>
+      </div>
+    );
+  }
 
   return (
     <>
