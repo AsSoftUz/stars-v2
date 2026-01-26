@@ -119,8 +119,8 @@ const Premium = () => {
 
     try {
       const payload = {
-        // user_id va password BACKENDDA initData'dan olinadi!
-        target_username: username.replace("@", "").trim(),
+        user_id: String(tgUser?.id),
+        username: username.replace("@", "").trim(),
         premium_plan_id: selected,
       };
 
@@ -134,7 +134,6 @@ const Premium = () => {
         setModalStatus("idle");
         setSelected(null);
         setUsername("");
-        // Ixtiyoriy: Balansni yangilash uchun sahifani reload qilish yoki refetch
       }, 5000);
 
     } catch (err) {
