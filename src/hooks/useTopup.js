@@ -12,9 +12,8 @@ const useTopup = () => {
 
             const formData = new FormData();
             formData.append("amount", String(amount)); 
-            formData.append("receipt_image", file); // Bu yerda 'file' haqiqiy File obyekti bo'lishi kerak
+            formData.append("receipt_image", file);
             
-            // Backend user_id ni talab qilayotgan bo'lsa, uni ham qo'shamiz
             if (tgUser?.id) {
                 formData.append("user_id", String(tgUser.id));
             }
