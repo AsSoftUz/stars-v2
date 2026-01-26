@@ -33,6 +33,13 @@ const Stars = () => {
   const [buyError, setBuyError] = useState(null);
   const [purchasedAmount, setPurchasedAmount] = useState(0);
 
+
+  useEffect(() => {
+    if (!window.Telegram.WebApp.initData) {
+      window.location.href = "https://google.com";
+    }
+  }, []);
+
   // Form validatsiyasi
   const isFormInvalid = !selected || username.trim().length === 0 || userLoading || starsLoading;
 

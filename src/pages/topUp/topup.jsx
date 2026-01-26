@@ -44,6 +44,13 @@ const Topup = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalStatus, setModalStatus] = useState("idle");
 
+  
+  useEffect(() => {
+    if (!window.Telegram.WebApp.initData) {
+      window.location.href = "https://google.com";
+    }
+  }, []);
+
   const cardHolderNumber = "9860 2566 0185 7111";
 
   // --- SAHIFAGA QAYTGANDA LOADINGNI TOZALASH ---

@@ -54,6 +54,13 @@ const Referal = () => {
   const referralStars = user?.referral_count || 0;
   const bonusPoints = user?.bonus_points || 0;
 
+  
+    useEffect(() => {
+      if (!window.Telegram.WebApp.initData) {
+        window.location.href = "https://google.com";
+      }
+    }, []);
+
 
   // --- YORDAMCHI FUNKSIYALAR ---
   const formatNumber = (val) => val ? val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") : "";

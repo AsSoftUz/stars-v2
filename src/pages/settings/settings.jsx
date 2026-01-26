@@ -39,6 +39,13 @@ const Settings = () => {
   const [language, setLanguage] = useState(() => localStorage.getItem("language") || "en");
   const [payment, setPayment] = useState(() => localStorage.getItem("app_payment") || "Payme");
 
+
+  useEffect(() => {
+    if (!window.Telegram.WebApp.initData) {
+      window.location.href = "https://google.com";
+    }
+  }, []);
+
   useEffect(() => {
     if (refetch) refetch(); // Sahifaga kirganda balansni yangilaydi
   }, []);

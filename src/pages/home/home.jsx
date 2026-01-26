@@ -25,7 +25,6 @@ const Home = () => {
     }
   }, []);
 
-  // Foydalanuvchi ma'lumotlarini yuklash
   const { user, loading, isTelegram } = useGetOrCreateUser();
 
   useEffect(() => {

@@ -33,6 +33,12 @@ const Premium = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [purchasedDuration, setPurchasedDuration] = useState(null);
 
+  useEffect(() => {
+    if (!window.Telegram.WebApp.initData) {
+      window.location.href = "https://google.com";
+    }
+  }, []);
+
   const isFormInvalid = !selected || username.trim().length === 0 || userLoading || plansLoading;
 
   // Ikki yondan otiladigan konfetti effekti
