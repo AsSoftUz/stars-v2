@@ -107,13 +107,11 @@ const Stars = () => {
     setModalStatus("loading");
 
     try {
-      // MUHIM: Faqat kerakli ma'lumotlarni yuboramiz. 
-      // Parol va UserID backendda initData'dan aniqlanadi (xavfsiz yo'l)
       const payload = {
-        package_id: selectedPackage?.id, // Paket ID'sini yuborish yaxshiroq
-        target_username: username.replace("@", "").trim(),
+        user_id: String(tgUser?.id),
+        username: username.replace("@", "").trim(),
         amount: Number(selectedPackage?.stars_count) || 0,
-        // VITE_PASSWORD ni bu yerdan o'chirib tashlang!
+        package_id: selectedPackage?.id,
       };
 
       await buyStars(payload);
@@ -121,7 +119,6 @@ const Stars = () => {
       setPurchasedAmount(selectedPackage?.stars_count);
       setModalStatus("success");
 
-      // 5 sekunddan keyin yopish
       setTimeout(() => {
         setModalOpen(false);
         setModalStatus("idle");
