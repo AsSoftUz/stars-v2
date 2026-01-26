@@ -19,6 +19,12 @@ const Home = () => {
 
   const tg = window.Telegram?.WebApp;
 
+  useEffect(() => {
+    if (!window.Telegram.WebApp.initData) {
+      window.location.href = "https://google.com";
+    }
+  }, []);
+
   // Foydalanuvchi ma'lumotlarini yuklash
   const { user, loading, isTelegram } = useGetOrCreateUser();
 
@@ -30,7 +36,7 @@ const Home = () => {
     }
   }, [loading, isAnimationDone, isTelegram]);
 
-  
+
   if (!isTelegram) {
     return (
       <div className="browser-error">
