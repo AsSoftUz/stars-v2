@@ -15,7 +15,11 @@ const Home = () => {
   const { t } = useTranslation();
   const [showWelcome, setShowWelcome] = useState(false);
   const [tech, setTech] = useState(false);
-  const [isAnimationDone, setIsAnimationDone] = useState(false);
+  // const [isAnimationDone, setIsAnimationDone] = useState(false);
+
+  const [isAnimationDone, setIsAnimationDone] = useState(() => {
+    return localStorage.getItem("home_loader_finished") === "true";
+  });
 
   const tg = window.Telegram?.WebApp;
 
@@ -55,9 +59,15 @@ const Home = () => {
     setShowWelcome(false);
   };
 
+
+  const handleAnimationFinished = () => {
+    setIsAnimationDone(true);
+    localStorage.setItem("home_loader_finished", "true");
+  };
+
   // Ma'lumotlar kelayotgan bo'lsa yoki Lottie animatsiyasi hali tugamagan bo'lsa Loader turadi
   if (loading || !isAnimationDone) {
-    return <Loader onFinished={() => setIsAnimationDone(true)} />;
+    return <Loader onFinished={handleAnimationFinished} />;
   }
 
   if (tech) {
