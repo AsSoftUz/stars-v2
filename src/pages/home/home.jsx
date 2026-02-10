@@ -66,7 +66,7 @@ const Home = () => {
   };
 
   // Ma'lumotlar kelayotgan bo'lsa yoki Lottie animatsiyasi hali tugamagan bo'lsa Loader turadi
-  if (loading || !isAnimationDone) {
+  if (!isAnimationDone) {
     return <Loader onFinished={handleAnimationFinished} />;
   }
 
