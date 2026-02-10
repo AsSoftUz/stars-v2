@@ -1,5 +1,5 @@
 import "./referal.scss";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Copy, Share2, Check, Star, Loader2, CheckCircle2, XCircle, Users } from "lucide-react";
 import Nav from "../nav/nav.jsx";
 import headerImg from "../../assets/referalGif.mp4";
