@@ -10,51 +10,57 @@ import Loader from "../loader/loader";
 import useGetOrCreateUser from "../../hooks/useGetOrCreateUser";
 import { X, Bell } from "lucide-react";
 import TechIssues from '../techIssues/techIssues';
+import i18n from "../../utils/i18n";
 
 const Home = () => {
   const { t } = useTranslation();
   const [showWelcome, setShowWelcome] = useState(false);
   const [tech, setTech] = useState(false);
-  // const [isAnimationDone, setIsAnimationDone] = useState(false);
 
+  // 1. Animatsiya holatini tekshirish
   const [isAnimationDone, setIsAnimationDone] = useState(() => {
     return localStorage.getItem("home_loader_finished") === "true";
   });
 
+  // 2. Til tanlash modali (Keshda til bo'lmasa ko'rsatiladi)
   const [showLanguageModal, setShowLanguageModal] = useState(() => {
     return !localStorage.getItem("language"); 
   });
+
+  const tg = window.Telegram?.WebApp;
+  const { user, loading, isTelegram } = useGetOrCreateUser();
+
+  // Telegramdan tashqarida ochilsa redirect
+  useEffect(() => {
+    if (window.Telegram && !window.Telegram.WebApp.initData) {
+      window.location.href = "https://google.com";
+    }
+  }, []);
+
+  // Til tanlash va keshga saqlash
   const handleLanguageSelect = (lang) => {
     localStorage.setItem("language", lang);
     i18n.changeLanguage(lang);
     setShowLanguageModal(false);
     
-    // Til tanlangandan keyin Welcome modalini chiqarish mantiqi (ixtiyoriy)
+    // Til tanlangandan keyin Welcome modalni tekshirish
     const hasVisited = localStorage.getItem("has_visited_linkify");
     if (!hasVisited && !loading && isAnimationDone) {
       setShowWelcome(true);
+      localStorage.setItem("has_visited_linkify", "true");
     }
   };
 
-  const tg = window.Telegram?.WebApp;
-
-  useEffect(() => {
-    if (!window.Telegram.WebApp.initData) {
-      window.location.href = "https://google.com";
-    }
-  }, []);
-
-  const { user, loading, isTelegram } = useGetOrCreateUser();
-
+  // Welcome modalni avtomatik chiqarish (useEffect orqali)
   useEffect(() => {
     const hasVisited = localStorage.getItem("has_visited_linkify");
-    if (!hasVisited && !loading && isAnimationDone && isTelegram) {
+    if (!hasVisited && !loading && isAnimationDone && isTelegram && !showLanguageModal) {
       setShowWelcome(true);
       localStorage.setItem("has_visited_linkify", "true");
     }
-  }, [loading, isAnimationDone, isTelegram]);
+  }, [loading, isAnimationDone, isTelegram, showLanguageModal]);
 
-
+  // Telegram Mini App emasligi aniqlansa
   if (!isTelegram) {
     return (
       <div className="browser-error">
@@ -62,7 +68,6 @@ const Home = () => {
       </div>
     );
   }
-
 
   const handleJoinChannel = () => {
     const channelLink = "https://t.me/Abdullayev_Stars";
@@ -74,13 +79,12 @@ const Home = () => {
     setShowWelcome(false);
   };
 
-
   const handleAnimationFinished = () => {
     setIsAnimationDone(true);
     localStorage.setItem("home_loader_finished", "true");
   };
 
-  // Ma'lumotlar kelayotgan bo'lsa yoki Lottie animatsiyasi hali tugamagan bo'lsa Loader turadi
+  // Loader (Animatsiya bitmagan bo'lsa ko'rsatiladi)
   if (!isAnimationDone) {
     return <Loader onFinished={handleAnimationFinished} />;
   }
@@ -92,21 +96,29 @@ const Home = () => {
   return (
     <>
       <div className="home">
+        {/* TIL TANLASH MODALI */}
         {showLanguageModal && (
           <div className="welcome-modal-overlay language-modal">
             <div className="welcome-modal-content">
-              <h3>Choose Language / Tilni tanlang</h3>
+              <h3>Choose Language / Tilni tanlang / Выберите язык</h3>
               <p>Iltimos, ilova tilini tanlang:</p>
               
               <div className="language-options">
-                <button onClick={() => handleLanguageSelect("uz")}>O'zbekcha (UZ)</button>
-                <button onClick={() => handleLanguageSelect("ru")}>Русский (RU)</button>
-                <button onClick={() => handleLanguageSelect("en")}>English (EN)</button>
+                <button onClick={() => handleLanguageSelect("uz")}>
+                  O'zbekcha <img src="https://flagcdn.com/w40/uz.png" width="24" alt="UZ" />
+                </button>
+                <button onClick={() => handleLanguageSelect("ru")}>
+                  Русский <img src="https://flagcdn.com/w40/ru.png" width="24" alt="RU" />
+                </button>
+                <button onClick={() => handleLanguageSelect("en")}>
+                  English <img src="https://flagcdn.com/w40/us.png" width="24" alt="EN" />
+                </button>
               </div>
             </div>
           </div>
         )}
 
+        {/* WELCOME MODAL */}
         {!showLanguageModal && showWelcome && (
           <div className="welcome-modal-overlay">
             <div className="welcome-modal-content">

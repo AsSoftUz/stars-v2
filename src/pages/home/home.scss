@@ -184,6 +184,10 @@
       font-size: 16px;
       cursor: pointer;
       transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
 
       &:hover, &:active {
         background: #0088cc;
