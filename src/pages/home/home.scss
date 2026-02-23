@@ -163,3 +163,32 @@
         }
     }
 }
+
+.language-modal {
+  z-index: 2000; // Har narsadan ustun turishi uchun
+  
+  .language-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-top: 20px;
+
+    button {
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #0088cc22;
+      background: #0088cc11;
+      color: #0088cc;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+
+      &:hover, &:active {
+        background: #0088cc;
+        color: #fff;
+      }
+    }
+  }
+}

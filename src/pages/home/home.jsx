@@ -21,6 +21,21 @@ const Home = () => {
     return localStorage.getItem("home_loader_finished") === "true";
   });
 
+  const [showLanguageModal, setShowLanguageModal] = useState(() => {
+    return !localStorage.getItem("language"); 
+  });
+  const handleLanguageSelect = (lang) => {
+    localStorage.setItem("language", lang);
+    i18n.changeLanguage(lang);
+    setShowLanguageModal(false);
+    
+    // Til tanlangandan keyin Welcome modalini chiqarish mantiqi (ixtiyoriy)
+    const hasVisited = localStorage.getItem("has_visited_linkify");
+    if (!hasVisited && !loading && isAnimationDone) {
+      setShowWelcome(true);
+    }
+  };
+
   const tg = window.Telegram?.WebApp;
 
   useEffect(() => {
@@ -77,7 +92,22 @@ const Home = () => {
   return (
     <>
       <div className="home">
-        {showWelcome && (
+        {showLanguageModal && (
+          <div className="welcome-modal-overlay language-modal">
+            <div className="welcome-modal-content">
+              <h3>Choose Language / Tilni tanlang</h3>
+              <p>Iltimos, ilova tilini tanlang:</p>
+              
+              <div className="language-options">
+                <button onClick={() => handleLanguageSelect("uz")}>O'zbekcha (UZ)</button>
+                <button onClick={() => handleLanguageSelect("ru")}>Русский (RU)</button>
+                <button onClick={() => handleLanguageSelect("en")}>English (EN)</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!showLanguageModal && showWelcome && (
           <div className="welcome-modal-overlay">
             <div className="welcome-modal-content">
               <button className="close-x" onClick={() => setShowWelcome(false)}>
