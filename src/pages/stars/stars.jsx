@@ -11,6 +11,7 @@ import useGetStars from "../../hooks/useGetStars";
 import useBuyStars from "../../hooks/useBuyStars";
 import useGetOrCreateUser from "../../hooks/useGetOrCreateUser";
 import confetti from "canvas-confetti";
+import api from "../../api/axios";
 
 const Stars = () => {
   useTelegramBack("/");
@@ -24,15 +25,16 @@ const Stars = () => {
   const { user, loading: userLoading, isTelegram } = useGetOrCreateUser();
   const { starsOptions = [], loading: starsLoading } = useGetStars();
   const { buyStars } = useBuyStars();
+
   // States
   const [selected, setSelected] = useState(null);
   const [username, setUsername] = useState("");
+  const [customAmount, setCustomAmount] = useState("");
   const [showAll, setShowAll] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalStatus, setModalStatus] = useState("idle");
   const [buyError, setBuyError] = useState(null);
   const [purchasedAmount, setPurchasedAmount] = useState(0);
-
 
   useEffect(() => {
     if (!window.Telegram.WebApp.initData) {
@@ -40,8 +42,32 @@ const Stars = () => {
     }
   }, []);
 
-  // Form validatsiyasi
-  const isFormInvalid = !selected || username.trim().length === 0 || userLoading || starsLoading;
+  const usernameReady = username.trim().length > 0;
+
+  // Mutual exclusivity: selecting a package clears custom amount, and vice versa
+  const handleSelectPackage = (id) => {
+    setSelected(id);
+    setCustomAmount("");
+  };
+
+  const handleCustomAmountChange = (e) => {
+    const val = e.target.value;
+    if (/^\d*$/.test(val)) {
+      setCustomAmount(val);
+      if (val.length > 0) {
+        setSelected(null);
+      }
+    }
+  };
+
+  // Form validation
+  const isCustomMode = customAmount.trim().length > 0 && Number(customAmount) > 0;
+  const isPackageMode = selected !== null;
+  const isFormInvalid =
+    (!isPackageMode && !isCustomMode) ||
+    !usernameReady ||
+    userLoading ||
+    starsLoading;
 
   // Star layers logic
   const getStarLayers = (count) => {
@@ -99,40 +125,62 @@ const Stars = () => {
   }, [modalStatus, modalOpen]);
 
   const handleBuyStars = async () => {
-    const selectedPackage = safeStarsOptions.find(p => p.id === selected);
-    const planPrice = Number(selectedPackage?.price) || 0;
-    const userBalance = Number(user?.balance) || 0;
-
-    if (userBalance < planPrice) {
-      setModalOpen(true);
-      setModalStatus("error");
-      setBuyError("insufficient_balance");
-      return;
-    }
-
     setModalOpen(true);
     setModalStatus("loading");
 
     try {
-      const payload = {
-        user_id: String(tgUser?.id),
-        username: username.replace("@", "").trim(),
-        amount: Number(selectedPackage?.stars_count) || 0,
-        package_id: selectedPackage?.id,
-      };
+      if (isCustomMode) {
+        // Custom amount — use /stars-buy/custom/ endpoint
+        const userBalance = Number(user?.balance) || 0;
+        const payload = {
+          user_id: String(tgUser?.id),
+          username: username.replace("@", "").trim(),
+          amount: Number(customAmount),
+        };
 
-      await buyStars(payload);
+        const response = await api.post("/stars-buy/custom/", payload);
+        setPurchasedAmount(Number(customAmount));
+        setModalStatus("success");
 
-      setPurchasedAmount(selectedPackage?.stars_count);
-      setModalStatus("success");
+        setTimeout(() => {
+          setModalOpen(false);
+          setModalStatus("idle");
+          setSelected(null);
+          setCustomAmount("");
+          setUsername("");
+        }, 5000);
+      } else {
+        // Package mode — use existing /stars-buy/v2/ endpoint
+        const selectedPackage = safeStarsOptions.find(p => p.id === selected);
+        const planPrice = Number(selectedPackage?.price) || 0;
+        const userBalance = Number(user?.balance) || 0;
 
-      setTimeout(() => {
-        setModalOpen(false);
-        setModalStatus("idle");
-        setSelected(null);
-        setUsername("");
-      }, 5000);
+        if (userBalance < planPrice) {
+          setModalOpen(true);
+          setModalStatus("error");
+          setBuyError("insufficient_balance");
+          return;
+        }
 
+        const payload = {
+          user_id: String(tgUser?.id),
+          username: username.replace("@", "").trim(),
+          amount: Number(selectedPackage?.stars_count) || 0,
+          package_id: selectedPackage?.id,
+        };
+
+        await buyStars(payload);
+
+        setPurchasedAmount(selectedPackage?.stars_count);
+        setModalStatus("success");
+
+        setTimeout(() => {
+          setModalOpen(false);
+          setModalStatus("idle");
+          setSelected(null);
+          setUsername("");
+        }, 5000);
+      }
     } catch (err) {
       setModalStatus("error");
       const errorMsg = err.response?.data?.error || err.response?.data?.message || t("error_modal_stars2");
@@ -221,23 +269,45 @@ const Stars = () => {
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
+
+          {/* Custom amount — only visible after username is entered */}
+          {usernameReady && (
+            <div className="customAmount">
+              <label>{t("stars_customAmount") || "Miqdorni o'zingiz kiriting"}</label>
+              <div className="custom-amount-input-wrapper">
+                <i className="star-icon-inline" />
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder={t("stars_customAmountPlaceholder") || "Masalan: 500"}
+                  value={customAmount}
+                  onChange={handleCustomAmountChange}
+                  className={customAmount ? "has-value" : ""}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="main">
           <div className="stars-container">
-            <h3>{t("stars_packages")}</h3>
+            <h3
+              className={isCustomMode ? "section-title dimmed" : "section-title"}
+            >
+              {t("stars_packages")}
+            </h3>
 
             {starsLoading ? (
               <div className="stars-loader">
                 <Loader2 className="spinner animate-spin" size={30} />
               </div>
             ) : (
-              <div className="options-list">
+              <div className={`options-list ${isCustomMode ? "disabled-list" : ""}`}>
                 {visibleOptions.map((option) => (
                   <div
                     key={option.id}
-                    className={`option-item ${selected === option.id ? "active" : ""}`}
-                    onClick={() => setSelected(option.id)}
+                    className={`option-item ${selected === option.id ? "active" : ""} ${isCustomMode ? "option-disabled" : ""}`}
+                    onClick={() => !isCustomMode && handleSelectPackage(option.id)}
                   >
                     <div className="radio-circle">
                       {selected === option.id && <div className="inner-dot" />}
