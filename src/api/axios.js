@@ -8,7 +8,7 @@ const api = axios.create({
   },
 });
 
-// So'rov yuborishdan oldin Telegram ma'lumotlarini qo'shish
+// So'rov yuborishdan oldin Telegram ma'lumotlarini qo'shis
 api.interceptors.request.use(
   (config) => {
     const tg = window.Telegram?.WebApp;

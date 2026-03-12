@@ -7,7 +7,7 @@ const useBuyPremium = () => {
     const buyPremium = async (data) => {
         setLoading(true);
         try {
-            const response = await api.post("/buy-premium/", data);
+            const response = await api.post("/buy-premium/v2/", data);
             return response.data;
         } catch (err) {
             throw err;

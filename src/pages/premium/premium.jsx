@@ -127,7 +127,7 @@ const Premium = () => {
       const payload = {
         user_id: String(tgUser?.id),
         username: username.replace("@", "").trim(),
-        premium_plan_id: selected,
+        duration: selectedPlan?.duration,
       };
 
       await buyPremium(payload);
@@ -144,7 +144,8 @@ const Premium = () => {
 
     } catch (err) {
       setModalStatus("error");
-      setErrorMessage(err.response?.data?.message || t("error_modal_referal"));
+      const errorMsg = err.response?.data?.error || err.response?.data?.message || t("error_modal_referal");
+      setErrorMessage(errorMsg);
     }
   };
 

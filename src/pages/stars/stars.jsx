@@ -135,7 +135,7 @@ const Stars = () => {
 
     } catch (err) {
       setModalStatus("error");
-      const errorMsg = err.response?.data?.message || t("error_modal_stars2");
+      const errorMsg = err.response?.data?.error || err.response?.data?.message || t("error_modal_stars2");
       setBuyError(errorMsg);
     }
   };

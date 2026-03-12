@@ -16,7 +16,7 @@ const useBuyStars = () => {
                 }
             }
 
-            const response = await api.post("/stars-buy/", payload);
+            const response = await api.post("/stars-buy/v2/", payload);
             return response.data;
         } catch (err) {
             console.error("Buy Stars Error:", err.response?.data);
