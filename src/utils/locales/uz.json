@@ -32,6 +32,8 @@
   "insufficient_stars": "Stars yetarli emas. Star olish uchun do'stalaringizni taklif qiling.",
   "success_title_stars": "Muvaffaqiyatli!",
   "stars_sent_success_stars": "Stars yuborildi!",
+  "stars_customAmount": "Miqdorni kiriting:",
+  "stars_customAmountPlaceholder": "50-10000 gacha kiriting",
 
   "forWho": "Kimga yuboramiz?",
   "forMe": "o'zimga",
