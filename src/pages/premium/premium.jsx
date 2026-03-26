@@ -116,7 +116,7 @@ const Premium = () => {
     if (userBalance < planPrice) {
       setModalOpen(true);
       setModalStatus("error");
-      setErrorMessage("insufficient_balance");
+      setErrorMessage(t("insufficient_balance"));
       return;
     }
 

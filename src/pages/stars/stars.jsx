@@ -158,7 +158,7 @@ const Stars = () => {
         if (userBalance < planPrice) {
           setModalOpen(true);
           setModalStatus("error");
-          setBuyError("insufficient_balance");
+          setBuyError(t("insufficient_balance"));
           return;
         }
 
