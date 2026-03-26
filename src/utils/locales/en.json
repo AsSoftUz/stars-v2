@@ -88,6 +88,8 @@
   "sending_payment": "Sending payment...",
   "payment_error": "Payment error.",
   "payment_sent_admin_title": "Payment sent!",
-  "payment_sent_admin_desc": "Your payment is being verified by the admin. Please wait."
+  "payment_sent_admin_desc": "Your payment is being verified by the admin. Please wait.",
+
+  "min_amount_error": "Minimum amount is 1000 UZS"
 
 }
