@@ -1,5 +1,5 @@
 import "./topup.scss";
-import { useState, useMemo, useEffect } from "react"; // useEffect qo'shildi
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   CreditCard,
@@ -44,12 +44,11 @@ const Topup = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalStatus, setModalStatus] = useState("idle");
 
-  
-  useEffect(() => {
-    if (!window.Telegram.WebApp.initData) {
-      window.location.href = "https://google.com";
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!window.Telegram.WebApp.initData) {
+  //     window.location.href = "https://google.com";
+  //   }
+  // }, []);
 
   const cardHolderNumber = "9860 2566 0185 7111";
 
@@ -57,7 +56,6 @@ const Topup = () => {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        // Agar foydalanuvchi tashqaridan qaytib kirsa va Click tanlangan bo'lsa, loadingni yopamiz
         if (modalStatus === "loading" && paymentMethod === "click") {
           setModalOpen(false);
           setModalStatus("idle");
@@ -80,6 +78,12 @@ const Topup = () => {
 
     const allSorted = [...starsOptions].sort((a, b) => a.amount - b.amount);
 
+    // Dastlabki yuklanishda yoki presetData o'zgarganda inputga default qiymat berish
+    if (selectedIdx !== null && allSorted[selectedIdx] && !customAmount) {
+      // Input ichiga birinchi qiymatni yozib qo'yamiz
+      setTimeout(() => setCustomAmount(allSorted[selectedIdx].price.toString()), 0);
+    }
+
     if (showAllPrices) {
       return allSorted;
     } else {
@@ -89,7 +93,8 @@ const Topup = () => {
     }
   }, [starsOptions, showAllPrices]);
 
-  const currentAmount = customAmount || (selectedIdx !== null ? presetData[selectedIdx]?.price : 0);
+  // Endi asosiy summa har doim customAmount state'idan olinadi
+  const currentAmount = customAmount || 0;
 
   // --- FUNKSIYALAR ---
   const formatNumber = (val) => {
@@ -109,10 +114,8 @@ const Topup = () => {
   };
 
   const copyToClipboard = () => {
-    // 1. Probelsiz faqat raqamlarni olish
     const cleanNumber = cardHolderNumber.replace(/\s/g, '');
 
-    // 2. To'g'ri metod: writeText
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(cleanNumber)
         .then(() => {
@@ -120,21 +123,19 @@ const Topup = () => {
         })
         .catch((err) => {
           console.error('Kopyalashda xatolik:', err);
-          fallbackCopyText(cleanNumber); // Agar writeText ishlamasa
+          fallbackCopyText(cleanNumber);
         });
     } else {
-      fallbackCopyText(cleanNumber); // Eski brauzerlar uchun
+      fallbackCopyText(cleanNumber);
     }
   };
 
-  // Muvaffaqiyatli kopyalangan holat uchun alohida funksiya
   const handleCopySuccess = () => {
     tg?.HapticFeedback.notificationOccurred('success');
     setShowTooltip(true);
     setTimeout(() => setShowTooltip(false), 2000);
   };
 
-  // Eski usul (fallback) - agar navigator.clipboard ishlamasa
   const fallbackCopyText = (text) => {
     const textArea = document.createElement("textarea");
     textArea.value = text;
@@ -149,7 +150,6 @@ const Topup = () => {
     document.body.removeChild(textArea);
   };
 
-
   const handlePaymentSubmit = async () => {
     tg?.HapticFeedback.impactOccurred('medium');
     setModalOpen(true);
@@ -157,7 +157,6 @@ const Topup = () => {
 
     try {
       if (paymentMethod === "admin") {
-        // user_id olib tashlandi
         await submitAdminTopup({
           amount: currentAmount,
           file: receipt
@@ -166,7 +165,6 @@ const Topup = () => {
         setModalStatus("success");
         setTimeout(() => { setModalOpen(false); navigate("/settings"); }, 4000);
       } else {
-        // user_id olib tashlandi
         const data = await submitClickTopup({ amount: currentAmount });
         if (data?.click_url) {
           tg?.HapticFeedback.notificationOccurred('success');
@@ -188,13 +186,13 @@ const Topup = () => {
     }
   };
 
-  if (!isTelegram) {
-    return (
-      <div className="browser-error" style={{ textAlign: 'center', marginTop: '50px', color: 'white' }}>
-        <h2>{t("please_open_in_telegram")}</h2>
-      </div>
-    );
-  }
+  // if (!isTelegram) {
+  //   return (
+  //     <div className="browser-error" style={{ textAlign: 'center', marginTop: '50px', color: 'white' }}>
+  //       <h2>{t("please_open_in_telegram")}</h2>
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
@@ -249,6 +247,26 @@ const Topup = () => {
           </div>
 
           <div className="section">
+            <input
+              type="text"
+              inputMode="numeric"
+              className={`custom-input ${customAmount ? "active" : ""}`}
+              placeholder={t("enter_custom_amount")}
+              value={formatNumber(customAmount)}
+              onChange={(e) => {
+                const rawValue = deformatNumber(e.target.value);
+                if (/^\d*$/.test(rawValue)) {
+                  setCustomAmount(rawValue);
+                  setSelectedIdx(null); // Qo'lda yozganda grid dagi aktivlik o'chadi
+                  tg?.HapticFeedback.selectionChanged();
+                }
+              }}
+            />
+            {customAmount && Number(customAmount) < 1000 && (
+              <p style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>
+                {t("min_amount_error") || "Minimal summa: 1 000 UZS"}
+              </p>
+            )}
             <p className="section-label">{t("select_amount")}</p>
 
             <div className="amount-grid">
@@ -259,7 +277,7 @@ const Topup = () => {
                   onClick={() => {
                     tg?.HapticFeedback.selectionChanged();
                     setSelectedIdx(idx);
-                    setCustomAmount("");
+                    setCustomAmount(item.price.toString()); // Grid bosilganda qiymat inputga o'tadi
                   }}
                 >
                   <span className="star-price">{Number(item.price).toLocaleString()} UZS</span>
@@ -273,6 +291,9 @@ const Topup = () => {
                 onClick={() => {
                   setShowAllPrices(!showAllPrices);
                   setSelectedIdx(0);
+                  if (presetData[0]) {
+                    setCustomAmount(presetData[0].price.toString());
+                  }
                   tg?.HapticFeedback.impactOccurred('light');
                 }}
               >
@@ -282,27 +303,6 @@ const Topup = () => {
                   <><ChevronDown size={18} /> {t("show_all_prices") || "Barcha narxlar"}</>
                 )}
               </button>
-            )}
-
-            <input
-              type="text"
-              inputMode="numeric"
-              className={`custom-input ${customAmount ? "active" : ""}`}
-              placeholder={t("enter_custom_amount")}
-              value={formatNumber(customAmount)}
-              onChange={(e) => {
-                const rawValue = deformatNumber(e.target.value);
-                if (/^\d*$/.test(rawValue)) {
-                  setCustomAmount(rawValue);
-                  setSelectedIdx(null);
-                  tg?.HapticFeedback.selectionChanged();
-                }
-              }}
-            />
-            {customAmount && Number(customAmount) < 1000 && (
-              <p style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>
-                {t("min_amount_error") || "Minimal summa: 1 000 UZS"}
-              </p>
             )}
           </div>
 
