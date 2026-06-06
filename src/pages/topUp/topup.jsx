@@ -44,12 +44,6 @@ const Topup = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalStatus, setModalStatus] = useState("idle");
 
-  // useEffect(() => {
-  //   if (!window.Telegram.WebApp.initData) {
-  //     window.location.href = "https://google.com";
-  //   }
-  // }, []);
-
   const cardHolderNumber = "9860 2566 0185 7111";
 
   // --- SAHIFAGA QAYTGANDA LOADINGNI TOZALASH ---
@@ -78,12 +72,6 @@ const Topup = () => {
 
     const allSorted = [...starsOptions].sort((a, b) => a.amount - b.amount);
 
-    // Dastlabki yuklanishda yoki presetData o'zgarganda inputga default qiymat berish
-    if (selectedIdx !== null && allSorted[selectedIdx] && !customAmount) {
-      // Input ichiga birinchi qiymatni yozib qo'yamiz
-      setTimeout(() => setCustomAmount(allSorted[selectedIdx].price.toString()), 0);
-    }
-
     if (showAllPrices) {
       return allSorted;
     } else {
@@ -93,13 +81,24 @@ const Topup = () => {
     }
   }, [starsOptions, showAllPrices]);
 
-  // Endi asosiy summa har doim customAmount state'idan olinadi
+  // --- BIRINCHI MARTA YUKLANGANDA DEFAULT SUMMANI INPUTGA QO'YISH ---
+  useEffect(() => {
+    if (presetData.length > 0 && selectedIdx !== null && !customAmount) {
+      // Narxni butun son ko'rinishida olish (masalan: 12500.00 -> 12500)
+      const initialPrice = Math.floor(Number(presetData[selectedIdx].price));
+      setCustomAmount(initialPrice.toString());
+    }
+  }, [presetData, selectedIdx]);
+
+  // Asosiy jo'natiladigan summa
   const currentAmount = customAmount || 0;
 
   // --- FUNKSIYALAR ---
   const formatNumber = (val) => {
     if (!val) return "";
-    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    // Nuqta va undan keyingi nollarni tozalab tashlaymiz (.00 muammosi uchun)
+    const cleanVal = val.toString().split('.')[0];
+    return cleanVal.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   };
 
   const deformatNumber = (val) => {
@@ -186,14 +185,6 @@ const Topup = () => {
     }
   };
 
-  // if (!isTelegram) {
-  //   return (
-  //     <div className="browser-error" style={{ textAlign: 'center', marginTop: '50px', color: 'white' }}>
-  //       <h2>{t("please_open_in_telegram")}</h2>
-  //     </div>
-  //   );
-  // }
-
   return (
     <>
       <div className="topup">
@@ -246,7 +237,7 @@ const Topup = () => {
             </span>
           </div>
 
-          <div className="section">
+          <div className="section" style={{ border: 'none', padding: 0, margin: 0 }}>
             <input
               type="text"
               inputMode="numeric"
@@ -267,22 +258,27 @@ const Topup = () => {
                 {t("min_amount_error") || "Minimal summa: 1 000 UZS"}
               </p>
             )}
-            <p className="section-label">{t("select_amount")}</p>
+            
+            <p className="section-label" style={{ marginTop: '20px' }}>{t("select_amount")}</p>
 
             <div className="amount-grid">
-              {presetData.map((item, idx) => (
-                <button
-                  key={idx}
-                  className={`amount-btn ${selectedIdx === idx ? "active" : ""}`}
-                  onClick={() => {
-                    tg?.HapticFeedback.selectionChanged();
-                    setSelectedIdx(idx);
-                    setCustomAmount(item.price.toString()); // Grid bosilganda qiymat inputga o'tadi
-                  }}
-                >
-                  <span className="star-price">{Number(item.price).toLocaleString()} UZS</span>
-                </button>
-              ))}
+              {presetData.map((item, idx) => {
+                // Tugmadagi narxlardan ham .00 ni olib tashlaymiz
+                const cleanPrice = Math.floor(Number(item.price));
+                return (
+                  <button
+                    key={idx}
+                    className={`amount-btn ${selectedIdx === idx ? "active" : ""}`}
+                    onClick={() => {
+                      tg?.HapticFeedback.selectionChanged();
+                      setSelectedIdx(idx);
+                      setCustomAmount(cleanPrice.toString()); // Grid bosilganda toza son inputga o'tadi
+                    }}
+                  >
+                    <span className="star-price">{cleanPrice.toLocaleString()} UZS</span>
+                  </button>
+                );
+              })}
             </div>
 
             {starsOptions?.length > 4 && (
@@ -292,7 +288,8 @@ const Topup = () => {
                   setShowAllPrices(!showAllPrices);
                   setSelectedIdx(0);
                   if (presetData[0]) {
-                    setCustomAmount(presetData[0].price.toString());
+                    const cleanPrice = Math.floor(Number(presetData[0].price));
+                    setCustomAmount(cleanPrice.toString());
                   }
                   tg?.HapticFeedback.impactOccurred('light');
                 }}
