@@ -253,7 +253,7 @@ const Topup = () => {
           </div>
 
           <div className="section" style={{ border: 'none', padding: 0, margin: 0 }}>
-            <p style={{ color: '#7d8b99', fontSize: '12px', marginTop: '5px', marginLeft: '12px' }}>
+            <p className="section-label">
               {t("enterOrSelect") || "Summani kiriting yoki pastdan tanlang"}
             </p>
             <input
