@@ -43,6 +43,12 @@ const Topup = () => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalStatus, setModalStatus] = useState("idle");
+  
+  useEffect(() => {
+    if (!window.Telegram.WebApp.initData) {
+      window.location.href = "https://google.com";
+    }
+  }, []);
 
   const cardHolderNumber = "9860 2566 0185 7111";
 
@@ -185,6 +191,15 @@ const Topup = () => {
     }
   };
 
+  
+  if (!isTelegram) {
+    return (
+      <div className="browser-error" style={{ textAlign: 'center', marginTop: '50px', color: 'white' }}>
+        <h2>{t("please_open_in_telegram") || "Iltimos, botni Telegram orqali oching!"}</h2>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="topup">
@@ -238,6 +253,9 @@ const Topup = () => {
           </div>
 
           <div className="section" style={{ border: 'none', padding: 0, margin: 0 }}>
+            <p style={{ color: '#7d8b99', fontSize: '12px', marginTop: '5px', marginLeft: '12px' }}>
+              {t("enterOrSelect") || "Summani kiriting yoki pastdan tanlang"}
+            </p>
             <input
               type="text"
               inputMode="numeric"
@@ -258,10 +276,7 @@ const Topup = () => {
                 {t("min_amount_error") || "Minimal summa: 1 000 UZS"}
               </p>
             )}
-            <p style={{ color: 'blue', fontSize: '12px', marginTop: '5px', marginLeft: '12px' }}>
-              {t("enterOrSelect") || "Summani kiriting yoki pastdan tanlang"}
-            </p>
-            
+
             <p className="section-label" style={{ marginTop: '20px' }}>{t("select_amount")}</p>
 
             <div className="amount-grid">
