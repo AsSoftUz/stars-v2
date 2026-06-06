@@ -92,7 +92,8 @@
   "payment_sent_admin_title": "To'lov yuborildi!",
   "payment_sent_admin_desc": "To'lovingiz admin tomonidan tekshirilmoqda. Iltimos, kuting.",
 
-  "min_amount_error": "Minimal miqdor 1000 so'm"
+  "min_amount_error": "Minimal miqdor 1000 so'm",
+  "enterOrSelect": "Summani kiriting yoki pastdan tanlang"
 }
 
 

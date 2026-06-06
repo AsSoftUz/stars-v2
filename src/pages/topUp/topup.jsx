@@ -258,6 +258,9 @@ const Topup = () => {
                 {t("min_amount_error") || "Minimal summa: 1 000 UZS"}
               </p>
             )}
+            <p style={{ color: 'blue', fontSize: '12px', marginTop: '5px', marginLeft: '12px' }}>
+              {t("enterOrSelect") || "Summani kiriting yoki pastdan tanlang"}
+            </p>
             
             <p className="section-label" style={{ marginTop: '20px' }}>{t("select_amount")}</p>
 
