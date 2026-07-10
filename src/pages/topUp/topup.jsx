@@ -18,7 +18,6 @@ import headerImg from "../../assets/topupGif.mp4";
 import useTelegramBack from "../../hooks/useTelegramBack";
 import useGetOrCreateUser from "../../hooks/useGetOrCreateUser";
 import useTopup from "../../hooks/useTopup";
-import useBuyClick from "../../hooks/useBuyClick";
 import useGetStars from "../../hooks/useGetStars";
 
 const Topup = () => {
@@ -32,11 +31,10 @@ const Topup = () => {
   const { user, isTelegram } = useGetOrCreateUser();
   const { starsOptions, loading: starsLoading } = useGetStars();
   const { submitTopup: submitAdminTopup, loading: adminLoading } = useTopup();
-  const { submitTopup: submitClickTopup, loading: clickLoading } = useBuyClick();
 
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [customAmount, setCustomAmount] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("click");
+  const [paymentMethod, setPaymentMethod] = useState("admin");
   const [receipt, setReceipt] = useState(null);
   const [showTooltip, setShowTooltip] = useState(false);
   const [showAllPrices, setShowAllPrices] = useState(false);
@@ -161,30 +159,17 @@ const Topup = () => {
     setModalStatus("loading");
 
     try {
-      if (paymentMethod === "admin") {
-        await submitAdminTopup({
-          amount: currentAmount,
-          file: receipt
-        });
-        tg?.HapticFeedback.notificationOccurred('success');
-        setModalStatus("success");
-        setTimeout(() => { setModalOpen(false); navigate("/settings"); }, 4000);
-      } else {
-        const data = await submitClickTopup({ amount: currentAmount });
-        if (data?.click_url) {
-          tg?.HapticFeedback.notificationOccurred('success');
-          setModalOpen(false);
-          setModalStatus("idle");
-
-          if (tg) {
-            tg.openLink(data.click_url);
-          } else {
-            window.location.href = data.click_url;
-          }
-        } else {
-          throw new Error("Click URL not found");
-        }
+      if (paymentMethod === "click") {
+        throw new Error("Click orqali to'lov vaqtincha ishlamayapti (texnik ishlar)");
       }
+
+      await submitAdminTopup({
+        amount: currentAmount,
+        file: receipt
+      });
+      tg?.HapticFeedback.notificationOccurred('success');
+      setModalStatus("success");
+      setTimeout(() => { setModalOpen(false); navigate("/settings"); }, 4000);
     } catch (err) {
       tg?.HapticFeedback.notificationOccurred('error');
       setModalStatus("error");
@@ -324,11 +309,15 @@ const Topup = () => {
           <div className="section">
             <p className="section-label">{t("select_payment_method")}</p>
 
-            <div className={`method-card ${paymentMethod === "click" ? "selected" : ""}`} onClick={() => { tg?.HapticFeedback.impactOccurred('light'); setPaymentMethod("click"); }}>
+            <div
+              className="method-card disabled"
+              onClick={() => { tg?.HapticFeedback.notificationOccurred('error'); }}
+              style={{ opacity: 0.5, cursor: 'not-allowed' }}
+            >
               <div className="icon-box"><CreditCard size={20} /></div>
               <div className="method-info">
                 <span className="title">{t("click_payment")}</span>
-                <span className="desc">{t("click_payment_desc")}</span>
+                <span className="desc">Texnik ishlar olib borilmoqda, vaqtincha ishlamayapti</span>
               </div>
             </div>
 
